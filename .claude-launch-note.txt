@@ -1,0 +1,2 @@
+Dev-Server läuft auf http://localhost:3000
+Start mit: cd ~/Developer/allgaeu-mit-kids && npm run dev

@@ -26,3 +26,7 @@ yarn-error.log*
 .DS_Store
 *.pem
 .vercel
+
+# build info
+tsconfig.tsbuildinfo
+.DS_Store

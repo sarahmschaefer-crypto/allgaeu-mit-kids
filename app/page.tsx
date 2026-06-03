@@ -1,22 +1,8 @@
-// app/page.tsx
-import Header from '@/components/Header'
-import HeroSection from '@/components/HeroSection'
-import CategoryJourney from '@/components/CategoryJourney'
-import AboutSection from '@/components/AboutSection'
-import RandomAusflug from '@/components/RandomAusflug'
-import Footer from '@/components/Footer'
+// app/page.tsx — Storytelling scroll landing (replaces the previous landing).
+// The previous landing (Header/HeroSection/CategoryJourney/AboutSection/
+// RandomAusflug/Footer) stays in the components folder and in git history.
+import StoryLanding from '@/components/StoryLanding'
 
 export default function HomePage() {
-  return (
-    <>
-      <Header />
-      <main>
-        <HeroSection />
-        <CategoryJourney />
-        <AboutSection />
-        <RandomAusflug />
-      </main>
-      <Footer />
-    </>
-  )
+  return <StoryLanding />
 }
