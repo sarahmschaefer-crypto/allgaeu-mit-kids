@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+/* ── Lo-Fi Design Tokens ─────────────────────────────────────── */
+@theme {
+  /* Colors */
+  --color-paper:     #F5EFE8;
+  --color-ink:       #1a1a1a;
+  --color-gold:      #B49139;
+  --color-muted:     #7a7068;
+
+  /* Category colors */
+  --color-ausflug:    #022D53;
+  --color-baden:      #00436C;
+  --color-sport:      #276299;
+  --color-shop:       #307A9A;
+  --color-spielplatz: #399CAA;
+  --color-attraktion: #399CAA;
+  --color-gastro:     #67C0C0;
+  --color-tierpark:   #88D3C1;
+  --color-kreatives:  #9CDEAF;
+  --color-unterkunft: #AADC93;
+  --color-kultur:     #B8CB6E;
+
+  /* Fonts */
+  --font-headline: var(--font-courier);
+  --font-body:     var(--font-lora);
+  --font-mono:     var(--font-source-code);
+
+  /* Lo-Fi shadows */
+  --shadow-lofi:    3px 3px 0px #1a1a1a;
+  --shadow-lofi-lg: 5px 5px 0px #1a1a1a;
+  --shadow-lofi-gold: 3px 3px 0px #B49139;
+}
+
+/* ── Base ────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #F5EFE8;
+  color: #1a1a1a;
+  font-family: var(--font-lora), Georgia, serif;
+  /* Subtle paper grain via SVG noise */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+/* ── Lo-Fi Utilities ─────────────────────────────────────────── */
+.shadow-lofi     { box-shadow: 3px 3px 0px #1a1a1a; }
+.shadow-lofi-lg  { box-shadow: 5px 5px 0px #1a1a1a; }
+.shadow-lofi-gold{ box-shadow: 3px 3px 0px #B49139; }
+
+.lofi-card {
+  background: #F5EFE8;
+  border: 1.5px solid #1a1a1a;
+  box-shadow: 3px 3px 0px #1a1a1a;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.lofi-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px #1a1a1a;
+}
+
+.lofi-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border: 1.5px solid #1a1a1a;
+  background: #1a1a1a;
+  color: #F5EFE8;
+  font-family: var(--font-source-code), 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 3px 3px 0px #B49139;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  text-decoration: none;
+}
+.lofi-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px #B49139;
+}
+
+.lofi-btn-outline {
+  background: transparent;
+  color: #1a1a1a;
+  box-shadow: 3px 3px 0px #1a1a1a;
+}
+.lofi-btn-outline:hover {
+  background: #1a1a1a;
+  color: #F5EFE8;
+  box-shadow: 5px 5px 0px #1a1a1a;
+}
+
+/* Dashed divider */
+.lofi-divider {
+  border: none;
+  border-top: 2px dashed #c4b9ae;
+  margin: 48px 0;
+}
+
+/* ── Typography ──────────────────────────────────────────────── */
+h1, h2, h3, h4 {
+  font-family: var(--font-courier), 'Courier New', monospace;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.label {
+  font-family: var(--font-source-code), 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #7a7068;
+}

@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 800">
+  <defs>
+    <!-- Diagonal hatching for steep summit areas -->
+    <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#C9A84C" stroke-width="0.9"/>
+    </pattern>
+    <!-- Water hatching (shallower angle) -->
+    <pattern id="water-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#C9A84C" stroke-width="0.7"/>
+    </pattern>
+
+    <!-- Clip paths for innermost peak rings (for hatching) -->
+    <clipPath id="clip-p1">
+      <ellipse cx="130" cy="555" rx="13" ry="9" transform="rotate(-15 130 555)"/>
+    </clipPath>
+    <clipPath id="clip-p2">
+      <ellipse cx="278" cy="572" rx="10" ry="8" transform="rotate(10 278 572)"/>
+    </clipPath>
+    <clipPath id="clip-p3">
+      <ellipse cx="398" cy="645" rx="9" ry="6" transform="rotate(-5 398 645)"/>
+    </clipPath>
+    <clipPath id="clip-p4">
+      <ellipse cx="198" cy="705" rx="10" ry="7" transform="rotate(20 198 705)"/>
+    </clipPath>
+    <clipPath id="clip-p5">
+      <ellipse cx="322" cy="735" rx="11" ry="8" transform="rotate(-10 322 735)"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="500" height="800" fill="#F5EFE8"/>
+
+  <!-- ============================================================
+       ALL MAP ELEMENTS — stroke #C9A84C, opacity 0.35
+       ============================================================ -->
+  <g stroke="#C9A84C" fill="none" stroke-width="1.5" opacity="0.35">
+
+    <!-- ── FOOTHILLS (gentle rolling contours, northern half) ── -->
+
+    <!-- Foothill cluster NW (Allgäuer Voralpen west) -->
+    <ellipse cx="98"  cy="382" rx="82" ry="26" transform="rotate(5 98 382)"/>
+    <ellipse cx="98"  cy="382" rx="60" ry="18" transform="rotate(5 98 382)"/>
+    <ellipse cx="98"  cy="382" rx="38" ry="12" transform="rotate(5 98 382)"/>
+
+    <!-- Foothill cluster NE (Allgäuer Voralpen east) -->
+    <ellipse cx="362" cy="418" rx="74" ry="23" transform="rotate(-8 362 418)"/>
+    <ellipse cx="362" cy="418" rx="54" ry="16" transform="rotate(-8 362 418)"/>
+    <ellipse cx="362" cy="418" rx="34" ry="10" transform="rotate(-8 362 418)"/>
+
+    <!-- Foothill cluster centre (Illertal hills) -->
+    <ellipse cx="232" cy="460" rx="64" ry="21" transform="rotate(14 232 460)"/>
+    <ellipse cx="232" cy="460" rx="46" ry="14" transform="rotate(14 232 460)"/>
+    <ellipse cx="232" cy="460" rx="28" ry="9"  transform="rotate(14 232 460)"/>
+
+    <!-- ── ALPINE PEAKS (south, higher/tighter contours) ── -->
+
+    <!-- Peak 1 · Nebelhorn / NW Alps -->
+    <ellipse cx="130" cy="555" rx="66" ry="44" transform="rotate(-15 130 555)"/>
+    <ellipse cx="130" cy="555" rx="51" ry="33" transform="rotate(-15 130 555)"/>
+    <ellipse cx="130" cy="555" rx="37" ry="23" transform="rotate(-15 130 555)"/>
+    <ellipse cx="130" cy="555" rx="25" ry="15" transform="rotate(-15 130 555)"/>
+    <ellipse cx="130" cy="555" rx="13" ry="9"  transform="rotate(-15 130 555)" stroke-width="1.8"/>
+    <rect x="55" y="510" width="150" height="90" fill="url(#hatch)" stroke="none" clip-path="url(#clip-p1)"/>
+
+    <!-- Peak 2 · Grünten / central Alps -->
+    <ellipse cx="278" cy="572" rx="56" ry="43" transform="rotate(10 278 572)"/>
+    <ellipse cx="278" cy="572" rx="43" ry="32" transform="rotate(10 278 572)"/>
+    <ellipse cx="278" cy="572" rx="30" ry="22" transform="rotate(10 278 572)"/>
+    <ellipse cx="278" cy="572" rx="19" ry="13" transform="rotate(10 278 572)"/>
+    <ellipse cx="278" cy="572" rx="10" ry="8"  transform="rotate(10 278 572)" stroke-width="1.8"/>
+    <rect x="215" y="530" width="126" height="84" fill="url(#hatch)" stroke="none" clip-path="url(#clip-p2)"/>
+
+    <!-- Peak 3 · Zugspitze area / SE Alps (highest — most rings) -->
+    <ellipse cx="398" cy="645" rx="76" ry="49" transform="rotate(-5 398 645)"/>
+    <ellipse cx="398" cy="645" rx="59" ry="37" transform="rotate(-5 398 645)"/>
+    <ellipse cx="398" cy="645" rx="44" ry="27" transform="rotate(-5 398 645)"/>
+    <ellipse cx="398" cy="645" rx="30" ry="17" transform="rotate(-5 398 645)"/>
+    <ellipse cx="398" cy="645" rx="18" ry="10" transform="rotate(-5 398 645)"/>
+    <ellipse cx="398" cy="645" rx="9"  ry="6"  transform="rotate(-5 398 645)" stroke-width="1.8"/>
+    <rect x="330" y="596" width="136" height="98" fill="url(#hatch)" stroke="none" clip-path="url(#clip-p3)"/>
+
+    <!-- Peak 4 · Allgäuer Hochalpen SW deep -->
+    <ellipse cx="198" cy="705" rx="59" ry="41" transform="rotate(20 198 705)"/>
+    <ellipse cx="198" cy="705" rx="45" ry="30" transform="rotate(20 198 705)"/>
+    <ellipse cx="198" cy="705" rx="32" ry="21" transform="rotate(20 198 705)"/>
+    <ellipse cx="198" cy="705" rx="19" ry="12" transform="rotate(20 198 705)"/>
+    <ellipse cx="198" cy="705" rx="10" ry="7"  transform="rotate(20 198 705)" stroke-width="1.8"/>
+    <rect x="135" y="660" width="128" height="90" fill="url(#hatch)" stroke="none" clip-path="url(#clip-p4)"/>
+
+    <!-- Peak 5 · Oberstdorf area / south centre -->
+    <ellipse cx="322" cy="735" rx="49" ry="35" transform="rotate(-10 322 735)"/>
+    <ellipse cx="322" cy="735" rx="36" ry="25" transform="rotate(-10 322 735)"/>
+    <ellipse cx="322" cy="735" rx="23" ry="16" transform="rotate(-10 322 735)"/>
+    <ellipse cx="322" cy="735" rx="11" ry="8"  transform="rotate(-10 322 735)" stroke-width="1.8"/>
+    <rect x="265" y="695" width="115" height="80" fill="url(#hatch)" stroke="none" clip-path="url(#clip-p5)"/>
+
+    <!-- ── RIVERS ── -->
+
+    <!-- Iller — flows N from SW Alps through centre-west -->
+    <path d="M 184,778
+             C 174,702 163,620 169,538
+             C 175,454 186,370 179,288
+             C 172,205 164,144 159,66"
+          stroke-width="2.2" stroke-linecap="round"/>
+
+    <!-- Lech — flows NE from SE Alps -->
+    <path d="M 420,784
+             C 415,706 419,628 413,548
+             C 407,467 397,384 408,304
+             C 417,224 425,160 429,84"
+          stroke-width="2.0" stroke-linecap="round"/>
+
+    <!-- Argen / tributary — smaller stream, west edge -->
+    <path d="M 82,648
+             C 92,584 107,524 115,464
+             C 123,404 129,350 135,290
+             C 140,230 142,174 145,114"
+          stroke-width="1.3" stroke-linecap="round"/>
+
+    <!-- Water-edge hatching on Iller banks (narrow strips) -->
+    <rect x="148" y="80" width="22" height="698" fill="url(#water-hatch)" stroke="none"
+          opacity="0.6"
+          style="clip-path:none"/>
+
+    <!-- ── HIKING TRAIL (dashed) ── -->
+    <path d="M 254,792
+             C 224,748 206,708 216,668
+             C 226,628 258,608 266,568
+             C 274,528 262,488 252,448
+             C 242,408 226,376 236,336
+             C 246,296 276,275 282,235
+             C 288,195 284,156 270,112"
+          stroke-width="1.6" stroke-dasharray="9 6" stroke-linecap="round"/>
+
+    <!-- ── PEAK TRIANGLE SYMBOLS ── -->
+    <!-- tip = peak summit; base ~14px wide, 14px tall -->
+    <polygon points="130,545  123,559  137,559" stroke-width="1.2" fill="#C9A84C"/>
+    <polygon points="278,562  271,576  285,576" stroke-width="1.2" fill="#C9A84C"/>
+    <polygon points="398,635  391,649  405,649" stroke-width="1.2" fill="#C9A84C"/>
+    <polygon points="198,695  191,709  205,709" stroke-width="1.2" fill="#C9A84C"/>
+    <polygon points="322,725  315,739  329,739" stroke-width="1.2" fill="#C9A84C"/>
+
+    <!-- ── SCALE BAR (bottom-left) ── -->
+    <line x1="28"  y1="770" x2="128" y2="770" stroke-width="1.8"/>
+    <line x1="28"  y1="764" x2="28"  y2="776" stroke-width="1.8"/>
+    <line x1="78"  y1="766" x2="78"  y2="774" stroke-width="1.5"/>
+    <line x1="128" y1="764" x2="128" y2="776" stroke-width="1.8"/>
+
+  </g>
+
+  <!-- ============================================================
+       COMPASS ROSE — slightly more opaque so labels read
+       ============================================================ -->
+  <g opacity="0.52">
+    <!-- Axes — centre (452, 742) -->
+    <line x1="452" y1="742" x2="452" y2="714" stroke="#C9A84C" stroke-width="1.5"/>
+    <polygon points="452,708 447,719 457,719" fill="#C9A84C"/>
+
+    <line x1="452" y1="742" x2="452" y2="770" stroke="#C9A84C" stroke-width="1.5"/>
+    <polygon points="452,776 447,765 457,765" fill="#C9A84C"/>
+
+    <line x1="452" y1="742" x2="480" y2="742" stroke="#C9A84C" stroke-width="1.5"/>
+    <polygon points="486,742 475,737 475,747" fill="#C9A84C"/>
+
+    <line x1="452" y1="742" x2="424" y2="742" stroke="#C9A84C" stroke-width="1.5"/>
+    <polygon points="418,742 429,737 429,747" fill="#C9A84C"/>
+
+    <!-- Centre dot -->
+    <circle cx="452" cy="742" r="2.5" fill="#C9A84C"/>
+
+    <!-- Cardinal labels -->
+    <text x="452" y="706"  text-anchor="middle"
+          font-family="Georgia, 'Times New Roman', serif"
+          font-size="10" font-weight="bold" fill="#C9A84C">N</text>
+    <text x="452" y="789"  text-anchor="middle"
+          font-family="Georgia, 'Times New Roman', serif"
+          font-size="10" font-weight="bold" fill="#C9A84C">S</text>
+    <text x="492" y="746"  text-anchor="middle"
+          font-family="Georgia, 'Times New Roman', serif"
+          font-size="10" font-weight="bold" fill="#C9A84C">E</text>
+    <text x="412" y="746"  text-anchor="middle"
+          font-family="Georgia, 'Times New Roman', serif"
+          font-size="10" font-weight="bold" fill="#C9A84C">W</text>
+  </g>
+
+</svg>
