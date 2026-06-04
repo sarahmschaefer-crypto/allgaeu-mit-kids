@@ -1,15 +1,18 @@
-// components/shapes/ShapesBar.tsx — top navigation for the discovery flows
+// components/shapes/ShapesBar.tsx — persistent top navigation for all flows
 import Link from 'next/link'
 
 const TABS = [
-  { href: '/entdecken', label: 'Filter' },
-  { href: '/quiz', label: 'Quiz' },
-  { href: '/swipe', label: 'Swipe' },
-]
+  { href: '/entdecken', key: 'entdecken', label: 'Filter' },
+  { href: '/karte', key: 'karte', label: 'Karte' },
+  { href: '/quiz', key: 'quiz', label: 'Quiz' },
+  { href: '/swipe', key: 'swipe', label: 'Swipe' },
+] as const
 
-export function ShapesBar({ active }: { active?: 'entdecken' | 'quiz' | 'swipe' }) {
+export type ShapesNavKey = (typeof TABS)[number]['key']
+
+export function ShapesBar({ active, overlay = false }: { active?: ShapesNavKey; overlay?: boolean }) {
   return (
-    <header className="shapes-bar">
+    <header className={`shapes-bar${overlay ? ' shapes-bar--overlay' : ''}`}>
       <div className="shapes-bar-inner">
         <Link href="/" className="shapes-brand">
           <i />
@@ -17,7 +20,7 @@ export function ShapesBar({ active }: { active?: 'entdecken' | 'quiz' | 'swipe' 
         </Link>
         <nav className="shapes-nav">
           {TABS.map((t) => (
-            <Link key={t.href} href={t.href} className={active && t.href === `/${active}` ? 'on' : ''}>
+            <Link key={t.href} href={t.href} className={active === t.key ? 'on' : ''}>
               {t.label}
             </Link>
           ))}

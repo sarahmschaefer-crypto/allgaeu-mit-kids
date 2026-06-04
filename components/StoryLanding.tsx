@@ -8,11 +8,13 @@ import { JourneyScene } from '@/components/story/JourneyScene'
 import { MatcherScene } from '@/components/story/MatcherScene'
 import { HorizontalScene, ResolutionScene } from '@/components/story/HorizontalScene'
 import { ProgressNav, FloatingCta } from '@/components/story/StoryNav'
+import { ShapesBar } from '@/components/shapes/ShapesBar'
 
 function StoryInner() {
   useEffect(() => runRevealController(), [])
   return (
     <>
+      <ShapesBar overlay />
       <ProgressNav />
       <FloatingCta />
       <HeroScene />

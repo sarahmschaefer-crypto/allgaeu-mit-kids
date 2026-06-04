@@ -1,6 +1,6 @@
 // app/entdecken/page.tsx
 import type { Metadata } from 'next'
-import Header from '@/components/Header'
+import { ShapesBar } from '@/components/shapes/ShapesBar'
 import Footer from '@/components/Footer'
 import EntdeckenClient from '@/components/EntdeckenClient'
 
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function EntdeckenPage() {
   return (
     <>
-      <Header />
+      <ShapesBar active="entdecken" />
       <main>
         <EntdeckenClient />
       </main>
