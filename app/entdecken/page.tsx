@@ -1,22 +1,27 @@
-// app/entdecken/page.tsx
+// app/entdecken/page.tsx — Shapes-styled filter/browse on the unified dataset
 import type { Metadata } from 'next'
 import { ShapesBar } from '@/components/shapes/ShapesBar'
-import Footer from '@/components/Footer'
-import EntdeckenClient from '@/components/EntdeckenClient'
+import { FilterBrowse } from '@/components/shapes/FilterBrowse'
+import { CATEGORIES } from '@/lib/shapes/data'
 
 export const metadata: Metadata = {
   title: 'Ausflugsziele entdecken',
-  description: 'Alle Ausflugsziele im Allgäu für Familien – filtern nach Kategorie, Region, Alter und Kosten.',
+  description: 'Alle Ausflugsziele im Allgäu für Familien – filtern nach Alter, Aktivität, Zeit und Budget.',
 }
 
-export default function EntdeckenPage() {
+export default async function EntdeckenPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ cat?: string }>
+}) {
+  const { cat } = await searchParams
+  const valid = cat && cat in CATEGORIES ? [cat] : []
   return (
-    <>
+    <div className="shapes-root">
       <ShapesBar active="entdecken" />
       <main>
-        <EntdeckenClient />
+        <FilterBrowse initialCats={valid} />
       </main>
-      <Footer />
-    </>
+    </div>
   )
 }

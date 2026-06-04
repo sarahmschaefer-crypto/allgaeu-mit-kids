@@ -1,22 +1,27 @@
 'use client'
 // components/story/MatcherScene.tsx — interactive "tell us about you" → live
-// matched trips.
+// matched trips. Uses the unified Shapes dataset (lib/shapes/data).
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import Link from 'next/link'
 import { clamp, lerp, easeOut } from '@/lib/story/scroll'
 import {
-  matchDestinations,
+  filterDests,
+  matchScore,
   DESTINATIONS,
-  AGE_BANDS,
-  TIME_OPTS,
-  BUDGET_OPTS,
-  TYPE_OPTS,
-  type Destination,
-} from '@/lib/story/destinations'
+  AGES,
+  TIMES,
+  BUDGETS,
+  CATEGORIES,
+  type ShapesDest,
+} from '@/lib/shapes/data'
 import { Reveal } from '@/components/story/Reveal'
 import { Placeholder } from '@/components/story/Placeholder'
 import { useTweaks } from '@/components/Tweaks'
+
+const TIME_LABEL: Record<string, string> = Object.fromEntries(TIMES.map((t) => [t.id, t.label]))
+const BUDGET_GLYPH: Record<string, string> = Object.fromEntries(BUDGETS.map((b) => [b.id, b.glyph]))
+const CAT_LIST = Object.values(CATEGORIES)
 
 function Chip({
   active,
@@ -34,25 +39,22 @@ function Chip({
   )
 }
 
-const TIME_LABEL: Record<string, string> = { kurz: '2–3 Std', halb: 'Halber Tag', ganz: 'Ganzer Tag' }
-const BUDGET_LABEL: Record<number, string> = { 0: 'Kostenlos', 1: 'Günstig', 2: '€€' }
-
-function ResultCard({ d, i }: { d: Destination; i: number }) {
+function ResultCard({ d, i }: { d: ShapesDest; i: number }) {
   return (
     <article className="rescard" style={{ ['--i']: i } as CSSProperties}>
       <div className="rescard-thumb">
-        <Placeholder label={d.img} className="rescard-ph" />
+        <Placeholder label={d.teaser ?? d.place} className="rescard-ph" />
       </div>
       <div className="rescard-body">
         <div className="rescard-top">
           <h4 className="rescard-name">{d.name}</h4>
-          <span className="rescard-area">{d.area}</span>
+          <span className="rescard-area">{d.place}</span>
         </div>
         <div className="rescard-tags">
           <span className="tag">ab {d.ages[0]} J.</span>
           <span className="tag">{TIME_LABEL[d.time]}</span>
-          <span className="tag tag-terra">{BUDGET_LABEL[d.budget]}</span>
-          <span className="tag tag-ghost">{d.km} km</span>
+          <span className="tag tag-terra">{BUDGET_GLYPH[d.budget]}</span>
+          <span className="tag tag-ghost">★ {d.rating.toFixed(1)}</span>
         </div>
       </div>
     </article>
@@ -83,16 +85,21 @@ function useCountUp(target: number) {
 
 export function MatcherScene() {
   const { direkt } = useTweaks()
-  const [age, setAge] = useState<string | null>('a35')
-  const [time, setTime] = useState<string | null>('halb')
-  const [budget, setBudget] = useState<number | null>(2)
-  const [types, setTypes] = useState<string[]>(['wasser'])
-  const toggleType = (id: string) =>
-    setTypes((ts) => (ts.includes(id) ? ts.filter((t) => t !== id) : [...ts, id]))
-  const results = useMemo(
-    () => matchDestinations({ age, time, budget, types }),
-    [age, time, budget, types],
-  )
+  const [ages, setAges] = useState<string[]>(['3-5'])
+  const [times, setTimes] = useState<string[]>(['halb'])
+  const [budgets, setBudgets] = useState<string[]>([])
+  const [cats, setCats] = useState<string[]>(['wasser'])
+
+  const toggle = (set: React.Dispatch<React.SetStateAction<string[]>>, id: string) =>
+    set((arr) => (arr.includes(id) ? arr.filter((x) => x !== id) : [...arr, id]))
+
+  const results = useMemo(() => {
+    const sel = { ages, times, budgets, cats }
+    return filterDests(sel)
+      .map((d) => ({ d, m: matchScore(d, sel) }))
+      .sort((a, b) => b.m - a.m || b.d.rating - a.d.rating)
+      .map((r) => r.d)
+  }, [ages, times, budgets, cats])
   const count = useCountUp(results.length)
 
   return (
@@ -123,8 +130,8 @@ export function MatcherScene() {
                 <span className="ctrl-num">01</span> Wie alt sind die Kinder?
               </legend>
               <div className="chiprow">
-                {AGE_BANDS.map((b) => (
-                  <Chip key={b.id} active={age === b.id} onClick={() => setAge(age === b.id ? null : b.id)}>
+                {AGES.map((b) => (
+                  <Chip key={b.id} active={ages.includes(b.id)} onClick={() => toggle(setAges, b.id)}>
                     {b.label}
                   </Chip>
                 ))}
@@ -135,8 +142,8 @@ export function MatcherScene() {
                 <span className="ctrl-num">02</span> Wie viel Zeit habt ihr?
               </legend>
               <div className="chiprow">
-                {TIME_OPTS.map((o) => (
-                  <Chip key={o.id} active={time === o.id} onClick={() => setTime(time === o.id ? null : o.id)}>
+                {TIMES.map((o) => (
+                  <Chip key={o.id} active={times.includes(o.id)} onClick={() => toggle(setTimes, o.id)}>
                     {o.label}
                   </Chip>
                 ))}
@@ -147,12 +154,8 @@ export function MatcherScene() {
                 <span className="ctrl-num">03</span> Wie viel darf&rsquo;s kosten?
               </legend>
               <div className="chiprow">
-                {BUDGET_OPTS.map((o) => (
-                  <Chip
-                    key={o.id}
-                    active={budget === o.id}
-                    onClick={() => setBudget(budget === o.id ? null : o.id)}
-                  >
+                {BUDGETS.map((o) => (
+                  <Chip key={o.id} active={budgets.includes(o.id)} onClick={() => toggle(setBudgets, o.id)}>
                     {o.label}
                   </Chip>
                 ))}
@@ -163,9 +166,9 @@ export function MatcherScene() {
                 <span className="ctrl-num">04</span> Worauf habt ihr Lust?
               </legend>
               <div className="chiprow">
-                {TYPE_OPTS.map((o) => (
-                  <Chip key={o.id} active={types.includes(o.id)} onClick={() => toggleType(o.id)}>
-                    {o.label}
+                {CAT_LIST.map((o) => (
+                  <Chip key={o.id} active={cats.includes(o.id)} onClick={() => toggle(setCats, o.id)}>
+                    {o.short}
                   </Chip>
                 ))}
               </div>

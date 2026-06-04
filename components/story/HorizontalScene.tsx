@@ -4,17 +4,17 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import { clamp, useScrollScene } from '@/lib/story/scroll'
-import { DESTINATIONS } from '@/lib/story/destinations'
+import { DESTINATIONS } from '@/lib/shapes/data'
 import { Placeholder } from '@/components/story/Placeholder'
 import { useTweaks } from '@/components/Tweaks'
 
 const GALLERY = [
-  { id: 'alpsee', tag: 'Berg & Rodelspaß', perks: ['Bergbahn', 'Einkehr', 'Coaster'] },
-  { id: 'breitach', tag: 'Wasser & Felsen', perks: ['Schatten', '~2 Std', 'Steg'] },
-  { id: 'sennalpe', tag: 'Tiere zum Anfassen', perks: ['Buggy ok', 'Hofcafé', 'Almtiere'] },
+  { id: 'alpsee-coaster', tag: 'Berg & Rodelspaß', perks: ['Bergbahn', 'Einkehr', 'Coaster'] },
+  { id: 'breitachklamm', tag: 'Wasser & Felsen', perks: ['Schatten', '~2 Std', 'Steg'] },
+  { id: 'bergbauernmuseum', tag: 'Tiere zum Anfassen', perks: ['Buggy ok', 'Hofcafé', 'Almtiere'] },
   { id: 'skywalk', tag: 'Über den Wipfeln', perks: ['Barrierearm', 'Aussicht', 'Spielturm'] },
   { id: 'eistobel', tag: 'Wilde Wasserfälle', perks: ['Kostenlos', 'Schatten', 'Rundweg'] },
-  { id: 'huendle', tag: 'Rasante Abfahrt', perks: ['Bergbahn', 'Sommerrodeln', 'Spielberg'] },
+  { id: 'hündle', tag: 'Rasante Abfahrt', perks: ['Bergbahn', 'Sommerrodeln', 'Spielberg'] },
 ]
 const BY_ID = Object.fromEntries(DESTINATIONS.map((d) => [d.id, d]))
 
@@ -54,21 +54,23 @@ export function HorizontalScene() {
           {GALLERY.map((g, i) => {
             const d = BY_ID[g.id]
             return (
-              <article
+              <Link
+                href={`/ausflug/${d.id}`}
                 className="hcard"
                 key={g.id}
                 ref={(el) => {
                   cards.current[i] = el
                 }}
+                style={{ textDecoration: 'none', color: 'inherit' }}
               >
                 <div className="hcard-img">
-                  <Placeholder label={d.img} className="hcard-ph" />
+                  <Placeholder label={d.teaser ?? d.place} className="hcard-ph" />
                   <span className="hcard-index">{String(i + 1).padStart(2, '0')}</span>
                 </div>
                 <div className="hcard-meta">
                   <p className="hcard-tag">{g.tag}</p>
                   <h3 className="display hcard-name">{d.name}</h3>
-                  <p className="hcard-area">{d.area}</p>
+                  <p className="hcard-area">{d.place}</p>
                   <div className="hcard-perks">
                     {g.perks.map((perk) => (
                       <span className="perk" key={perk}>
@@ -77,7 +79,7 @@ export function HorizontalScene() {
                     ))}
                   </div>
                 </div>
-              </article>
+              </Link>
             )
           })}
           <div className="horiz-end">
