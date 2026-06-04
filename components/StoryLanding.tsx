@@ -7,7 +7,7 @@ import { HeroScene } from '@/components/story/HeroScene'
 import { JourneyScene } from '@/components/story/JourneyScene'
 import { MatcherScene } from '@/components/story/MatcherScene'
 import { HorizontalScene, ResolutionScene } from '@/components/story/HorizontalScene'
-import { ProgressNav, FloatingCta, goToMatcher } from '@/components/story/StoryNav'
+import { ProgressNav, FloatingCta } from '@/components/story/StoryNav'
 
 function StoryInner() {
   useEffect(() => runRevealController(), [])
@@ -19,7 +19,7 @@ function StoryInner() {
       <JourneyScene />
       <MatcherScene />
       <HorizontalScene />
-      <ResolutionScene onStart={goToMatcher} />
+      <ResolutionScene />
 
       <footer className="story-foot">
         <span className="foot-mark">Allgäu&nbsp;·&nbsp;für kleine Entdecker</span>

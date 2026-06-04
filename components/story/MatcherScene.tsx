@@ -3,6 +3,7 @@
 // matched trips.
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
+import Link from 'next/link'
 import { clamp, lerp, easeOut } from '@/lib/story/scroll'
 import {
   matchDestinations,
@@ -195,6 +196,14 @@ export function MatcherScene() {
                 <ResultCard key={d.id} d={d} i={i} />
               ))}
               {results.length > 6 && <p className="results-more">+ {results.length - 6} weitere Orte</p>}
+            </div>
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 22 }}>
+              <Link className="btn btn-primary" href="/quiz">
+                Genauer eingrenzen<span aria-hidden="true">→</span>
+              </Link>
+              <Link className="btn btn-ghost" href="/swipe">
+                Durchblättern
+              </Link>
             </div>
           </Reveal>
         </div>

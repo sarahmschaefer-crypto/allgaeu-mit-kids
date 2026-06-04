@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Courier_Prime, Source_Code_Pro, Lora } from 'next/font/google'
 import './globals.css'
 import './story.css'
+import './shapes.css'
 
 const courierPrime = Courier_Prime({
   weight: ['400', '700'],

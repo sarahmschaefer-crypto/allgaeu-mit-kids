@@ -2,6 +2,7 @@
 // components/story/HorizontalScene.tsx — vertical scroll drives a horizontal
 // sweep of places. Plus the closing ResolutionScene.
 import { useRef } from 'react'
+import Link from 'next/link'
 import { clamp, useScrollScene } from '@/lib/story/scroll'
 import { DESTINATIONS } from '@/lib/story/destinations'
 import { Placeholder } from '@/components/story/Placeholder'
@@ -95,7 +96,7 @@ export function HorizontalScene() {
   )
 }
 
-export function ResolutionScene({ onStart }: { onStart: () => void }) {
+export function ResolutionScene() {
   const { fx } = useTweaks()
   const sec = useRef<HTMLElement>(null)
   const img = useRef<HTMLDivElement>(null)
@@ -126,12 +127,12 @@ export function ResolutionScene({ onStart }: { onStart: () => void }) {
             uns, wer mitkommt.
           </p>
           <div className="res-actions">
-            <button className="btn btn-primary" onClick={onStart}>
+            <Link className="btn btn-primary" href="/quiz">
               Passenden Ausflug finden<span aria-hidden="true">→</span>
-            </button>
-            <a className="btn btn-ghost" href="#start">
-              So funktioniert&rsquo;s
-            </a>
+            </Link>
+            <Link className="btn btn-ghost" href="/swipe">
+              Lieber durchblättern
+            </Link>
           </div>
         </div>
       </div>

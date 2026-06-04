@@ -35,7 +35,7 @@ export default function RandomAusflug() {
             {/* Image */}
             <div className="relative h-56 border-b-2 border-ink overflow-hidden">
               <Image
-                src={loc.image}
+                src={loc.images[0]}
                 alt={loc.name}
                 fill
                 className="object-cover"
