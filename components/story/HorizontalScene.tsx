@@ -4,22 +4,19 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import { clamp, useScrollScene } from '@/lib/story/scroll'
-import { DESTINATIONS } from '@/lib/shapes/data'
+import { CATEGORIES } from '@/lib/shapes/data'
 import { Placeholder } from '@/components/story/Placeholder'
 import { useTweaks } from '@/components/Tweaks'
+import { useMatch } from '@/components/story/MatchContext'
+import { buildExploreHref } from '@/lib/shapes/explore'
 
-const GALLERY = [
-  { id: 'alpsee-coaster', tag: 'Berg & Rodelspaß', perks: ['Bergbahn', 'Einkehr', 'Coaster'] },
-  { id: 'breitachklamm', tag: 'Wasser & Felsen', perks: ['Schatten', '~2 Std', 'Steg'] },
-  { id: 'bergbauernmuseum', tag: 'Tiere zum Anfassen', perks: ['Buggy ok', 'Hofcafé', 'Almtiere'] },
-  { id: 'skywalk', tag: 'Über den Wipfeln', perks: ['Barrierearm', 'Aussicht', 'Spielturm'] },
-  { id: 'eistobel', tag: 'Wilde Wasserfälle', perks: ['Kostenlos', 'Schatten', 'Rundweg'] },
-  { id: 'hündle', tag: 'Rasante Abfahrt', perks: ['Bergbahn', 'Sommerrodeln', 'Spielberg'] },
-]
-const BY_ID = Object.fromEntries(DESTINATIONS.map((d) => [d.id, d]))
+const CAT = CATEGORIES as Record<string, { label: string; short: string }>
 
 export function HorizontalScene() {
-  const { fx } = useTweaks()
+  const { fx, direkt } = useTweaks()
+  const { ranked, sel } = useMatch()
+  const cardsData = ranked.slice(0, 8)
+  const exploreHref = buildExploreHref(sel, { from: 'quiz' })
   const sec = useRef<HTMLElement>(null)
   const track = useRef<HTMLDivElement>(null)
   const cards = useRef<(HTMLElement | null)[]>([])
@@ -46,49 +43,49 @@ export function HorizontalScene() {
     <section className="scene horizontal" ref={sec}>
       <div className="sticky-stage horiz-stage">
         <div className="horiz-head wrap">
-          <p className="eyebrow">Und plötzlich ist es einfach</p>
+          <p className="eyebrow">{direkt ? 'Eure Treffer' : 'Und plötzlich wird es leicht'}</p>
           <h2 className="display h-md">Das Allgäu öffnet sich.</h2>
+          {/* always-visible entry (mobile-safe — not hidden at the end of the sweep) */}
+          <Link className="horiz-cta" href={exploreHref}>
+            Alle eure Treffer ansehen<span aria-hidden="true">→</span>
+          </Link>
         </div>
         <div className="horiz-track" ref={track}>
           <div className="horiz-spacer" />
-          {GALLERY.map((g, i) => {
-            const d = BY_ID[g.id]
-            return (
-              <Link
-                href={`/ausflug/${d.id}`}
-                className="hcard"
-                key={g.id}
-                ref={(el) => {
-                  cards.current[i] = el
-                }}
-                style={{ textDecoration: 'none', color: 'inherit' }}
-              >
-                <div className="hcard-img">
-                  <Placeholder label={d.teaser ?? d.place} className="hcard-ph" />
-                  <span className="hcard-index">{String(i + 1).padStart(2, '0')}</span>
+          {cardsData.map((d, i) => (
+            <Link
+              href={`/ausflug/${d.id}`}
+              className="hcard"
+              key={d.id}
+              ref={(el) => {
+                cards.current[i] = el
+              }}
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
+              <div className="hcard-img">
+                <Placeholder label={d.teaser ?? d.place} className="hcard-ph" />
+                <span className="hcard-index">{String(i + 1).padStart(2, '0')}</span>
+              </div>
+              <div className="hcard-meta">
+                <p className="hcard-tag">{CAT[d.cat]?.label ?? d.cat}</p>
+                <h3 className="display hcard-name">{d.name}</h3>
+                <p className="hcard-area">{d.place}</p>
+                <div className="hcard-perks">
+                  {d.highlights.slice(0, 3).map((perk) => (
+                    <span className="perk" key={perk}>
+                      {perk}
+                    </span>
+                  ))}
                 </div>
-                <div className="hcard-meta">
-                  <p className="hcard-tag">{g.tag}</p>
-                  <h3 className="display hcard-name">{d.name}</h3>
-                  <p className="hcard-area">{d.place}</p>
-                  <div className="hcard-perks">
-                    {g.perks.map((perk) => (
-                      <span className="perk" key={perk}>
-                        {perk}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </Link>
-            )
-          })}
-          <div className="horiz-end">
+              </div>
+            </Link>
+          ))}
+          <Link className="horiz-end" href={exploreHref} style={{ textDecoration: 'none' }}>
             <p className="display h-md">
-              …und das ist erst
-              <br />
-              der Anfang.
+              Alle Treffer<br />
+              auf einen Blick <span aria-hidden="true">→</span>
             </p>
-          </div>
+          </Link>
         </div>
         <div className="horiz-progress" aria-hidden="true">
           <span ref={bar} />

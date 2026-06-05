@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { runRevealController } from '@/lib/story/scroll'
 import { TweaksProvider, TweaksPanel } from '@/components/Tweaks'
+import { MatchProvider } from '@/components/story/MatchContext'
 import { HeroScene } from '@/components/story/HeroScene'
 import { JourneyScene } from '@/components/story/JourneyScene'
 import { MatcherScene } from '@/components/story/MatcherScene'
@@ -36,9 +37,11 @@ function StoryInner() {
 export default function StoryLanding() {
   return (
     <TweaksProvider>
-      <div id="story-root">
-        <StoryInner />
-      </div>
+      <MatchProvider>
+        <div id="story-root">
+          <StoryInner />
+        </div>
+      </MatchProvider>
     </TweaksProvider>
   )
 }

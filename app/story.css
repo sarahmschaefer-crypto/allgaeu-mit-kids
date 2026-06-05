@@ -191,6 +191,10 @@
 #story-root .horiz-stage { display: block; background: var(--paper); }
 #story-root .horiz-head { position: absolute; top: clamp(36px,7vh,76px); left: 0; right: 0; z-index: 6; pointer-events: none; }
 #story-root .horiz-head .eyebrow { margin-bottom: 12px; }
+#story-root .horiz-cta { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; pointer-events: auto; font-family: var(--font-body); font-weight: 700; font-size: .95rem; color: var(--paper); background: var(--pine); border-radius: 999px; padding: 12px 22px; text-decoration: none; box-shadow: 0 10px 26px -12px color-mix(in oklab, var(--pine) 80%, #000); transition: transform .2s, background .2s; }
+#story-root .horiz-cta:hover { transform: translateY(-2px); background: var(--pine-deep); }
+#story-root .horiz-end:hover p { color: var(--pine); }
+@media (max-width: 720px) { #story-root .horiz-cta { font-size: .85rem; padding: 10px 18px; } }
 #story-root .horiz-track { position: absolute; top: 0; left: 0; height: 100%; display: flex; align-items: center; gap: clamp(28px,3.2vw,56px); padding: 0 6vw; will-change: transform; }
 #story-root .horiz-spacer { flex: 0 0 clamp(40px,22vw,360px); }
 #story-root .hcard { flex: 0 0 auto; width: clamp(300px,40vw,540px); }

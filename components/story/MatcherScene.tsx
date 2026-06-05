@@ -1,23 +1,15 @@
 'use client'
 // components/story/MatcherScene.tsx — interactive "tell us about you" → live
 // matched trips. Uses the unified Shapes dataset (lib/shapes/data).
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import Link from 'next/link'
 import { clamp, lerp, easeOut } from '@/lib/story/scroll'
-import {
-  filterDests,
-  matchScore,
-  DESTINATIONS,
-  AGES,
-  TIMES,
-  BUDGETS,
-  CATEGORIES,
-  type ShapesDest,
-} from '@/lib/shapes/data'
+import { DESTINATIONS, AGES, TIMES, BUDGETS, CATEGORIES, type ShapesDest } from '@/lib/shapes/data'
 import { Reveal } from '@/components/story/Reveal'
 import { Placeholder } from '@/components/story/Placeholder'
 import { useTweaks } from '@/components/Tweaks'
+import { useMatch } from '@/components/story/MatchContext'
 import { buildExploreHref } from '@/lib/shapes/explore'
 
 const TIME_LABEL: Record<string, string> = Object.fromEntries(TIMES.map((t) => [t.id, t.label]))
@@ -86,21 +78,9 @@ function useCountUp(target: number) {
 
 export function MatcherScene() {
   const { direkt } = useTweaks()
-  const [ages, setAges] = useState<string[]>(['3-5'])
-  const [times, setTimes] = useState<string[]>(['halb'])
-  const [budgets, setBudgets] = useState<string[]>([])
-  const [cats, setCats] = useState<string[]>(['wasser'])
-
-  const toggle = (set: React.Dispatch<React.SetStateAction<string[]>>, id: string) =>
-    set((arr) => (arr.includes(id) ? arr.filter((x) => x !== id) : [...arr, id]))
-
-  const results = useMemo(() => {
-    const sel = { ages, times, budgets, cats }
-    return filterDests(sel)
-      .map((d) => ({ d, m: matchScore(d, sel) }))
-      .sort((a, b) => b.m - a.m || b.d.rating - a.d.rating)
-      .map((r) => r.d)
-  }, [ages, times, budgets, cats])
+  const { sel, toggle, matches } = useMatch()
+  const { ages, times, budgets, cats } = sel
+  const results = matches
   const count = useCountUp(results.length)
 
   return (
@@ -132,7 +112,7 @@ export function MatcherScene() {
               </legend>
               <div className="chiprow">
                 {AGES.map((b) => (
-                  <Chip key={b.id} active={ages.includes(b.id)} onClick={() => toggle(setAges, b.id)}>
+                  <Chip key={b.id} active={ages.includes(b.id)} onClick={() => toggle('ages', b.id)}>
                     {b.label}
                   </Chip>
                 ))}
@@ -144,7 +124,7 @@ export function MatcherScene() {
               </legend>
               <div className="chiprow">
                 {TIMES.map((o) => (
-                  <Chip key={o.id} active={times.includes(o.id)} onClick={() => toggle(setTimes, o.id)}>
+                  <Chip key={o.id} active={times.includes(o.id)} onClick={() => toggle('times', o.id)}>
                     {o.label}
                   </Chip>
                 ))}
@@ -156,7 +136,7 @@ export function MatcherScene() {
               </legend>
               <div className="chiprow">
                 {BUDGETS.map((o) => (
-                  <Chip key={o.id} active={budgets.includes(o.id)} onClick={() => toggle(setBudgets, o.id)}>
+                  <Chip key={o.id} active={budgets.includes(o.id)} onClick={() => toggle('budgets', o.id)}>
                     {o.label}
                   </Chip>
                 ))}
@@ -168,7 +148,7 @@ export function MatcherScene() {
               </legend>
               <div className="chiprow">
                 {CAT_LIST.map((o) => (
-                  <Chip key={o.id} active={cats.includes(o.id)} onClick={() => toggle(setCats, o.id)}>
+                  <Chip key={o.id} active={cats.includes(o.id)} onClick={() => toggle('cats', o.id)}>
                     {o.short}
                   </Chip>
                 ))}
