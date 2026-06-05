@@ -30,7 +30,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
     <div className="shapes-root">
       <ShapesBar />
       <main style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 24px 70px' }} className="fade-in">
-        <Link href="/swipe" className="kicker" style={{ display: 'inline-block', marginBottom: 18, color: 'var(--ink-soft)' }}>
+        <Link href="/entdecken" className="kicker" style={{ display: 'inline-block', marginBottom: 18, color: 'var(--ink-soft)' }}>
           ← Zurück zur Entdeckung
         </Link>
 
@@ -86,8 +86,8 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
               <Link href="/quiz" className="btn btn--primary">
                 Mehr passende Ziele finden
               </Link>
-              <Link href="/swipe" className="btn btn--ghost">
-                Weiterblättern
+              <Link href="/sammeln" className="btn btn--ghost">
+                Ins Album sammeln
               </Link>
             </div>
           </div>

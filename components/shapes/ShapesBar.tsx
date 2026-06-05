@@ -4,7 +4,7 @@ import Link from 'next/link'
 const TABS = [
   { href: '/entdecken', key: 'entdecken', label: 'Entdecken' },
   { href: '/quiz', key: 'quiz', label: 'Quiz' },
-  { href: '/swipe', key: 'swipe', label: 'Swipe' },
+  { href: '/sammeln', key: 'sammeln', label: 'Sammeln' },
 ] as const
 
 export type ShapesNavKey = (typeof TABS)[number]['key']

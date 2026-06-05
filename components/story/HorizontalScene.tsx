@@ -129,8 +129,8 @@ export function ResolutionScene() {
             <Link className="btn btn-primary" href="/quiz">
               Passenden Ausflug finden<span aria-hidden="true">→</span>
             </Link>
-            <Link className="btn btn-ghost" href="/swipe">
-              Lieber durchblättern
+            <Link className="btn btn-ghost" href="/sammeln">
+              Mit den Kindern sammeln
             </Link>
           </div>
         </div>

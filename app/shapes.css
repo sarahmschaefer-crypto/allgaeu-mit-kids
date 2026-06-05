@@ -105,6 +105,23 @@
 .shapes-root .view-seg { border: 0; background: transparent; color: var(--ink-soft); font-family: var(--font-body); font-weight: 700; font-size: 13px; padding: 8px 18px; border-radius: 999px; cursor: pointer; transition: background .15s, color .15s; }
 .shapes-root .view-seg.on { background: var(--accent); color: #fff; }
 
+/* Sammelalbum (sticker collection) */
+.shapes-root .sticker { position: relative; }
+.shapes-root .sticker-tap { display: flex; flex-direction: column; gap: 0; width: 100%; text-align: left; background: none; border: 0; padding: 0; cursor: pointer; }
+.shapes-root .sticker-img { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: var(--radius); border: 1.5px solid var(--line); transition: box-shadow .18s, border-color .18s; }
+.shapes-root .sticker-img .ph { filter: saturate(0.8); transition: filter .25s; }
+.shapes-root .sticker.on .sticker-img { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent), 0 10px 26px -14px color-mix(in oklch, var(--accent) 70%, transparent); animation: sticker-pop .36s cubic-bezier(.2,.8,.3,1); }
+.shapes-root .sticker.on .sticker-img .ph { filter: saturate(1.05); }
+@keyframes sticker-pop { 0% { transform: scale(1); } 40% { transform: scale(1.06) rotate(-1.5deg); } 100% { transform: scale(1) rotate(0); } }
+.shapes-root .sticker-badge { position: absolute; top: 10px; right: 10px; font-family: var(--font-body); font-weight: 700; font-size: 11px; letter-spacing: 0.04em; color: #fff; background: var(--accent); padding: 5px 10px; border-radius: 999px; opacity: 0; transform: scale(.7) translateY(-4px); transition: opacity .18s, transform .18s; }
+.shapes-root .sticker.on .sticker-badge { opacity: 1; transform: scale(1) translateY(0); }
+.shapes-root .sticker-hint { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%) translateY(6px); font-family: var(--font-body); font-weight: 700; font-size: 12.5px; color: var(--ink); background: color-mix(in oklch, var(--card) 92%, transparent); backdrop-filter: blur(4px); padding: 7px 14px; border-radius: 999px; box-shadow: 0 2px 8px rgba(7,14,112,.15); opacity: 0; transition: opacity .15s, transform .15s; pointer-events: none; }
+.shapes-root .sticker-tap:hover .sticker-hint { opacity: 1; transform: translateX(-50%) translateY(0); }
+.shapes-root .sticker-meta { padding: 12px 2px 0; display: flex; flex-direction: column; gap: 5px; }
+.shapes-root .sticker-detail { position: absolute; top: 10px; left: 10px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--card); border: 1px solid var(--ink); color: var(--ink); text-decoration: none; font-size: 15px; line-height: 1; opacity: 0; transition: opacity .15s, transform .12s; }
+.shapes-root .sticker:hover .sticker-detail { opacity: 1; }
+.shapes-root .sticker-detail:hover { transform: scale(1.1); background: var(--accent); color: #fff; border-color: var(--accent); }
+
 /* Quiz → Entdecken handoff banner */
 .shapes-root .quiz-banner { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: color-mix(in oklch, var(--accent) 10%, var(--card)); border: 1px solid color-mix(in oklch, var(--accent) 35%, transparent); border-radius: var(--radius); padding: 13px 18px; margin-bottom: 24px; font-size: 14.5px; color: var(--ink); }
 .shapes-root .quiz-banner strong { font-weight: 700; }
