@@ -1,20 +1,7 @@
-// app/karte/page.tsx
-import type { Metadata } from 'next'
-import { ShapesBar } from '@/components/shapes/ShapesBar'
-import { MapExplore } from '@/components/shapes/MapExplore'
-
-export const metadata: Metadata = {
-  title: 'Ausflugsziele auf der Karte',
-  description: 'Allgäuer Ausflugsziele für Familien auf einer Karte entdecken.',
-}
+// app/karte/page.tsx — Karte is now a view of /entdecken. Keep the old URL
+// working by redirecting to the map view.
+import { redirect } from 'next/navigation'
 
 export default function KartePage() {
-  return (
-    <div className="shapes-root">
-      <ShapesBar active="karte" />
-      <main>
-        <MapExplore />
-      </main>
-    </div>
-  )
+  redirect('/entdecken?view=karte')
 }

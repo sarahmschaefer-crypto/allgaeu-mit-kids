@@ -18,6 +18,7 @@ import {
 import { Reveal } from '@/components/story/Reveal'
 import { Placeholder } from '@/components/story/Placeholder'
 import { useTweaks } from '@/components/Tweaks'
+import { buildExploreHref } from '@/lib/shapes/explore'
 
 const TIME_LABEL: Record<string, string> = Object.fromEntries(TIMES.map((t) => [t.id, t.label]))
 const BUDGET_GLYPH: Record<string, string> = Object.fromEntries(BUDGETS.map((b) => [b.id, b.glyph]))
@@ -201,11 +202,14 @@ export function MatcherScene() {
               {results.length > 6 && <p className="results-more">+ {results.length - 6} weitere Orte</p>}
             </div>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 22 }}>
-              <Link className="btn btn-primary" href="/quiz">
-                Genauer eingrenzen<span aria-hidden="true">→</span>
-              </Link>
-              <Link className="btn btn-ghost" href="/swipe">
-                Durchblättern
+              {results.length > 0 && (
+                <Link className="btn btn-primary" href={buildExploreHref({ ages, times, budgets, cats }, { from: 'quiz' })}>
+                  {results.length === 1 ? 'Treffer ansehen' : 'Alle Treffer ansehen'}
+                  <span aria-hidden="true">→</span>
+                </Link>
+              )}
+              <Link className="btn btn-ghost" href="/quiz">
+                Schritt für Schritt
               </Link>
             </div>
           </Reveal>

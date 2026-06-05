@@ -2,17 +2,17 @@
 // components/shapes/QuizFlow.tsx — guided question flow → recommendations
 // (ported from view_quiz.jsx).
 import { useState } from 'react'
+import Link from 'next/link'
 import {
-  DESTINATIONS,
   CATEGORIES,
   AGES,
   TIMES,
   BUDGETS,
-  matchScore,
-  type Sel,
+  filterDests,
 } from '@/lib/shapes/data'
-import { DestCard, Container } from '@/components/shapes/primitives'
+import { Container } from '@/components/shapes/primitives'
 import { Squiggle } from '@/components/shapes/decor'
+import { buildExploreHref } from '@/lib/shapes/explore'
 
 type QuizItem = { id: string; label: string; sub?: string; dot?: string }
 type QuizStep = { key: string; multi: boolean; q: string; hint: string; items: () => QuizItem[] }
@@ -108,47 +108,51 @@ export function QuizFlow() {
     else if (step > 0) setStep(step - 1)
   }
 
-  const sSel: Sel = {
+  // quiz answers → shared filter shape (arrays), the language Entdecken speaks
+  const handoffSel = {
     ages: sel.ages,
     cats: sel.cats,
-    weather: sel.weather,
-    stroller: false,
     times: sel.times ? [sel.times] : [],
     budgets: sel.budgets ? [sel.budgets] : [],
+    weather: sel.weather === 'regen' ? 'regen' : null,
   }
 
   if (done) {
-    const ranked = DESTINATIONS.map((d) => ({ d, m: matchScore(d, sSel) })).sort(
-      (a, b) => b.m - a.m || b.d.rating - a.d.rating,
-    )
-    const top = ranked.slice(0, 6)
+    const count = filterDests(handoffSel).length
+    const href = buildExploreHref(handoffSel, { from: 'quiz' })
     return (
-      <Container style={{ paddingTop: 40, paddingBottom: 70, maxWidth: 1100 }} className="fade-in">
-        <div style={{ textAlign: 'center', marginBottom: 30 }}>
-          <div className="kicker" style={{ marginBottom: 12 }}>Euer Ergebnis</div>
-          <h2 style={{ fontSize: 'clamp(34px, 5vw, 54px)' }}>
-            Die <em style={{ fontStyle: 'italic', fontWeight: 500 }}>besten</em> Treffer
+      <Container style={{ paddingTop: 64, paddingBottom: 90, maxWidth: 640 }} className="fade-in">
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ display: 'inline-block', marginBottom: 18 }}>
+            <Squiggle color="var(--accent)" width={90} height={30} humps={4} />
+          </div>
+          <div className="kicker" style={{ marginBottom: 14 }}>Euer Ergebnis</div>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'clamp(72px, 16vw, 128px)', lineHeight: 0.9, color: 'var(--accent)' }}>
+            {count}
+          </div>
+          <h2 style={{ fontSize: 'clamp(26px, 4vw, 38px)', marginTop: 8 }}>
+            {count === 1 ? 'Ort passt zu euch' : 'Orte passen zu euch'}
           </h2>
-          <p className="caption" style={{ fontSize: 17, marginTop: 8 }}>
-            Auf Basis eurer Antworten — sortiert nach Übereinstimmung.
+          <p className="caption" style={{ fontSize: 17, marginTop: 10, maxWidth: 420, marginInline: 'auto' }}>
+            Auf Basis eurer Antworten. Schaut sie euch an – als Liste oder auf der Karte.
           </p>
-          <button
-            className="btn btn--ghost"
-            style={{ marginTop: 18 }}
-            onClick={() => {
-              setDone(false)
-              setStep(0)
-              setSel(EMPTY)
-            }}
-          >
-            Neu starten
-          </button>
-        </div>
-        <hr className="rule" style={{ marginBottom: 28 }} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))', gap: 22 }}>
-          {top.map(({ d, m }) => (
-            <DestCard key={d.id} dest={d} match={m} />
-          ))}
+          <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap', marginTop: 30 }}>
+            {count > 0 && (
+              <Link href={href} className="btn btn--primary" style={{ fontSize: 16, padding: '15px 26px' }}>
+                Eure Treffer ansehen<span aria-hidden="true">→</span>
+              </Link>
+            )}
+            <button
+              className="btn btn--ghost"
+              onClick={() => {
+                setDone(false)
+                setStep(0)
+                setSel(EMPTY)
+              }}
+            >
+              {count > 0 ? 'Neu starten' : 'Antworten lockern'}
+            </button>
+          </div>
         </div>
       </Container>
     )
