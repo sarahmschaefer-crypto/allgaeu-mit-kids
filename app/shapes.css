@@ -105,22 +105,44 @@
 .shapes-root .view-seg { border: 0; background: transparent; color: var(--ink-soft); font-family: var(--font-body); font-weight: 700; font-size: 13px; padding: 8px 18px; border-radius: 999px; cursor: pointer; transition: background .15s, color .15s; }
 .shapes-root .view-seg.on { background: var(--accent); color: #fff; }
 
-/* Sammelalbum (sticker collection) */
-.shapes-root .sticker { position: relative; }
-.shapes-root .sticker-tap { display: flex; flex-direction: column; gap: 0; width: 100%; text-align: left; background: none; border: 0; padding: 0; cursor: pointer; }
-.shapes-root .sticker-img { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: var(--radius); border: 1.5px solid var(--line); transition: box-shadow .18s, border-color .18s; }
-.shapes-root .sticker-img .ph { filter: saturate(0.8); transition: filter .25s; }
-.shapes-root .sticker.on .sticker-img { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent), 0 10px 26px -14px color-mix(in oklch, var(--accent) 70%, transparent); animation: sticker-pop .36s cubic-bezier(.2,.8,.3,1); }
-.shapes-root .sticker.on .sticker-img .ph { filter: saturate(1.05); }
-@keyframes sticker-pop { 0% { transform: scale(1); } 40% { transform: scale(1.06) rotate(-1.5deg); } 100% { transform: scale(1) rotate(0); } }
-.shapes-root .sticker-badge { position: absolute; top: 10px; right: 10px; font-family: var(--font-body); font-weight: 700; font-size: 11px; letter-spacing: 0.04em; color: #fff; background: var(--accent); padding: 5px 10px; border-radius: 999px; opacity: 0; transform: scale(.7) translateY(-4px); transition: opacity .18s, transform .18s; }
-.shapes-root .sticker.on .sticker-badge { opacity: 1; transform: scale(1) translateY(0); }
-.shapes-root .sticker-hint { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%) translateY(6px); font-family: var(--font-body); font-weight: 700; font-size: 12.5px; color: var(--ink); background: color-mix(in oklch, var(--card) 92%, transparent); backdrop-filter: blur(4px); padding: 7px 14px; border-radius: 999px; box-shadow: 0 2px 8px rgba(7,14,112,.15); opacity: 0; transition: opacity .15s, transform .15s; pointer-events: none; }
-.shapes-root .sticker-tap:hover .sticker-hint { opacity: 1; transform: translateX(-50%) translateY(0); }
-.shapes-root .sticker-meta { padding: 12px 2px 0; display: flex; flex-direction: column; gap: 5px; }
-.shapes-root .sticker-detail { position: absolute; top: 10px; left: 10px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--card); border: 1px solid var(--ink); color: var(--ink); text-decoration: none; font-size: 15px; line-height: 1; opacity: 0; transition: opacity .15s, transform .12s; }
-.shapes-root .sticker:hover .sticker-detail { opacity: 1; }
-.shapes-root .sticker-detail:hover { transform: scale(1.1); background: var(--accent); color: #fff; border-color: var(--accent); }
+/* Sammelalbum — collecting game */
+.shapes-root .album-meter { margin-bottom: 30px; }
+.shapes-root .album-meter-bar { position: relative; height: 12px; border-radius: 999px; background: var(--bg-2); overflow: visible; max-width: 520px; }
+.shapes-root .album-meter-bar > span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, color-mix(in oklch, var(--accent) 70%, #fff), var(--accent)); transition: width .45s cubic-bezier(.2,.7,.2,1); }
+.shapes-root .album-meter-bar > i { position: absolute; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--card); border: 2px solid var(--line); transition: border-color .3s, background .3s, transform .3s; }
+.shapes-root .album-meter-bar > i.on { border-color: var(--accent); background: var(--accent); transform: scale(1.15); }
+.shapes-root .album-meter-label { display: flex; align-items: baseline; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+.shapes-root .album-meter-label strong { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--accent); }
+.shapes-root .album-meter-label span { font-size: 14px; color: var(--ink-soft); }
+
+.shapes-root .album-zone-head { font-size: 13px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-faint); font-family: var(--font-body); font-weight: 700; margin: 0 0 16px; }
+
+.shapes-root .album-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 14px; }
+.shapes-root .album-slot { position: relative; aspect-ratio: 4 / 5; }
+.shapes-root .album-slot.empty { border: 2px dashed color-mix(in oklch, var(--ink) 22%, transparent); border-radius: var(--radius); display: grid; place-items: center; background: color-mix(in oklch, var(--bg-2) 45%, transparent); }
+.shapes-root .album-slot.empty .slot-no { font-family: var(--font-display); font-weight: 700; font-size: 21px; color: var(--ink-faint); opacity: .65; }
+.shapes-root .album-sticker { position: absolute; inset: 0; display: block; border-radius: var(--radius); overflow: hidden; border: 1.5px solid var(--accent); box-shadow: 0 0 0 3px var(--accent), 0 12px 26px -16px color-mix(in oklch, var(--accent) 70%, transparent); text-decoration: none; animation: album-pop .42s cubic-bezier(.2,.8,.3,1); }
+@keyframes album-pop { 0% { transform: scale(.4) rotate(-7deg); opacity: 0; } 60% { transform: scale(1.08) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0); } }
+.shapes-root .album-no { position: absolute; top: 8px; left: 9px; font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; color: #fff; background: oklch(0.25 0.02 150 / .5); backdrop-filter: blur(4px); padding: 2px 7px; border-radius: 999px; }
+.shapes-root .album-star { position: absolute; top: 7px; right: 9px; color: #fff; font-size: 15px; filter: drop-shadow(0 1px 2px rgba(0,0,0,.4)); }
+.shapes-root .album-name { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 10px 9px; font-family: var(--font-display); font-weight: 700; font-size: 14px; line-height: 1.2; color: #fff; background: linear-gradient(transparent, oklch(0.2 0.03 158 / .8)); }
+.shapes-root .album-remove { position: absolute; top: -7px; right: -7px; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--card); color: var(--ink); font-size: 15px; line-height: 1; cursor: pointer; opacity: 0; transition: opacity .15s, transform .12s; z-index: 2; }
+.shapes-root .album-slot:hover .album-remove { opacity: 1; }
+.shapes-root .album-remove:hover { transform: scale(1.12); background: var(--ink); color: var(--bg); }
+
+.shapes-root .vorrat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
+.shapes-root .vorrat-card { display: flex; flex-direction: column; gap: 9px; background: none; border: 0; padding: 0; text-align: left; cursor: pointer; }
+.shapes-root .vorrat-img { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: var(--radius); border: 1.5px solid var(--line); transition: border-color .15s, transform .12s; }
+.shapes-root .vorrat-card:hover .vorrat-img { border-color: var(--accent); transform: translateY(-3px); }
+.shapes-root .vorrat-img .ph { filter: saturate(.82); transition: filter .2s; }
+.shapes-root .vorrat-card:hover .vorrat-img .ph { filter: saturate(1); }
+.shapes-root .vorrat-hint { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%) translateY(6px); font-family: var(--font-body); font-weight: 700; font-size: 12.5px; color: #fff; background: var(--accent); padding: 7px 15px; border-radius: 999px; box-shadow: 0 4px 12px -4px color-mix(in oklch, var(--accent) 70%, transparent); opacity: 0; transition: opacity .15s, transform .15s; pointer-events: none; }
+.shapes-root .vorrat-card:hover .vorrat-hint { opacity: 1; transform: translateX(-50%) translateY(0); }
+.shapes-root .vorrat-meta { display: flex; flex-direction: column; gap: 4px; padding: 0 2px; }
+.shapes-root .vorrat-name { font-family: var(--font-display); font-weight: 700; font-size: 16px; line-height: 1.25; color: var(--ink); }
+
+.shapes-root .album-toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 60; background: var(--ink); color: var(--bg); font-family: var(--font-display); font-weight: 700; font-size: 17px; padding: 14px 26px; border-radius: 999px; box-shadow: 0 18px 40px -14px rgba(7,14,112,.5); animation: toast-in .3s cubic-bezier(.2,.8,.3,1); }
+@keyframes toast-in { from { opacity: 0; transform: translateX(-50%) translateY(16px) scale(.9); } to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } }
 
 /* Quiz → Entdecken handoff banner */
 .shapes-root .quiz-banner { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: color-mix(in oklch, var(--accent) 10%, var(--card)); border: 1px solid color-mix(in oklch, var(--accent) 35%, transparent); border-radius: var(--radius); padding: 13px 18px; margin-bottom: 24px; font-size: 14.5px; color: var(--ink); }

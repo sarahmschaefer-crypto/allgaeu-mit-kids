@@ -1,16 +1,31 @@
 'use client'
-// components/shapes/Sammelalbum.tsx — kid-friendly "sticker album": tap a place
-// to stick it into your album (no swiping). Collection persists in localStorage.
-import { useEffect, useState } from 'react'
+// components/shapes/Sammelalbum.tsx — a small collecting GAME for kids:
+// an album of empty numbered slots that fill up as you tap places from the
+// "Sammelvorrat". Each fill plops in; reaching 3 / 8 / 16 unlocks a level.
+// No swiping. Persists in localStorage.
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { DESTINATIONS } from '@/lib/shapes/data'
 import { Photo, CatPill, Container } from '@/components/shapes/primitives'
 
 const STORAGE_KEY = 'amk-album'
+const TOTAL = DESTINATIONS.length
+
+const LEVELS = [
+  { at: 16, name: 'Allgäu-Profi' },
+  { at: 8, name: 'Kenner' },
+  { at: 3, name: 'Entdecker' },
+  { at: 0, name: 'Frisch dabei' },
+]
+const MILESTONES = [3, 8, 16]
+const levelName = (n: number) => LEVELS.find((l) => n >= l.at)!.name
+const nextMilestone = (n: number) => MILESTONES.find((m) => m > n) ?? null
 
 export function Sammelalbum() {
   const [collected, setCollected] = useState<string[]>([])
   const [hydrated, setHydrated] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
+  const toastTimer = useRef<number | null>(null)
 
   useEffect(() => {
     try {
@@ -20,84 +35,140 @@ export function Sammelalbum() {
       /* ignore */
     }
     setHydrated(true)
+    return () => {
+      if (toastTimer.current) clearTimeout(toastTimer.current)
+    }
   }, [])
 
-  const toggle = (id: string) =>
+  const persist = (next: string[]) => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+    } catch {
+      /* ignore */
+    }
+  }
+  const fireToast = (msg: string) => {
+    setToast(msg)
+    if (toastTimer.current) clearTimeout(toastTimer.current)
+    toastTimer.current = window.setTimeout(() => setToast(null), 2600)
+  }
+
+  const collect = (id: string) => {
     setCollected((c) => {
-      const next = c.includes(id) ? c.filter((x) => x !== id) : [...c, id]
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-      } catch {
-        /* ignore */
+      if (c.includes(id)) return c
+      const next = [...c, id]
+      persist(next)
+      if (MILESTONES.includes(next.length)) {
+        fireToast(next.length === TOTAL ? 'Album voll! 🎉' : `Stufe erreicht: ${levelName(next.length)} 🎉`)
       }
       return next
     })
+  }
+  const remove = (id: string) => {
+    setCollected((c) => {
+      const next = c.filter((x) => x !== id)
+      persist(next)
+      return next
+    })
+  }
+  const reset = () => {
+    setCollected([])
+    persist([])
+  }
 
-  const total = DESTINATIONS.length
   const count = collected.length
-  const pct = Math.round((count / total) * 100)
+  const level = levelName(count)
+  const next = nextMilestone(count)
+  const vorrat = DESTINATIONS.filter((d) => !collected.includes(d.id))
 
   return (
     <Container style={{ paddingTop: 30, paddingBottom: 80 }} className="fade-in">
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 18, flexWrap: 'wrap', marginBottom: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 18, flexWrap: 'wrap', marginBottom: 6 }}>
         <div>
           <div className="kicker" style={{ marginBottom: 10 }}>Lasst die Kleinen mitsammeln</div>
           <h2 style={{ fontSize: 'clamp(30px, 4.4vw, 46px)', lineHeight: 1.3 }}>Euer Sammelalbum</h2>
         </div>
         {count > 0 && (
-          <button className="link-arrow" style={{ fontSize: 12.5, borderBottomWidth: 1 }} onClick={() => { setCollected([]); try { localStorage.removeItem(STORAGE_KEY) } catch {} }}>
+          <button className="link-arrow" style={{ fontSize: 12.5, borderBottomWidth: 1 }} onClick={reset}>
             Album leeren
           </button>
         )}
       </div>
-      <p style={{ color: 'var(--ink-soft)', fontSize: 15.5, maxWidth: '52ch', margin: '0 0 18px' }}>
-        Tippt die Orte an, die euch gefallen – sie kleben sich ins Album. Über das <span aria-hidden="true">→</span> kommt ihr zu den Details.
+      <p style={{ color: 'var(--ink-soft)', fontSize: 15.5, maxWidth: '54ch', margin: '0 0 20px' }}>
+        Tippt unten einen Ort an – er klebt sich in euer Album. Füllt alle {TOTAL} Plätze und werdet zum Allgäu-Profi!
       </p>
 
-      {/* progress */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 26 }}>
-        <div style={{ flex: 1, height: 8, borderRadius: 999, background: 'var(--bg-2)', overflow: 'hidden', maxWidth: 320 }}>
-          <span style={{ display: 'block', height: '100%', width: `${pct}%`, background: 'var(--accent)', borderRadius: 999, transition: 'width .4s cubic-bezier(.2,.7,.2,1)' }} />
+      {/* level meter */}
+      <div className="album-meter">
+        <div className="album-meter-bar">
+          <span style={{ width: `${(count / TOTAL) * 100}%` }} />
+          {MILESTONES.map((m) => (
+            <i key={m} className={count >= m ? 'on' : ''} style={{ left: `${(m / TOTAL) * 100}%` }} aria-hidden="true" />
+          ))}
         </div>
-        <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 17, color: 'var(--ink)' }}>
-          {hydrated ? `${count} / ${total} gesammelt` : `${total} Orte`}
-        </span>
+        <div className="album-meter-label">
+          <strong>{hydrated ? level : '…'}</strong>
+          <span>
+            {next ? `${count} / ${TOTAL} · noch ${next - count} bis ${levelName(next)}` : `${count} / ${TOTAL} · komplett!`}
+          </span>
+        </div>
       </div>
-      <hr className="rule" style={{ marginBottom: 26 }} />
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 22 }}>
-        {DESTINATIONS.map((d) => {
+      {/* the album — fixed numbered slots */}
+      <h3 className="album-zone-head">Mein Album</h3>
+      <div className="album-grid">
+        {DESTINATIONS.map((d, i) => {
           const on = collected.includes(d.id)
+          if (!on) {
+            return (
+              <div key={d.id} className="album-slot empty" aria-label={`Platz ${i + 1} – noch frei`}>
+                <span className="slot-no">Nº {String(i + 1).padStart(2, '0')}</span>
+              </div>
+            )
+          }
           return (
-            <div key={d.id} className={`sticker${on ? ' on' : ''}`}>
-              <button className="sticker-tap" onClick={() => toggle(d.id)} aria-pressed={on} aria-label={on ? `${d.name} aus dem Album nehmen` : `${d.name} ins Album kleben`}>
-                <div className="sticker-img">
-                  <Photo cat={d.cat} style={{ position: 'absolute', inset: 0 }} rounded={false} seed={d.name.length + 2} />
-                  <span className="sticker-badge" aria-hidden="true">★ Eingeklebt</span>
-                  {!on && <span className="sticker-hint" aria-hidden="true">+ Einkleben</span>}
-                </div>
-                <div className="sticker-meta">
-                  <CatPill cat={d.cat} />
-                  <h3 style={{ fontSize: 19, lineHeight: 1.3, margin: '2px 0 0' }}>{d.name}</h3>
-                  <div className="caption" style={{ fontSize: 14 }}>{d.place}</div>
-                </div>
-              </button>
-              <Link href={`/ausflug/${d.id}`} className="sticker-detail" aria-label={`${d.name} – Details`}>
-                →
+            <div key={d.id} className="album-slot">
+              <Link href={`/ausflug/${d.id}`} className="album-sticker" aria-label={`${d.name} – Details`}>
+                <Photo cat={d.cat} style={{ position: 'absolute', inset: 0 }} rounded={false} seed={d.name.length + 2} />
+                <span className="album-no" aria-hidden="true">Nº {String(i + 1).padStart(2, '0')}</span>
+                <span className="album-name">{d.name}</span>
+                <span className="album-star" aria-hidden="true">★</span>
               </Link>
+              <button className="album-remove" onClick={() => remove(d.id)} aria-label={`${d.name} zurücklegen`}>
+                ×
+              </button>
             </div>
           )
         })}
       </div>
 
-      {hydrated && count > 0 && (
-        <div style={{ textAlign: 'center', marginTop: 44 }}>
-          <p className="caption" style={{ fontSize: 17, marginBottom: 14 }}>
-            Schön gesammelt! {count === 1 ? 'Ein Lieblingsort' : `${count} Lieblingsorte`} im Album.
-          </p>
-          <Link href="/entdecken" className="btn btn--ghost">Mehr Orte entdecken</Link>
+      {/* the pile still to collect */}
+      <h3 className="album-zone-head" style={{ marginTop: 40 }}>
+        {vorrat.length > 0 ? `Noch einzukleben (${vorrat.length})` : 'Alles gesammelt'}
+      </h3>
+      {vorrat.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '30px 20px' }}>
+          <p className="caption" style={{ fontSize: 18, marginBottom: 14 }}>Glückwunsch – euer Album ist voll! 🎉</p>
+          <Link href="/entdecken" className="btn btn--primary">Eure Orte planen</Link>
+        </div>
+      ) : (
+        <div className="vorrat-grid">
+          {vorrat.map((d) => (
+            <button key={d.id} className="vorrat-card" onClick={() => collect(d.id)} aria-label={`${d.name} ins Album kleben`}>
+              <div className="vorrat-img">
+                <Photo cat={d.cat} style={{ position: 'absolute', inset: 0 }} rounded={false} seed={d.name.length + 2} />
+                <span className="vorrat-hint" aria-hidden="true">+ Einkleben</span>
+              </div>
+              <div className="vorrat-meta">
+                <CatPill cat={d.cat} />
+                <span className="vorrat-name">{d.name}</span>
+              </div>
+            </button>
+          ))}
         </div>
       )}
+
+      {toast && <div className="album-toast" role="status">{toast}</div>}
     </Container>
   )
 }
