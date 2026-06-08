@@ -8,6 +8,7 @@ import { HeroScene } from '@/components/story/HeroScene'
 import { JourneyScene } from '@/components/story/JourneyScene'
 import { MatcherScene } from '@/components/story/MatcherScene'
 import { HorizontalScene, ResolutionScene } from '@/components/story/HorizontalScene'
+import { SammelnTeaser } from '@/components/story/SammelnTeaser'
 import { ProgressNav, FloatingCta } from '@/components/story/StoryNav'
 import { ShapesBar } from '@/components/shapes/ShapesBar'
 
@@ -22,6 +23,7 @@ function StoryInner() {
       <JourneyScene />
       <MatcherScene />
       <HorizontalScene />
+      <SammelnTeaser />
       <ResolutionScene />
 
       <footer className="story-foot">

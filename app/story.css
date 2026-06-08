@@ -212,6 +212,18 @@
 #story-root .horiz-progress { position: absolute; left: 6vw; right: 6vw; bottom: 40px; height: 3px; border-radius: 999px; background: var(--line); z-index: 6; }
 #story-root .horiz-progress span { display: block; height: 100%; background: var(--pine); border-radius: 999px; transform: scaleX(0); transform-origin: left; }
 
+/* ===================================================== SAMMELN TEASER === */
+#story-root .sammeln-teaser { background: color-mix(in oklab, var(--paper-2) 60%, var(--paper)); padding: clamp(72px, 13vh, 150px) 0; position: relative; z-index: 1; }
+#story-root .st-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(28px, 5vw, 76px); align-items: center; }
+#story-root .st-copy .lede { margin: 16px 0 28px; }
+#story-root .st-album { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+#story-root .st-slot { position: relative; aspect-ratio: 4 / 5; border-radius: var(--radius); overflow: hidden; }
+#story-root .st-slot.filled { border: 1.5px solid var(--pine); box-shadow: 0 0 0 3px var(--pine), 0 14px 30px -18px color-mix(in oklab, var(--pine) 70%, transparent); }
+#story-root .st-slot.empty { border: 2px dashed var(--line); display: grid; place-items: center; color: var(--ink-mute); font-family: var(--font-display); font-weight: 700; font-size: 19px; background: color-mix(in oklab, var(--paper) 60%, transparent); }
+#story-root .st-ph { position: absolute; inset: 0; }
+#story-root .st-star { position: absolute; top: 7px; right: 9px; color: #fff; font-size: 14px; filter: drop-shadow(0 1px 2px rgba(0,0,0,.4)); }
+@media (max-width: 760px) { #story-root .st-grid { grid-template-columns: 1fr; } #story-root .st-album { max-width: 360px; } }
+
 /* ======================================================== RESOLUTION === */
 #story-root .resolution .sticky-stage { background: var(--pine-deep); }
 #story-root .res-img-wrap { overflow: hidden; }
