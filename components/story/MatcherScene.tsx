@@ -5,16 +5,16 @@ import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import Link from 'next/link'
 import { clamp, lerp, easeOut } from '@/lib/story/scroll'
-import { DESTINATIONS, AGES, TIMES, BUDGETS, CATEGORIES, type ShapesDest } from '@/lib/shapes/data'
+import { DESTINATIONS, TIMES, BUDGETS, type ShapesDest } from '@/lib/shapes/data'
+import { MATCHER_QUESTIONS } from '@/lib/shapes/questions'
 import { Reveal } from '@/components/story/Reveal'
 import { Placeholder } from '@/components/story/Placeholder'
 import { useTweaks } from '@/components/Tweaks'
-import { useMatch } from '@/components/story/MatchContext'
+import { useMatch, type MatchSel } from '@/components/story/MatchContext'
 import { buildExploreHref } from '@/lib/shapes/explore'
 
 const TIME_LABEL: Record<string, string> = Object.fromEntries(TIMES.map((t) => [t.id, t.label]))
 const BUDGET_GLYPH: Record<string, string> = Object.fromEntries(BUDGETS.map((b) => [b.id, b.glyph]))
-const CAT_LIST = Object.values(CATEGORIES)
 
 function Chip({
   active,
@@ -106,54 +106,24 @@ export function MatcherScene() {
 
         <div className="matcher-grid">
           <Reveal delay={1} className="matcher-controls">
-            <fieldset className="ctrl">
-              <legend className="ctrl-label">
-                <span className="ctrl-num">01</span> Wie alt sind die Kinder?
-              </legend>
-              <div className="chiprow">
-                {AGES.map((b) => (
-                  <Chip key={b.id} active={ages.includes(b.id)} onClick={() => toggle('ages', b.id)}>
-                    {b.label}
-                  </Chip>
-                ))}
-              </div>
-            </fieldset>
-            <fieldset className="ctrl">
-              <legend className="ctrl-label">
-                <span className="ctrl-num">02</span> Wie viel Zeit habt ihr?
-              </legend>
-              <div className="chiprow">
-                {TIMES.map((o) => (
-                  <Chip key={o.id} active={times.includes(o.id)} onClick={() => toggle('times', o.id)}>
-                    {o.label}
-                  </Chip>
-                ))}
-              </div>
-            </fieldset>
-            <fieldset className="ctrl">
-              <legend className="ctrl-label">
-                <span className="ctrl-num">03</span> Wie viel darf&rsquo;s kosten?
-              </legend>
-              <div className="chiprow">
-                {BUDGETS.map((o) => (
-                  <Chip key={o.id} active={budgets.includes(o.id)} onClick={() => toggle('budgets', o.id)}>
-                    {o.label}
-                  </Chip>
-                ))}
-              </div>
-            </fieldset>
-            <fieldset className="ctrl">
-              <legend className="ctrl-label">
-                <span className="ctrl-num">04</span> Worauf habt ihr Lust?
-              </legend>
-              <div className="chiprow">
-                {CAT_LIST.map((o) => (
-                  <Chip key={o.id} active={cats.includes(o.id)} onClick={() => toggle('cats', o.id)}>
-                    {o.short}
-                  </Chip>
-                ))}
-              </div>
-            </fieldset>
+            {MATCHER_QUESTIONS.map((q, i) => {
+              const key = q.key as 'ages' | 'times' | 'budgets' | 'cats'
+              const selected = sel[key]
+              return (
+                <fieldset className="ctrl" key={q.key}>
+                  <legend className="ctrl-label">
+                    <span className="ctrl-num">{String(i + 1).padStart(2, '0')}</span> {q.q}
+                  </legend>
+                  <div className="chiprow">
+                    {q.options.map((o) => (
+                      <Chip key={o.id} active={selected.includes(o.id)} onClick={() => toggle(q.key as keyof MatchSel, o.id)}>
+                        {o.label}
+                      </Chip>
+                    ))}
+                  </div>
+                </fieldset>
+              )
+            })}
           </Reveal>
 
           <Reveal delay={2} className="matcher-results">

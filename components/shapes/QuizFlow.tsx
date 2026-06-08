@@ -3,81 +3,11 @@
 // (ported from view_quiz.jsx).
 import { useState } from 'react'
 import Link from 'next/link'
-import {
-  CATEGORIES,
-  AGES,
-  TIMES,
-  BUDGETS,
-  filterDests,
-} from '@/lib/shapes/data'
+import { filterDests } from '@/lib/shapes/data'
+import { QUESTIONS } from '@/lib/shapes/questions'
 import { Container } from '@/components/shapes/primitives'
 import { Squiggle } from '@/components/shapes/decor'
 import { buildExploreHref } from '@/lib/shapes/explore'
-
-type QuizItem = { id: string; label: string; sub?: string; dot?: string }
-type QuizStep = { key: string; multi: boolean; q: string; hint: string; items: () => QuizItem[] }
-
-const QUIZ_STEPS: QuizStep[] = [
-  { key: 'ages', multi: true, q: 'Wie alt sind eure Kinder?', hint: 'Mehrfachauswahl möglich', items: () => AGES.map((a) => ({ id: a.id, label: a.label, sub: a.sub })) },
-  { key: 'cats', multi: true, q: 'Worauf habt ihr Lust?', hint: 'Wählt ein oder mehrere Themen', items: () => Object.values(CATEGORIES).map((c) => ({ id: c.id, label: c.label, dot: c.id })) },
-  { key: 'times', multi: false, q: 'Wie viel Zeit habt ihr?', hint: '', items: () => TIMES.map((t) => ({ id: t.id, label: t.label, sub: t.sub })) },
-  { key: 'budgets', multi: false, q: "Wie sieht's mit dem Budget aus?", hint: '', items: () => BUDGETS.map((b) => ({ id: b.id, label: b.label, sub: b.sub })) },
-  {
-    key: 'weather',
-    multi: false,
-    q: 'Wie ist das Wetter heute?',
-    hint: '',
-    items: () => [
-      { id: 'gut', label: 'Schön & trocken', sub: 'Raus an die frische Luft' },
-      { id: 'regen', label: 'Regnerisch', sub: 'Lieber etwas Wetterfestes' },
-    ],
-  },
-]
-
-function OptionCard({
-  opt,
-  on,
-  index,
-  onClick,
-}: {
-  opt: QuizItem
-  on: boolean
-  index: number
-  onClick: () => void
-}) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 16,
-        width: '100%',
-        textAlign: 'left',
-        background: on ? 'color-mix(in oklch, var(--accent) 9%, var(--card))' : 'var(--card)',
-        border: '1.5px solid ' + (on ? 'var(--accent)' : 'var(--line)'),
-        borderRadius: 'var(--radius-sm)',
-        padding: '16px 20px',
-        cursor: 'pointer',
-        transition: 'all .14s',
-      }}
-    >
-      <span style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontStyle: 'italic', color: on ? 'var(--accent)' : 'var(--ink-faint)', width: 22, flex: '0 0 22px' }}>
-        {String.fromCharCode(97 + index)}
-      </span>
-      <span style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10 }}>
-        {opt.dot && <span style={{ width: 11, height: 11, borderRadius: '50%', background: `var(--c-${opt.dot})`, flex: '0 0 auto' }} />}
-        <span>
-          <span style={{ display: 'block', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 19, color: 'var(--ink)', lineHeight: 1.3 }}>{opt.label}</span>
-          {opt.sub && <span style={{ display: 'block', fontSize: 13.5, color: 'var(--ink-faint)', marginTop: 2 }}>{opt.sub}</span>}
-        </span>
-      </span>
-      <span style={{ width: 22, height: 22, borderRadius: '50%', flex: '0 0 22px', border: '1.5px solid ' + (on ? 'var(--accent)' : 'var(--line)'), background: on ? 'var(--accent)' : 'transparent', display: 'grid', placeItems: 'center', color: '#fff', fontSize: 13, transition: 'all .14s' }}>
-        {on ? '✓' : ''}
-      </span>
-    </button>
-  )
-}
 
 type SelState = { ages: string[]; cats: string[]; times: string | null; budgets: string | null; weather: string | null }
 const EMPTY: SelState = { ages: [], cats: [], times: null, budgets: null, weather: null }
@@ -87,7 +17,7 @@ export function QuizFlow() {
   const [sel, setSel] = useState<SelState>(EMPTY)
   const [done, setDone] = useState(false)
 
-  const cur = QUIZ_STEPS[step]
+  const cur = QUESTIONS[step]
   const choose = (id: string) => {
     setSel((s) => {
       if (cur.multi) {
@@ -100,7 +30,7 @@ export function QuizFlow() {
   const curVal = sel[cur.key as keyof SelState]
   const hasAnswer = cur.multi ? (curVal as string[]).length > 0 : !!curVal
   const next = () => {
-    if (step < QUIZ_STEPS.length - 1) setStep(step + 1)
+    if (step < QUESTIONS.length - 1) setStep(step + 1)
     else setDone(true)
   }
   const back = () => {
@@ -170,11 +100,11 @@ export function QuizFlow() {
           ← Zurück
         </button>
         <span className="caption" style={{ fontSize: 15 }}>
-          Frage {String(step + 1).padStart(2, '0')} / {String(QUIZ_STEPS.length).padStart(2, '0')}
+          Frage {String(step + 1).padStart(2, '0')} / {String(QUESTIONS.length).padStart(2, '0')}
         </span>
       </div>
       <div style={{ display: 'flex', gap: 6, marginBottom: 36 }}>
-        {QUIZ_STEPS.map((_, i) => (
+        {QUESTIONS.map((_, i) => (
           <div key={i} style={{ flex: 1, height: 3, background: i <= step ? 'var(--accent)' : 'var(--line)', transition: 'background .3s' }} />
         ))}
       </div>
@@ -185,10 +115,15 @@ export function QuizFlow() {
           <h2 style={{ fontSize: 'clamp(26px, 4vw, 36px)', lineHeight: 1.3 }}>{cur.q}</h2>
         </div>
         {cur.hint && <p className="caption" style={{ fontSize: 15.5, marginTop: 0, marginBottom: 24, marginLeft: 58 }}>{cur.hint}</p>}
-        <div style={{ display: 'grid', gap: 12 }}>
-          {cur.items().map((opt, i) => {
+        <div className="quiz-chips">
+          {cur.options.map((opt) => {
             const on = cur.multi ? (curVal as string[]).includes(opt.id) : curVal === opt.id
-            return <OptionCard key={opt.id} opt={opt} index={i} on={on} onClick={() => choose(opt.id)} />
+            return (
+              <button key={opt.id} type="button" className="chip quiz-chip" data-on={on} onClick={() => choose(opt.id)}>
+                {cur.key === 'cats' && <span className="quiz-chip-dot" style={{ background: `var(--c-${opt.id})` }} />}
+                {opt.label}
+              </button>
+            )
           })}
         </div>
         <button
@@ -197,7 +132,7 @@ export function QuizFlow() {
           onClick={next}
           style={{ width: '100%', marginTop: 28, padding: '16px', fontSize: 16, opacity: hasAnswer ? 1 : 0.4, cursor: hasAnswer ? 'pointer' : 'default' }}
         >
-          {step === QUIZ_STEPS.length - 1 ? 'Ergebnisse anzeigen' : 'Weiter'}
+          {step === QUESTIONS.length - 1 ? 'Ergebnisse anzeigen' : 'Weiter'}
         </button>
         {cur.multi && (
           <p style={{ textAlign: 'center', marginTop: 14 }}>

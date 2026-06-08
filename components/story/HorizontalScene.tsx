@@ -97,6 +97,9 @@ export function HorizontalScene() {
 
 export function ResolutionScene() {
   const { fx } = useTweaks()
+  const { matches, sel } = useMatch()
+  const count = matches.length
+  const href = buildExploreHref(sel, { from: 'quiz' })
   const sec = useRef<HTMLElement>(null)
   const img = useRef<HTMLDivElement>(null)
   const card = useRef<HTMLDivElement>(null)
@@ -114,7 +117,8 @@ export function ResolutionScene() {
       <div className="sticky-stage">
         <div className="layer res-img-wrap">
           <div className="res-img-scale" ref={img}>
-            <Placeholder label="Familie am Bergsee · Goldene Abendstunde" className="res-img" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="res-photo" src="/hero-allgaeu.jpg" alt="" />
           </div>
         </div>
         <div className="res-veil" />
@@ -122,12 +126,19 @@ export function ResolutionScene() {
           <p className="eyebrow">Euer Allgäu</p>
           <h2 className="display h-lg">Euer Tag wartet.</h2>
           <p className="lede res-lede">
-            Ein Nachmittag, der zu euren Kindern passt – ohne langes Suchen, ohne Kompromisse. Sagt
-            uns, wer mitkommt.
+            {count > 0 ? (
+              <>
+                <strong style={{ color: 'var(--paper)', fontWeight: 700 }}>{count} Orte</strong>{' '}
+                passen schon zu euch – ein Nachmittag, der zu euren Kindern passt, ohne langes Suchen.
+              </>
+            ) : (
+              <>Ein Nachmittag, der zu euren Kindern passt – ohne langes Suchen, ohne Kompromisse.</>
+            )}
           </p>
           <div className="res-actions">
-            <Link className="btn btn-primary" href="/quiz">
-              Passenden Ausflug finden<span aria-hidden="true">→</span>
+            <Link className="btn btn-primary" href={count > 0 ? href : '/quiz'}>
+              {count > 0 ? `Eure ${count} Orte ansehen` : 'Passenden Ausflug finden'}
+              <span aria-hidden="true">→</span>
             </Link>
             <Link className="btn btn-ghost" href="/sammeln">
               Mit den Kindern sammeln

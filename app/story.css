@@ -228,6 +228,7 @@
 #story-root .resolution .sticky-stage { background: var(--pine-deep); }
 #story-root .res-img-wrap { overflow: hidden; }
 #story-root .res-img-scale { position: absolute; inset: -2%; will-change: transform; }
+#story-root .res-photo { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(0.92) brightness(0.92); }
 #story-root .res-img { width: 100%; height: 100%; --ph-a: var(--pine); --ph-b: var(--pine-deep); }
 #story-root .res-img::after { color: var(--paper); background: oklch(0.25 0.02 150 / .45); box-shadow: none; }
 #story-root .res-veil { position: absolute; inset: 0; background: linear-gradient(90deg, oklch(0.2 0.03 160 / .78) 0%, oklch(0.2 0.03 160 / .5) 40%, transparent 78%), linear-gradient(0deg, oklch(0.2 0.03 160 / .55), transparent 50%); z-index: 2; }
