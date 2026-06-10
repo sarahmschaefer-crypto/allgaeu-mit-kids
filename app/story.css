@@ -127,52 +127,31 @@
 #story-root .hero-cue-line { width: 1.5px; height: 38px; background: linear-gradient(var(--ink-mute), transparent); animation: cuepulse 1.8s ease-in-out infinite; transform-origin: top; }
 @keyframes cuepulse { 0%,100% { transform: scaleY(.5); opacity: .4; } 50% { transform: scaleY(1); opacity: 1; } }
 
-/* ============================================================ JOURNEY === */
-#story-root .journey { position: relative; height: 320vh; background: color-mix(in oklab, var(--paper-2) 50%, var(--paper)); }
-#story-root .journey-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
-#story-root .journey-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: clamp(70px, 9vw, 130px) clamp(70px, 9vw, 130px); opacity: .5; -webkit-mask-image: radial-gradient(130% 100% at 50% 45%, #000 36%, transparent 80%); mask-image: radial-gradient(130% 100% at 50% 45%, #000 36%, transparent 80%); }
-#story-root .journey-head { position: absolute; top: clamp(26px, 6vh, 64px); left: 0; right: 0; z-index: 9; text-align: center; padding: 0 var(--pad); pointer-events: none; }
+/* =============================== JOURNEY (flowing winding path) === */
+#story-root .journey { position: relative; z-index: 1; background: color-mix(in oklab, var(--paper-2) 50%, var(--paper)); padding: clamp(40px,7vh,90px) 0 clamp(70px,12vh,150px); overflow: hidden; }
+#story-root .journey-head { text-align: center; max-width: 42ch; margin: 0 auto clamp(18px,4vh,40px); }
 #story-root .journey-head .eyebrow { margin-bottom: 14px; letter-spacing: .34em; color: var(--ink-mute); }
-#story-root .journey-canvas { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); height: min(74vh, 86vw); }
+#story-root .journey-canvas { position: relative; width: 100%; max-width: 720px; height: clamp(1600px, 230vh, 2800px); margin: 0 auto; }
 #story-root .journey-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-#story-root .journey-ghost { fill: none; stroke: var(--ink-mute); opacity: .26; stroke-width: 4; stroke-dasharray: 1 16; stroke-linecap: round; }
-#story-root .journey-line { fill: none; stroke-width: 15; stroke-linecap: round; stroke-linejoin: round; }
-#story-root .journey-tip { position: absolute; width: 22px; height: 22px; border-radius: 50%; background: var(--paper); border: 4px solid var(--ink); transform: translate(-50%,-50%); box-shadow: 0 6px 16px -6px oklch(0 0 0 / .4); opacity: 0; z-index: 7; }
-#story-root .poss { position: absolute; opacity: 0; transform: translate(-50%, -50%) scale(var(--k, .6)); transform-origin: center; will-change: transform, opacity; z-index: 6; }
+#story-root .journey-ghost { fill: none; stroke: var(--ink-mute); opacity: .22; stroke-width: 2.5; stroke-dasharray: 2 14; stroke-linecap: round; }
+#story-root .journey-line { fill: none; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+#story-root .journey-tip { position: absolute; width: 20px; height: 20px; border-radius: 50%; background: var(--paper); border: 4px solid var(--ink); transform: translate(-50%,-50%); box-shadow: 0 6px 16px -6px oklch(0 0 0 / .4); opacity: 0; z-index: 7; }
+#story-root .poss { position: absolute; opacity: 0; transform: translate(-50%, -50%) scale(var(--k, .7)); transform-origin: center; will-change: transform, opacity; z-index: 6; }
 #story-root .poss-dot { display: block; width: 16px; height: 16px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 5px color-mix(in oklab, var(--c) 24%, transparent); }
-#story-root .poss-card { position: absolute; top: 50%; left: 22px; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; background: var(--paper); border: 1px solid var(--line); border-radius: 13px; padding: 9px 15px; box-shadow: 0 10px 26px -16px oklch(0.3 0.03 160 / .5); white-space: nowrap; }
-#story-root .poss-left .poss-card { left: auto; right: 22px; }
-#story-root .poss-label { font-family: var(--font-display); font-weight: 600; font-size: 1.06rem; color: var(--ink); line-height: 1.1; }
-#story-root .poss-sub { font-family: var(--font-mono); font-size: 11px; color: var(--ink-mute); letter-spacing: .02em; }
-#story-root .poss-big .poss-card { padding: 11px 18px; }
-#story-root .poss-big .poss-label { font-size: 1.28rem; }
-#story-root .journey-foot { position: absolute; left: 50%; bottom: clamp(28px, 6vh, 64px); transform: translateX(-50%); width: min(34ch, 86vw); text-align: center; z-index: 9; opacity: 0; margin: 0; font-family: var(--font-body); font-weight: 500; font-size: clamp(1.05rem, 1.6vw, 1.3rem); color: var(--ink-soft); }
+#story-root .poss-card { position: absolute; top: 50%; left: 26px; transform: translateY(-50%); width: clamp(150px, 18vw, 190px); background: var(--paper); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: 0 12px 30px -16px oklch(0.3 0.03 160 / .55); }
+#story-root .poss-left .poss-card { left: auto; right: 26px; }
+#story-root .poss-img { position: relative; aspect-ratio: 3 / 2; }
+#story-root .poss-ph { position: absolute; inset: 0; }
+#story-root .poss-body { padding: 9px 13px 11px; display: flex; flex-direction: column; gap: 2px; }
+#story-root .poss-label { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; color: var(--ink); line-height: 1.1; }
+#story-root .poss-sub { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-mute); letter-spacing: .02em; }
+#story-root .poss-big .poss-card { width: clamp(165px, 20vw, 210px); }
+#story-root .poss-big .poss-label { font-size: 1.18rem; }
+#story-root .journey-foot { text-align: center; max-width: 34ch; margin: clamp(30px,5vh,60px) auto 0; opacity: 0; font-weight: 500; font-size: clamp(1.05rem,1.6vw,1.3rem); color: var(--ink-soft); }
 #story-root .journey-foot em { font-style: normal; color: var(--terra); font-weight: 700; }
-
-/* ===================================================== JOURNEY (flow) === */
-#story-root .journey2 { background: color-mix(in oklab, var(--paper-2) 50%, var(--paper)); padding: clamp(48px,9vh,110px) 0 clamp(60px,12vh,150px); position: relative; z-index: 1; }
-#story-root .journey2-head { text-align: center; max-width: 42ch; margin: 0 auto clamp(36px,6vh,72px); }
-#story-root .journey2-track { position: relative; max-width: 880px; }
-#story-root .journey2-rail { position: absolute; left: 50%; top: 6px; bottom: 6px; width: 3px; transform: translateX(-50%); background: var(--line); border-radius: 999px; overflow: hidden; }
-#story-root .journey2-fill { width: 100%; height: 0; background: linear-gradient(var(--terra), var(--pine)); border-radius: 999px; }
-#story-root .jstation { position: relative; min-height: clamp(160px,22vh,230px); display: flex; align-items: flex-start; }
-#story-root .jstation.l { justify-content: flex-start; }
-#story-root .jstation.r { justify-content: flex-end; }
-#story-root .jstation-dot { position: absolute; left: 50%; top: 30px; transform: translate(-50%,-50%); width: 17px; height: 17px; border-radius: 50%; border: 3px solid var(--paper); box-shadow: 0 4px 12px -4px rgba(0,0,0,.3); z-index: 2; }
-#story-root .jcard { width: clamp(240px, 44%, 360px); background: var(--paper); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: 0 16px 36px -22px oklch(0.3 0.03 160 / .5); }
-#story-root .jcard-img { position: relative; aspect-ratio: 16 / 10; }
-#story-root .jcard-ph { position: absolute; inset: 0; }
-#story-root .jcard-body { padding: 13px 17px 15px; display: flex; flex-direction: column; gap: 3px; }
-#story-root .jcard-label { font-family: var(--font-display); font-weight: 600; font-size: 1.3rem; line-height: 1.15; color: var(--ink); }
-#story-root .jcard.big .jcard-label { font-size: 1.55rem; }
-#story-root .jcard-sub { font-family: var(--font-mono); font-size: 11px; letter-spacing: .02em; color: var(--ink-mute); }
-#story-root .journey2-foot { text-align: center; max-width: 36ch; margin: clamp(40px,7vh,80px) auto 0; font-weight: 500; font-size: clamp(1.05rem,1.6vw,1.3rem); color: var(--ink-soft); }
-#story-root .journey2-foot em { font-style: normal; color: var(--terra); font-weight: 700; }
-@media (max-width: 700px) {
-  #story-root .journey2-rail { left: 17px; }
-  #story-root .jstation, #story-root .jstation.l, #story-root .jstation.r { justify-content: flex-end; padding-left: 42px; }
-  #story-root .jstation-dot { left: 17px; }
-  #story-root .jcard { width: 100%; }
+@media (max-width: 640px) {
+  #story-root .journey-canvas { max-width: 100%; height: clamp(1400px, 200vh, 2400px); }
+  #story-root .poss-card { width: clamp(130px, 40vw, 170px); }
 }
 
 /* =========================================================== MATCHER === */
