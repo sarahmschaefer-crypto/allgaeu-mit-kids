@@ -149,6 +149,32 @@
 #story-root .journey-foot { position: absolute; left: 50%; bottom: clamp(28px, 6vh, 64px); transform: translateX(-50%); width: min(34ch, 86vw); text-align: center; z-index: 9; opacity: 0; margin: 0; font-family: var(--font-body); font-weight: 500; font-size: clamp(1.05rem, 1.6vw, 1.3rem); color: var(--ink-soft); }
 #story-root .journey-foot em { font-style: normal; color: var(--terra); font-weight: 700; }
 
+/* ===================================================== JOURNEY (flow) === */
+#story-root .journey2 { background: color-mix(in oklab, var(--paper-2) 50%, var(--paper)); padding: clamp(48px,9vh,110px) 0 clamp(60px,12vh,150px); position: relative; z-index: 1; }
+#story-root .journey2-head { text-align: center; max-width: 42ch; margin: 0 auto clamp(36px,6vh,72px); }
+#story-root .journey2-track { position: relative; max-width: 880px; }
+#story-root .journey2-rail { position: absolute; left: 50%; top: 6px; bottom: 6px; width: 3px; transform: translateX(-50%); background: var(--line); border-radius: 999px; overflow: hidden; }
+#story-root .journey2-fill { width: 100%; height: 0; background: linear-gradient(var(--terra), var(--pine)); border-radius: 999px; }
+#story-root .jstation { position: relative; min-height: clamp(160px,22vh,230px); display: flex; align-items: flex-start; }
+#story-root .jstation.l { justify-content: flex-start; }
+#story-root .jstation.r { justify-content: flex-end; }
+#story-root .jstation-dot { position: absolute; left: 50%; top: 30px; transform: translate(-50%,-50%); width: 17px; height: 17px; border-radius: 50%; border: 3px solid var(--paper); box-shadow: 0 4px 12px -4px rgba(0,0,0,.3); z-index: 2; }
+#story-root .jcard { width: clamp(240px, 44%, 360px); background: var(--paper); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: 0 16px 36px -22px oklch(0.3 0.03 160 / .5); }
+#story-root .jcard-img { position: relative; aspect-ratio: 16 / 10; }
+#story-root .jcard-ph { position: absolute; inset: 0; }
+#story-root .jcard-body { padding: 13px 17px 15px; display: flex; flex-direction: column; gap: 3px; }
+#story-root .jcard-label { font-family: var(--font-display); font-weight: 600; font-size: 1.3rem; line-height: 1.15; color: var(--ink); }
+#story-root .jcard.big .jcard-label { font-size: 1.55rem; }
+#story-root .jcard-sub { font-family: var(--font-mono); font-size: 11px; letter-spacing: .02em; color: var(--ink-mute); }
+#story-root .journey2-foot { text-align: center; max-width: 36ch; margin: clamp(40px,7vh,80px) auto 0; font-weight: 500; font-size: clamp(1.05rem,1.6vw,1.3rem); color: var(--ink-soft); }
+#story-root .journey2-foot em { font-style: normal; color: var(--terra); font-weight: 700; }
+@media (max-width: 700px) {
+  #story-root .journey2-rail { left: 17px; }
+  #story-root .jstation, #story-root .jstation.l, #story-root .jstation.r { justify-content: flex-end; padding-left: 42px; }
+  #story-root .jstation-dot { left: 17px; }
+  #story-root .jcard { width: 100%; }
+}
+
 /* =========================================================== MATCHER === */
 #story-root .matcher { min-height: 100vh; padding: clamp(78px,12vh,150px) 0; display: flex; align-items: center; background: var(--paper); }
 #story-root .matcher-head { max-width: 640px; margin-bottom: clamp(36px,6vh,64px); }
