@@ -276,3 +276,32 @@ export function filterDests(sel: Sel) {
   });
 }
 
+
+// ── Detail-Infos: die 6 Kundinnen-Kategorien je Ziel. Einige Werte sind
+// Platzhalter (abgeleitet), bis echte Daten kommen. ──
+const PRICE_BY_BUDGET: Record<string, string> = {
+  frei: 'Kostenlos',
+  '€': 'Günstig – bis ~10 €/Person',
+  '€€': 'Erwachsene ~12 €, Kinder ~7 €',
+  '€€€': 'Erwachsene ~25 €, Kinder ~15 €',
+}
+
+export type DetailInfo = {
+  ort: string
+  parkplatz: string
+  preis: string
+  oeffnungszeiten: string
+  dauer: string
+  wegbeschaffenheit: string[]
+}
+
+export function detailInfo(d: ShapesDest): DetailInfo {
+  return {
+    ort: d.place,
+    parkplatz: d.facilities.includes('Parkplatz') ? 'Kostenloser Parkplatz vor Ort' : 'Parkplatz in der Nähe',
+    preis: PRICE_BY_BUDGET[d.budget] ?? '—',
+    oeffnungszeiten: `${d.season} · täglich 9–17 Uhr`,
+    dauer: d.duration,
+    wegbeschaffenheit: d.stroller ? ['Kinderwagen', 'Laufrad'] : ['Fahrrad'],
+  }
+}

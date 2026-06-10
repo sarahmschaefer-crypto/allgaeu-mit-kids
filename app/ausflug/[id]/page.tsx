@@ -3,86 +3,94 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ShapesBar } from '@/components/shapes/ShapesBar'
-import { Photo, CatPill, Stars, MetaRow } from '@/components/shapes/primitives'
-import { DESTINATIONS, getDest } from '@/lib/shapes/data'
+import { DetailGallery } from '@/components/shapes/DetailGallery'
+import { Stars } from '@/components/shapes/primitives'
+import { DESTINATIONS, getDest, detailInfo } from '@/lib/shapes/data'
 
 export function generateStaticParams() {
   return DESTINATIONS.map((d) => ({ id: d.id }))
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
   const dest = getDest(id)
   if (!dest) return { title: 'Ausflugsziel' }
   return { title: dest.name, description: dest.blurb }
 }
 
+const INFO_FIELDS: { key: keyof ReturnType<typeof detailInfo>; icon: string; label: string }[] = [
+  { key: 'ort', icon: '📍', label: 'Ort' },
+  { key: 'parkplatz', icon: '🅿️', label: 'Parkplatz' },
+  { key: 'preis', icon: '💶', label: 'Preis' },
+  { key: 'oeffnungszeiten', icon: '🕒', label: 'Öffnungszeiten' },
+  { key: 'dauer', icon: '⏱️', label: 'Dauer des Ausflugs' },
+]
+
 export default async function DetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const dest = getDest(id)
   if (!dest) notFound()
 
+  const info = detailInfo(dest)
+
   return (
     <div className="shapes-root">
       <ShapesBar />
-      <main style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 24px 70px' }} className="fade-in">
-        <Link href="/entdecken" className="kicker" style={{ display: 'inline-block', marginBottom: 18, color: 'var(--ink-soft)' }}>
+      <main className="detail-main fade-in">
+        <Link href="/entdecken" className="kicker detail-back">
           ← Zurück zur Entdeckung
         </Link>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr)', gap: 'clamp(24px, 4vw, 56px)', alignItems: 'start' }} className="detail-grid">
-          {/* Hero image */}
-          <div style={{ position: 'relative', aspectRatio: '4 / 3', overflow: 'hidden', borderRadius: 'var(--radius)', border: '1px solid var(--ink)' }}>
-            <Photo cat={dest.cat} style={{ position: 'absolute', inset: 0 }} rounded={false} seed={dest.name.length + 5} />
-            <div style={{ position: 'absolute', top: 16, left: 18 }}>
-              <CatPill cat={dest.cat} />
-            </div>
-          </div>
+        <div className="detail-grid">
+          <DetailGallery cat={dest.cat} name={dest.name} />
 
-          {/* Info */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-              <h1 style={{ fontSize: 'clamp(30px, 4vw, 46px)', lineHeight: 1.2 }}>{dest.name}</h1>
+            <div className="detail-head">
+              <h1 className="detail-title">{dest.name}</h1>
               <Stars rating={dest.rating} reviews={dest.reviews} />
             </div>
-            <p className="caption" style={{ fontSize: 17, marginTop: 6 }}>{dest.place}</p>
-            <div style={{ marginTop: 14 }}>
-              <MetaRow dest={dest} />
-            </div>
-            <p style={{ margin: '20px 0 24px', color: 'var(--ink-soft)', fontSize: 16.5, lineHeight: 1.5 }}>{dest.blurb}</p>
+            <p className="caption detail-place">{dest.place}</p>
+            <p className="detail-blurb">{dest.blurb}</p>
 
             <hr className="rule-soft" />
 
-            <h3 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: '0.16em', color: 'var(--ink-faint)', margin: '20px 0 12px', fontFamily: 'var(--font-body)', fontWeight: 700 }}>
-              Highlights
-            </h3>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {/* the 6 categories */}
+            <div className="detail-info">
+              {INFO_FIELDS.map((f) => (
+                <div className="info-item" key={f.key}>
+                  <span className="info-label">
+                    <span aria-hidden="true">{f.icon}</span> {f.label}
+                  </span>
+                  <span className="info-value">{info[f.key] as string}</span>
+                </div>
+              ))}
+              <div className="info-item">
+                <span className="info-label">
+                  <span aria-hidden="true">🚼</span> Wegbeschaffenheit
+                </span>
+                <span className="info-tags">
+                  {info.wegbeschaffenheit.map((w) => (
+                    <span key={w} className="chip" style={{ cursor: 'default' }}>
+                      {w}
+                    </span>
+                  ))}
+                </span>
+              </div>
+            </div>
+
+            <hr className="rule-soft" />
+
+            <h3 className="detail-subhead">Highlights</h3>
+            <ul className="detail-highlights">
               {dest.highlights.map((h) => (
-                <li key={h} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 16 }}>
-                  <span style={{ width: 7, height: 7, borderRadius: '50%', background: `var(--c-${dest.cat})`, flex: '0 0 auto' }} />
+                <li key={h}>
+                  <span className="hl-dot" style={{ background: `var(--c-${dest.cat})` }} />
                   {h}
                 </li>
               ))}
             </ul>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 22 }}>
-              {dest.facilities.map((f) => (
-                <span key={f} className="chip" style={{ cursor: 'default' }}>
-                  {f}
-                </span>
-              ))}
-            </div>
-
-            <div style={{ display: 'flex', gap: '6px 22px', flexWrap: 'wrap', marginTop: 22, fontSize: 14, color: 'var(--ink-soft)' }}>
-              <span><strong style={{ color: 'var(--ink)' }}>Saison:</strong> {dest.season}</span>
-              <span><strong style={{ color: 'var(--ink)' }}>Dauer:</strong> {dest.duration}</span>
-            </div>
-
-            <div style={{ display: 'flex', gap: 14, marginTop: 30, flexWrap: 'wrap' }}>
+            <div className="detail-actions">
               <Link href="/quiz" className="btn btn--primary">
                 Mehr passende Ziele finden
               </Link>
