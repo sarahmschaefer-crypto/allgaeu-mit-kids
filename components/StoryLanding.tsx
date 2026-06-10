@@ -6,7 +6,7 @@ import { TweaksProvider, TweaksPanel } from '@/components/Tweaks'
 import { MatchProvider } from '@/components/story/MatchContext'
 import { HeroScene } from '@/components/story/HeroScene'
 import { JourneyScene } from '@/components/story/JourneyScene'
-import { MatcherScene } from '@/components/story/MatcherScene'
+import { LandingQuiz } from '@/components/story/LandingQuiz'
 import { HorizontalScene, ResolutionScene } from '@/components/story/HorizontalScene'
 import { SammelnTeaser } from '@/components/story/SammelnTeaser'
 import { ProgressNav } from '@/components/story/StoryNav'
@@ -20,7 +20,7 @@ function StoryInner() {
       <ProgressNav />
       <HeroScene />
       <JourneyScene />
-      <MatcherScene />
+      <LandingQuiz />
       <HorizontalScene />
       <SammelnTeaser />
       <ResolutionScene />

@@ -1,19 +1,19 @@
 'use client'
-// components/story/MatchContext.tsx — shared landing state so the Matcher and
-// the "Das Allgäu öffnet sich" gallery speak about the SAME selection:
-//   matches = hard-filtered set  → the Matcher's live count + list
-//   ranked  = all places, best-fit first → the gallery sweep (always full)
+// components/story/MatchContext.tsx — shared landing state. The embedded quiz
+// (section 2) writes the selection; the gallery (section 3) reads `matches`.
 import { createContext, useContext, useMemo, useState } from 'react'
-import { filterDests, matchScore, DESTINATIONS, type ShapesDest } from '@/lib/shapes/data'
+import { filterDests, type ShapesDest, type Sel } from '@/lib/shapes/data'
 
-export type MatchSel = { ages: string[]; times: string[]; budgets: string[]; cats: string[] }
-const DEFAULT: MatchSel = { ages: ['3-5'], times: ['halb'], budgets: [], cats: ['wasser'] }
+export type ArrField = 'ages' | 'cats' | 'times' | 'budgets'
+export type MatchSel = { ages: string[]; cats: string[]; times: string[]; budgets: string[]; weather: string | null }
+const DEFAULT: MatchSel = { ages: [], cats: [], times: [], budgets: [], weather: null }
 
 type Ctx = {
   sel: MatchSel
-  toggle: (field: keyof MatchSel, id: string) => void
+  toggle: (field: ArrField, id: string) => void
+  setWeather: (id: string | null) => void
+  reset: () => void
   matches: ShapesDest[]
-  ranked: ShapesDest[]
 }
 const MatchCtx = createContext<Ctx | null>(null)
 
@@ -25,17 +25,13 @@ export function useMatch(): Ctx {
 
 export function MatchProvider({ children }: { children: React.ReactNode }) {
   const [sel, setSel] = useState<MatchSel>(DEFAULT)
-  const toggle = (field: keyof MatchSel, id: string) =>
+
+  const toggle = (field: ArrField, id: string) =>
     setSel((s) => ({ ...s, [field]: s[field].includes(id) ? s[field].filter((x) => x !== id) : [...s[field], id] }))
+  const setWeather = (id: string | null) => setSel((s) => ({ ...s, weather: s.weather === id ? null : id }))
+  const reset = () => setSel(DEFAULT)
 
-  const matches = useMemo(() => filterDests(sel), [sel])
-  const ranked = useMemo(
-    () =>
-      DESTINATIONS.map((d) => ({ d, m: matchScore(d, sel) }))
-        .sort((a, b) => b.m - a.m || b.d.rating - a.d.rating)
-        .map((r) => r.d),
-    [sel],
-  )
+  const matches = useMemo(() => filterDests(sel as Sel), [sel])
 
-  return <MatchCtx.Provider value={{ sel, toggle, matches, ranked }}>{children}</MatchCtx.Provider>
+  return <MatchCtx.Provider value={{ sel, toggle, setWeather, reset, matches }}>{children}</MatchCtx.Provider>
 }

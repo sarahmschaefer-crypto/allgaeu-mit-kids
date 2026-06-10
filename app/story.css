@@ -220,6 +220,24 @@
 #story-root .horiz-progress { position: absolute; left: 6vw; right: 6vw; bottom: 40px; height: 3px; border-radius: 999px; background: var(--line); z-index: 6; }
 #story-root .horiz-progress span { display: block; height: 100%; background: var(--pine); border-radius: 999px; transform: scaleX(0); transform-origin: left; }
 
+/* ===================================================== LANDING QUIZ === */
+#story-root .lquiz { min-height: 100vh; padding: clamp(78px,12vh,150px) 0; display: flex; align-items: center; background: var(--paper); position: relative; z-index: 1; }
+#story-root .lquiz-head { max-width: 640px; margin-bottom: clamp(26px,5vh,46px); }
+#story-root .lquiz-card { max-width: 640px; background: color-mix(in oklab, var(--paper-2) 60%, var(--paper)); border: 1px solid var(--line); border-radius: 24px; padding: clamp(24px,4vw,40px); }
+#story-root .lquiz-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
+#story-root .lquiz-back { background: none; border: none; padding: 0; font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--ink-soft); cursor: pointer; }
+#story-root .lquiz-back:disabled { color: var(--line); cursor: default; }
+#story-root .lquiz-count { font-family: var(--font-mono); font-size: 12px; color: var(--ink-mute); letter-spacing: .06em; }
+#story-root .lquiz-progress { display: flex; gap: 6px; margin-bottom: 30px; }
+#story-root .lquiz-progress span { flex: 1; height: 3px; border-radius: 999px; background: var(--line); transition: background .3s; }
+#story-root .lquiz-progress span.on { background: var(--pine); }
+#story-root .lquiz-body { animation: lquiz-in .35s ease; }
+@keyframes lquiz-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+#story-root .lquiz-q { font-size: clamp(1.5rem,3vw,2.1rem); line-height: 1.2; margin: 0 0 4px; }
+#story-root .lquiz-hint { color: var(--ink-mute); font-size: 14.5px; margin: 0 0 18px; }
+#story-root .lquiz-chips { margin-top: 4px; }
+#story-root .lquiz-next { margin-top: 26px; }
+
 /* ===================================================== SAMMELN TEASER === */
 #story-root .sammeln-teaser { background: color-mix(in oklab, var(--paper-2) 60%, var(--paper)); padding: clamp(72px, 13vh, 150px) 0; position: relative; z-index: 1; }
 #story-root .st-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(28px, 5vw, 76px); align-items: center; }
