@@ -197,7 +197,15 @@
 @media (max-width: 720px) { #story-root .horiz-cta { font-size: .85rem; padding: 10px 18px; } }
 #story-root .horiz-track { position: absolute; top: 0; left: 0; height: 100%; display: flex; align-items: center; gap: clamp(28px,3.2vw,56px); padding: 0 6vw; will-change: transform; }
 #story-root .horiz-spacer { flex: 0 0 clamp(40px,22vw,360px); }
-#story-root .hcard { flex: 0 0 auto; width: clamp(300px,40vw,540px); }
+#story-root .hcard { flex: 0 0 auto; width: clamp(240px, 30vw, 300px); }
+/* gallery uses the shapes DestCard → make its placeholder render like /entdecken */
+#story-root .hcard .ph { background: oklch(0.91 0.055 var(--ph-h, 88)); }
+#story-root .hcard .ph::after { content: none; }
+#story-root .hcard .ph__label { position: relative; z-index: 2; font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: oklch(0.34 0.06 var(--ph-h, 88)); background: oklch(1 0 0 / .6); padding: 4px 9px; }
+/* empty state */
+#story-root .horiz-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 14px; padding: 0 var(--pad); }
+#story-root .horiz-empty .lede { max-width: 34ch; }
+#story-root .horiz-empty-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
 #story-root .hcard-img { position: relative; aspect-ratio: 3/2; border-radius: 22px; overflow: hidden; box-shadow: 0 30px 60px -34px oklch(0.3 0.04 160 / .55); }
 #story-root .hcard-ph { position: absolute; inset: 0; width: 100%; height: 100%; will-change: transform; }
 #story-root .hcard-index { position: absolute; top: 16px; left: 16px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; color: var(--paper); background: oklch(0.25 0.02 150 / .5); backdrop-filter: blur(6px); padding: 5px 10px; border-radius: 999px; }

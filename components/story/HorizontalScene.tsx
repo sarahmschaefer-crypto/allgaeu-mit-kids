@@ -4,19 +4,22 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import { clamp, useScrollScene } from '@/lib/story/scroll'
-import { CATEGORIES } from '@/lib/shapes/data'
-import { Placeholder } from '@/components/story/Placeholder'
+import { DestCard } from '@/components/shapes/primitives'
 import { useTweaks } from '@/components/Tweaks'
 import { useMatch } from '@/components/story/MatchContext'
 import { buildExploreHref } from '@/lib/shapes/explore'
 
-const CAT = CATEGORIES as Record<string, { label: string; short: string }>
+function scrollToQuiz() {
+  const el = document.getElementById('start')
+  if (el) window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - 16, behavior: 'smooth' })
+}
 
 export function HorizontalScene() {
-  const { fx, direkt } = useTweaks()
-  const { ranked, sel } = useMatch()
-  const cardsData = ranked.slice(0, 8)
+  const { fx } = useTweaks()
+  const { matches, sel } = useMatch()
+  const cardsData = matches.slice(0, 12)
   const exploreHref = buildExploreHref(sel, { from: 'quiz' })
+  const empty = matches.length === 0
   const sec = useRef<HTMLElement>(null)
   const track = useRef<HTMLDivElement>(null)
   const cards = useRef<(HTMLElement | null)[]>([])
@@ -34,8 +37,8 @@ export function HorizontalScene() {
       if (!el) return
       const r = el.getBoundingClientRect()
       const t = 1 - clamp(Math.abs(r.left + r.width / 2 - center) / (vw * 0.6))
-      const imgEl = el.querySelector<HTMLElement>('.hcard-ph')
-      if (imgEl) imgEl.style.transform = `scale(${1.06 + t * 0.12 * fx})`
+      const imgEl = el.querySelector<HTMLElement>('.ph')
+      if (imgEl) imgEl.style.transform = `scale(${1.04 + t * 0.1 * fx})`
     })
   })
 
@@ -43,53 +46,51 @@ export function HorizontalScene() {
     <section className="scene horizontal" ref={sec}>
       <div className="sticky-stage horiz-stage">
         <div className="horiz-head wrap">
-          <p className="eyebrow">{direkt ? 'Eure Treffer' : 'Und plötzlich wird es leicht'}</p>
+          <p className="eyebrow">Eure Treffer</p>
           <h2 className="display h-md">Das Allgäu öffnet sich.</h2>
-          {/* always-visible entry (mobile-safe — not hidden at the end of the sweep) */}
-          <Link className="horiz-cta" href={exploreHref}>
-            Alle eure Treffer ansehen<span aria-hidden="true">→</span>
-          </Link>
-        </div>
-        <div className="horiz-track" ref={track}>
-          <div className="horiz-spacer" />
-          {cardsData.map((d, i) => (
-            <Link
-              href={`/ausflug/${d.id}`}
-              className="hcard"
-              key={d.id}
-              ref={(el) => {
-                cards.current[i] = el
-              }}
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-              <div className="hcard-img">
-                <Placeholder label={d.teaser ?? d.place} className="hcard-ph" />
-                <span className="hcard-index">{String(i + 1).padStart(2, '0')}</span>
-              </div>
-              <div className="hcard-meta">
-                <p className="hcard-tag">{CAT[d.cat]?.label ?? d.cat}</p>
-                <h3 className="display hcard-name">{d.name}</h3>
-                <p className="hcard-area">{d.place}</p>
-                <div className="hcard-perks">
-                  {d.highlights.slice(0, 3).map((perk) => (
-                    <span className="perk" key={perk}>
-                      {perk}
-                    </span>
-                  ))}
-                </div>
-              </div>
+          {!empty && (
+            <Link className="horiz-cta" href={exploreHref}>
+              Alle {matches.length} ansehen<span aria-hidden="true">→</span>
             </Link>
-          ))}
-          <Link className="horiz-end" href={exploreHref} style={{ textDecoration: 'none' }}>
-            <p className="display h-md">
-              Alle Treffer<br />
-              auf einen Blick <span aria-hidden="true">→</span>
-            </p>
-          </Link>
+          )}
         </div>
-        <div className="horiz-progress" aria-hidden="true">
-          <span ref={bar} />
-        </div>
+
+        {empty ? (
+          <div className="horiz-empty wrap">
+            <p className="display h-md">Noch nichts Perfektes dabei.</p>
+            <p className="lede">Lockert oben eine Angabe – dann öffnet sich das Allgäu wieder.</p>
+            <div className="horiz-empty-actions">
+              <button className="btn btn-primary" onClick={scrollToQuiz}>Angaben anpassen</button>
+              <Link className="btn btn-ghost" href="/entdecken">Alle Ziele ansehen</Link>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="horiz-track" ref={track}>
+              <div className="horiz-spacer" />
+              {cardsData.map((d, i) => (
+                <div
+                  className="hcard"
+                  key={d.id}
+                  ref={(el) => {
+                    cards.current[i] = el
+                  }}
+                >
+                  <DestCard dest={d} />
+                </div>
+              ))}
+              <Link className="horiz-end" href={exploreHref}>
+                <p className="display h-md">
+                  Alle Treffer<br />
+                  auf einen Blick <span aria-hidden="true">→</span>
+                </p>
+              </Link>
+            </div>
+            <div className="horiz-progress" aria-hidden="true">
+              <span ref={bar} />
+            </div>
+          </>
+        )}
       </div>
     </section>
   )
@@ -97,9 +98,6 @@ export function HorizontalScene() {
 
 export function ResolutionScene() {
   const { fx } = useTweaks()
-  const { matches, sel } = useMatch()
-  const count = matches.length
-  const href = buildExploreHref(sel, { from: 'quiz' })
   const sec = useRef<HTMLElement>(null)
   const img = useRef<HTMLDivElement>(null)
   const card = useRef<HTMLDivElement>(null)
@@ -124,21 +122,14 @@ export function ResolutionScene() {
         <div className="res-veil" />
         <div className="res-card wrap" ref={card}>
           <p className="eyebrow">Euer Allgäu</p>
-          <h2 className="display h-lg">Euer Tag wartet.</h2>
+          <h2 className="display h-lg">Es gibt noch viel zu entdecken.</h2>
           <p className="lede res-lede">
-            {count > 0 ? (
-              <>
-                <strong style={{ color: 'var(--paper)', fontWeight: 700 }}>{count} Orte</strong>{' '}
-                passen schon zu euch – ein Nachmittag, der zu euren Kindern passt, ohne langes Suchen.
-              </>
-            ) : (
-              <>Ein Nachmittag, der zu euren Kindern passt – ohne langes Suchen, ohne Kompromisse.</>
-            )}
+            Über 100 Ausflugsziele für Familien – Berge, Seen, Höfe und Pfade. Stöbert in Ruhe und
+            findet euren nächsten Lieblingsort.
           </p>
           <div className="res-actions">
-            <Link className="btn btn-primary" href={count > 0 ? href : '/quiz'}>
-              {count > 0 ? `Eure ${count} Orte ansehen` : 'Passenden Ausflug finden'}
-              <span aria-hidden="true">→</span>
+            <Link className="btn btn-primary" href="/entdecken">
+              Alle Ausflugsziele entdecken<span aria-hidden="true">→</span>
             </Link>
             <Link className="btn btn-ghost" href="/sammeln">
               Mit den Kindern sammeln
