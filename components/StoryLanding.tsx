@@ -9,7 +9,7 @@ import { JourneyScene } from '@/components/story/JourneyScene'
 import { MatcherScene } from '@/components/story/MatcherScene'
 import { HorizontalScene, ResolutionScene } from '@/components/story/HorizontalScene'
 import { SammelnTeaser } from '@/components/story/SammelnTeaser'
-import { ProgressNav, FloatingCta } from '@/components/story/StoryNav'
+import { ProgressNav } from '@/components/story/StoryNav'
 import { ShapesBar } from '@/components/shapes/ShapesBar'
 
 function StoryInner() {
@@ -18,7 +18,6 @@ function StoryInner() {
     <>
       <ShapesBar overlay />
       <ProgressNav />
-      <FloatingCta />
       <HeroScene />
       <JourneyScene />
       <MatcherScene />

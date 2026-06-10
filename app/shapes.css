@@ -91,6 +91,9 @@
 .shapes-brand b { font-family: var(--font-display); font-weight: 800; font-size: 20px; color: var(--ink); letter-spacing: -0.01em; }
 .shapes-brand i { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
 .shapes-nav { margin-left: auto; display: flex; gap: 22px; }
+.shapes-cta { display: inline-flex; align-items: center; background: var(--accent); color: #fff; font-family: var(--font-body); font-weight: 700; font-size: 13px; letter-spacing: 0.02em; padding: 10px 18px; border-radius: 999px; text-decoration: none; white-space: nowrap; transition: transform .12s, box-shadow .15s; box-shadow: 0 8px 20px -10px color-mix(in oklch, var(--accent) 70%, transparent); }
+.shapes-cta:hover { transform: translateY(-1px); box-shadow: 0 12px 26px -10px color-mix(in oklch, var(--accent) 75%, transparent); }
+@media (max-width: 680px) { .shapes-cta { padding: 9px 14px; font-size: 12px; } }
 .shapes-nav a { background: none; border: none; padding: 4px 0; color: var(--ink-faint); font-family: var(--font-body); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.16em; border-bottom: 2px solid transparent; transition: color .15s; text-decoration: none; }
 .shapes-nav a:hover { color: var(--ink); }
 .shapes-nav a.on { color: var(--ink); border-bottom-color: var(--accent); }

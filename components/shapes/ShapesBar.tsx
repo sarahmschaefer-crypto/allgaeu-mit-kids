@@ -24,6 +24,9 @@ export function ShapesBar({ active, overlay = false }: { active?: ShapesNavKey; 
             </Link>
           ))}
         </nav>
+        <Link href="/quiz" className="shapes-cta">
+          Ausflugsziel finden
+        </Link>
       </div>
     </header>
   )
