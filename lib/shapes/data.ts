@@ -12,6 +12,7 @@ export type ShapesDest = {
 export type Sel = {
   ages?: string[]; cats?: string[]; types?: string[]; times?: string[];
   budgets?: string[]; weather?: string | null; stroller?: boolean;
+  parking?: boolean; access?: string[]; ort?: string;
 }
 
 
@@ -263,6 +264,7 @@ export function matchScore(dest: ShapesDest, sel: Sel) {
 }
 
 export function filterDests(sel: Sel) {
+  const ort = sel.ort?.trim().toLowerCase();
   // Hard filter (must match every chosen facet group that is set)
   return DESTINATIONS.filter(d => {
     if (sel.ages?.length && !sel.ages?.some(a => d.ages.includes(a))) return false;
@@ -272,8 +274,25 @@ export function filterDests(sel: Sel) {
     if (sel.budgets?.length && !sel.budgets?.includes(d.budget)) return false;
     if (sel.weather === "regen" && d.weather !== "regen") return false;
     if (sel.stroller && !d.stroller) return false;
+    if (sel.parking && !d.facilities.includes("Parkplatz")) return false;
+    if (sel.access?.length && !sel.access.some(a => accessIds(d).includes(a))) return false;
+    if (ort && !d.place.toLowerCase().includes(ort)) return false;
     return true;
   });
+}
+
+// ── Wegbeschaffenheit (path access) — derived from `stroller` for now, until
+// per-destination data exists. Used by both the filter and the detail page so
+// they stay in sync. ──
+export const ACCESS_OPTIONS = [
+  { id: "kinderwagen", label: "Kinderwagen" },
+  { id: "laufrad",     label: "Laufrad" },
+  { id: "fahrrad",     label: "Fahrrad" },
+] as const;
+const ACCESS_LABEL: Record<string, string> = Object.fromEntries(ACCESS_OPTIONS.map(o => [o.id, o.label]));
+
+export function accessIds(d: ShapesDest): string[] {
+  return d.stroller ? ["kinderwagen", "laufrad"] : ["fahrrad"];
 }
 
 
@@ -302,7 +321,7 @@ export function detailInfo(d: ShapesDest): DetailInfo {
     preis: PRICE_BY_BUDGET[d.budget] ?? '—',
     oeffnungszeiten: `${d.season} · täglich 9–17 Uhr`,
     dauer: d.duration,
-    wegbeschaffenheit: d.stroller ? ['Kinderwagen', 'Laufrad'] : ['Fahrrad'],
+    wegbeschaffenheit: accessIds(d).map((id) => ACCESS_LABEL[id]),
   }
 }
 

@@ -11,6 +11,7 @@ import {
   TIMES,
   BUDGETS,
   CATEGORIES,
+  ACCESS_OPTIONS,
   filterDests,
   matchScore,
   getDest,
@@ -184,10 +185,12 @@ export function ExploreView({
   const [view, setView] = useState<'liste' | 'karte'>(initialView)
   const [banner, setBanner] = useState(fromQuiz)
 
-  const toggleIn = (key: 'ages' | 'times' | 'budgets' | 'cats' | 'types', id: string) =>
+  const toggleIn = (key: 'ages' | 'times' | 'budgets' | 'cats' | 'types' | 'access', id: string) =>
     setSel((s) => ({ ...s, [key]: s[key].includes(id) ? s[key].filter((x) => x !== id) : [...s[key], id] }))
 
-  const active = sel.ages.length + sel.times.length + sel.budgets.length + sel.cats.length + sel.types.length + (sel.weather ? 1 : 0) + (sel.stroller ? 1 : 0)
+  const active =
+    sel.ages.length + sel.times.length + sel.budgets.length + sel.cats.length + sel.types.length + sel.access.length +
+    (sel.weather ? 1 : 0) + (sel.stroller ? 1 : 0) + (sel.parking ? 1 : 0) + (sel.ort.trim() ? 1 : 0)
 
   const ranked = filterDests(sel as Sel).map((d) => ({ d, m: matchScore(d, sel as Sel) }))
   if (sort === 'match') ranked.sort((a, b) => b.m - a.m || b.d.rating - a.d.rating)
@@ -220,14 +223,26 @@ export function ExploreView({
             </div>
             <hr className="rule" />
             <div style={{ marginTop: 20 }}>
-              <FacetGroup title="Alter der Kinder" items={AGES} sel={sel.ages} onToggle={(id) => toggleIn('ages', id)} first />
+              <div>
+                <div className="kicker" style={{ marginBottom: 13 }}>Ort suchen</div>
+                <input
+                  type="search"
+                  value={sel.ort}
+                  onChange={(e) => setSel((s) => ({ ...s, ort: e.target.value }))}
+                  placeholder="z. B. Oberstdorf"
+                  aria-label="Ort suchen"
+                  style={{ width: '100%', boxSizing: 'border-box', padding: '10px 15px', borderRadius: 999, border: '1.5px solid var(--line)', background: 'var(--card)', color: 'var(--ink)', fontFamily: 'var(--font-body)', fontSize: 14.5 }}
+                />
+              </div>
+              <FacetGroup title="Alter der Kinder" items={AGES} sel={sel.ages} onToggle={(id) => toggleIn('ages', id)} />
               <CategoryFacet sel={sel.cats} onToggle={(id) => toggleIn('cats', id)} />
               <FacetGroup title="Verfügbare Zeit" items={TIMES} sel={sel.times} onToggle={(id) => toggleIn('times', id)} />
               <FacetGroup title="Budget" items={BUDGETS} sel={sel.budgets} onToggle={(id) => toggleIn('budgets', id)} />
+              <FacetGroup title="Wegbeschaffenheit" items={[...ACCESS_OPTIONS]} sel={sel.access} onToggle={(id) => toggleIn('access', id)} />
             </div>
             <div style={{ borderTop: '1px solid var(--line-soft)', paddingTop: 12, marginTop: 20 }}>
               <Toggle label="Auch bei Regen" sub="Nur wetterfeste Ziele" on={sel.weather === 'regen'} onClick={() => setSel((s) => ({ ...s, weather: s.weather === 'regen' ? null : 'regen' }))} />
-              <Toggle label="Kinderwagentauglich" sub="Barrierearm & flach" on={sel.stroller} onClick={() => setSel((s) => ({ ...s, stroller: !s.stroller }))} />
+              <Toggle label="Nur mit Parkplatz" sub="Parkplatz vor Ort" on={sel.parking} onClick={() => setSel((s) => ({ ...s, parking: !s.parking }))} />
             </div>
           </div>
         </aside>

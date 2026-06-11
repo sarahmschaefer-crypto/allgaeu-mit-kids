@@ -11,6 +11,9 @@ export type SelState = {
   types: string[]
   weather: string | null
   stroller: boolean
+  parking: boolean
+  access: string[]
+  ort: string
 }
 
 export const EMPTY_SEL: SelState = {
@@ -21,6 +24,9 @@ export const EMPTY_SEL: SelState = {
   types: [],
   weather: null,
   stroller: false,
+  parking: false,
+  access: [],
+  ort: '',
 }
 
 export const CATEGORY_KEYS = Object.keys(CATEGORIES)
@@ -36,6 +42,9 @@ export function buildExploreHref(sel: Partial<SelState>, opts?: { view?: 'liste'
   if (sel.types?.length) p.set('types', sel.types.join(','))
   if (sel.weather) p.set('weather', sel.weather)
   if (sel.stroller) p.set('stroller', '1')
+  if (sel.parking) p.set('parking', '1')
+  if (sel.access?.length) p.set('access', sel.access.join(','))
+  if (sel.ort?.trim()) p.set('ort', sel.ort.trim())
   if (opts?.view === 'karte') p.set('view', 'karte')
   if (opts?.from) p.set('from', opts.from)
   const qs = p.toString()
