@@ -28,6 +28,8 @@ Familien-Ausflugsplattform fürs Allgäu. Next.js 15 · React 19 · Tailwind 4 �
 
 ## Stehende Entscheidungen (von Sarah — IMMER beachten)
 Diese Festlegungen gelten dauerhaft. Bei neuen dauerhaften Anweisungen hier ergänzen.
+- **IMMER responsiv bauen** (Desktop + Mobile) — und nach jeder Änderung selbst gegenchecken, ob es sauber ist.
+- **Journey-Bilder:** sollen mittig im Viewport „aufploppen" (beim Scrollen zentral erscheinen, nie off-screen).
 - **Bilder:** Platzhalter, bis echte Fotos kommen. Hero = `public/hero-lake.jpg` (Allgäu-See).
 - **Navbar:** primärer „Ausflugsziel finden"-Button (→ /quiz). KEIN schwebender Floating-CTA.
 - **Hero:** Foto im Allgäu-Umriss, KEIN gezeichneter Stroke/Umrandung.

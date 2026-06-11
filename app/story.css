@@ -150,7 +150,11 @@
 #story-root .journey-foot { text-align: center; max-width: 34ch; margin: clamp(30px,5vh,60px) auto 0; opacity: 0; font-weight: 500; font-size: clamp(1.05rem,1.6vw,1.3rem); color: var(--ink-soft); }
 #story-root .journey-foot em { font-style: normal; color: var(--terra); font-weight: 700; }
 @media (max-width: 640px) {
-  #story-root .poss-card { width: clamp(120px, 38vw, 160px); }
+  /* narrow screens: drop the aspect-lock and grow tall so the stops spread out
+     vertically (one pops up at a time, no stacking) */
+  #story-root .journey-canvas { aspect-ratio: auto; height: clamp(1500px, 270vh, 2200px); }
+  #story-root .poss-card { width: clamp(120px, 38vw, 158px); }
+  #story-root .journey-line { stroke-width: 4.5; }
 }
 
 /* =========================================================== MATCHER === */

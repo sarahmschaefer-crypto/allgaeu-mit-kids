@@ -18,13 +18,15 @@ export function JourneyScene() {
   const canvasRef = useRef<HTMLDivElement>(null)
   const lineRef = useRef<SVGPathElement>(null) // the drawn (solid) path = our measure
   const nodeRefs = useRef<(HTMLDivElement | null)[]>([])
+  const nodeFracY = useRef<number[]>([]) // each node's y as a fraction of the path height
   const tipRef = useRef<HTMLSpanElement>(null)
   const footRef = useRef<HTMLParagraphElement>(null)
   const lenRef = useRef(0)
 
   const D = JOURNEY_DATA
 
-  const apply = (f: number) => {
+  // draw the path + tip for a given progress f (0..1 along the path)
+  const drawPath = (f: number) => {
     const L = lenRef.current || 1
     if (lineRef.current) lineRef.current.style.strokeDashoffset = String(L * (1 - f))
     if (tipRef.current && lineRef.current) {
@@ -33,12 +35,6 @@ export function JourneyScene() {
       tipRef.current.style.top = (pt.y / D.vh) * 100 + '%'
       tipRef.current.style.opacity = f > 0.01 && f < 0.985 ? '1' : '0'
     }
-    nodeRefs.current.forEach((el, i) => {
-      if (!el) return
-      const k = clamp((f - POSSIBILITIES[i].t) / 0.05)
-      el.style.opacity = String(k)
-      el.style.setProperty('--k', (0.7 + k * 0.3).toFixed(3))
-    })
     if (footRef.current) footRef.current.style.opacity = String(clamp((f - 0.9) / 0.1))
   }
 
@@ -57,22 +53,35 @@ export function JourneyScene() {
       el.style.top = (pt.y / D.vh) * 100 + '%'
       el.classList.toggle('poss-left', pt.x > D.vw * 0.5)
       el.classList.toggle('poss-right', pt.x <= D.vw * 0.5)
+      nodeFracY.current[i] = pt.y / D.vh
     })
-    apply(0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // draw progress tied to the CANVAS scrolling through the viewport (so it goes
-  // a clean 0 → 1 as the path travels past, not faster than the canvas itself)
+  // Everything tied to scroll: the path draws as the canvas passes through, and
+  // each image card pops in as ITS point reaches the middle of the viewport
+  // (so the images always appear centred, never off-screen). Responsive: all
+  // measures come from the live canvas rect + window height.
   useEffect(() => {
     const onScroll = () => {
       const c = canvasRef.current
       if (!c) return
       const r = c.getBoundingClientRect()
       const vh = window.innerHeight
-      const start = vh * 0.88 // begins drawing as the canvas enters
-      const range = vh * 0.66 + r.height // finishes as it leaves the top
-      apply(clamp((start - r.top) / range))
+      // path draw: clean 0→1 as the canvas travels through the viewport
+      drawPath(clamp((vh * 0.88 - r.top) / (vh * 0.66 + r.height)))
+      // card reveal: each image is fully visible only near the MIDDLE of the
+      // viewport and fades above/below — so it pops up centred, is never shown
+      // off-screen, and cards never stack on top of each other (works on any
+      // screen size).
+      nodeRefs.current.forEach((el, i) => {
+        if (!el) return
+        const screenY = r.top + (nodeFracY.current[i] ?? 0.5) * r.height
+        const dist = Math.abs(screenY - vh * 0.5) / vh // 0 at centre
+        const k = clamp((0.34 - dist) / 0.2) // full within 14% of centre, gone past 34%
+        el.style.opacity = String(k)
+        el.style.setProperty('--k', (0.86 + k * 0.14).toFixed(3))
+      })
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -96,7 +105,7 @@ export function JourneyScene() {
       </div>
 
       <div className="journey-canvas" ref={canvasRef}>
-        <svg className="journey-svg" viewBox={D.viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <svg className="journey-svg" viewBox={D.viewBox} preserveAspectRatio="none" aria-hidden="true">
           {/* ahead of the front: dashed (same path → perfect overlap) */}
           <path className="journey-ghost" d={D.combinedD} />
           {/* driven part: solid single-colour, revealed along its length */}
