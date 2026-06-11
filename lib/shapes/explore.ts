@@ -14,7 +14,10 @@ export type SelState = {
   parking: boolean
   access: string[]
   ort: string
+  radius: number
 }
+
+export const DEFAULT_RADIUS = 25
 
 export const EMPTY_SEL: SelState = {
   ages: [],
@@ -27,6 +30,7 @@ export const EMPTY_SEL: SelState = {
   parking: false,
   access: [],
   ort: '',
+  radius: DEFAULT_RADIUS,
 }
 
 export const CATEGORY_KEYS = Object.keys(CATEGORIES)
@@ -45,6 +49,7 @@ export function buildExploreHref(sel: Partial<SelState>, opts?: { view?: 'liste'
   if (sel.parking) p.set('parking', '1')
   if (sel.access?.length) p.set('access', sel.access.join(','))
   if (sel.ort?.trim()) p.set('ort', sel.ort.trim())
+  if (sel.ort?.trim() && sel.radius && sel.radius !== DEFAULT_RADIUS) p.set('radius', String(sel.radius))
   if (opts?.view === 'karte') p.set('view', 'karte')
   if (opts?.from) p.set('from', opts.from)
   const qs = p.toString()

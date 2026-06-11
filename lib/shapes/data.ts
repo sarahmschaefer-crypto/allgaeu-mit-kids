@@ -12,7 +12,7 @@ export type ShapesDest = {
 export type Sel = {
   ages?: string[]; cats?: string[]; types?: string[]; times?: string[];
   budgets?: string[]; weather?: string | null; stroller?: boolean;
-  parking?: boolean; access?: string[]; ort?: string;
+  parking?: boolean; access?: string[]; ort?: string; radius?: number;
 }
 
 
@@ -282,8 +282,82 @@ export function matchScore(dest: ShapesDest, sel: Sel) {
   return max === 0 ? 1 : score / max;
 }
 
+// ── Geo: approximate (placeholder) coordinates for the radius/"Umkreis" filter.
+// DEST_GEO = each attraction; TOWN_GEO = town centres usable as search centre.
+// Values are rough and meant to be refined with real data later. ──
+type LatLng = { lat: number; lng: number };
+
+export const DEST_GEO: Record<string, LatLng> = {
+  "breitachklamm":         { lat: 47.388, lng: 10.221 },
+  "skywalk":               { lat: 47.595, lng: 9.838 },
+  "alpsee-coaster":        { lat: 47.586, lng: 10.118 },
+  "skyline-park":          { lat: 48.092, lng: 10.535 },
+  "ziegelwies":            { lat: 47.566, lng: 10.717 },
+  "eistobel":              { lat: 47.611, lng: 9.985 },
+  "aquaria":               { lat: 48.006, lng: 10.594 },
+  "bergbauernmuseum":      { lat: 47.585, lng: 10.165 },
+  "soellereck":            { lat: 47.392, lng: 10.252 },
+  "sturmannshoehle":       { lat: 47.422, lng: 10.211 },
+  "neuschwanstein":        { lat: 47.5576, lng: 10.7498 },
+  "kletterwald-bärenfalle":{ lat: 47.560, lng: 10.210 },
+  "moorbad-schwarzenberg": { lat: 47.617, lng: 10.252 },
+  "vogelpark":             { lat: 47.515, lng: 10.281 },
+  "iglu-indoorspielplatz": { lat: 47.726, lng: 10.317 },
+  "hündle":                { lat: 47.557, lng: 10.045 },
+};
+
+export const TOWN_GEO: Record<string, LatLng> = {
+  "Oberstdorf":     { lat: 47.410, lng: 10.279 },
+  "Fischen":        { lat: 47.456, lng: 10.275 },
+  "Sonthofen":      { lat: 47.515, lng: 10.281 },
+  "Bad Hindelang":  { lat: 47.508, lng: 10.378 },
+  "Immenstadt":     { lat: 47.561, lng: 10.218 },
+  "Diepolz":        { lat: 47.585, lng: 10.165 },
+  "Oberstaufen":    { lat: 47.555, lng: 10.025 },
+  "Scheidegg":      { lat: 47.578, lng: 9.847 },
+  "Lindenberg":     { lat: 47.602, lng: 9.892 },
+  "Maierhöfen":     { lat: 47.620, lng: 10.012 },
+  "Obermaiselstein":{ lat: 47.418, lng: 10.225 },
+  "Waltenhofen":    { lat: 47.660, lng: 10.307 },
+  "Kempten":        { lat: 47.726, lng: 10.317 },
+  "Wertach":        { lat: 47.597, lng: 10.410 },
+  "Nesselwang":     { lat: 47.622, lng: 10.503 },
+  "Pfronten":       { lat: 47.575, lng: 10.555 },
+  "Füssen":         { lat: 47.571, lng: 10.701 },
+  "Schwangau":      { lat: 47.578, lng: 10.738 },
+  "Bad Wörishofen": { lat: 48.005, lng: 10.600 },
+};
+
+// Town names for the search datalist, sorted alphabetically (de).
+export const TOWNS = Object.keys(TOWN_GEO).sort((a, b) => a.localeCompare(b, "de"));
+
+export function haversineKm(a: LatLng, b: LatLng): number {
+  const R = 6371, toRad = (x: number) => (x * Math.PI) / 180;
+  const dLat = toRad(b.lat - a.lat), dLng = toRad(b.lng - a.lng);
+  const s = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(s));
+}
+
+// Resolve a typed place to a centre coordinate: exact, then prefix match.
+export function resolveCenter(q: string): LatLng | null {
+  const n = q.trim().toLowerCase();
+  if (!n) return null;
+  const exact = TOWNS.find((t) => t.toLowerCase() === n);
+  if (exact) return TOWN_GEO[exact];
+  const pre = TOWNS.find((t) => t.toLowerCase().startsWith(n));
+  return pre ? TOWN_GEO[pre] : null;
+}
+
+// Distance (km) from a centre to a destination, or null if unknown.
+export function distanceKm(center: LatLng, d: ShapesDest): number | null {
+  const g = DEST_GEO[d.id];
+  return g ? haversineKm(center, g) : null;
+}
+
 export function filterDests(sel: Sel) {
-  const ort = sel.ort?.trim().toLowerCase();
+  const ort = sel.ort?.trim();
+  const center = ort ? resolveCenter(ort) : null;
+  const radius = sel.radius ?? 25;
   // Hard filter (must match every chosen facet group that is set)
   return DESTINATIONS.filter(d => {
     if (sel.ages?.length && !sel.ages?.some(a => d.ages.includes(a))) return false;
@@ -295,7 +369,16 @@ export function filterDests(sel: Sel) {
     if (sel.stroller && !d.stroller) return false;
     if (sel.parking && !d.facilities.includes("Parkplatz")) return false;
     if (sel.access?.length && !sel.access.some(a => accessIds(d).includes(a))) return false;
-    if (ort && !d.place.toLowerCase().includes(ort)) return false;
+    if (ort) {
+      if (center) {
+        // Radius filter: keep destinations within `radius` km of the centre.
+        const g = DEST_GEO[d.id];
+        if (!g || haversineKm(center, g) > radius) return false;
+      } else if (!d.place.toLowerCase().includes(ort.toLowerCase())) {
+        // Fallback: plain place-name match for unknown centres.
+        return false;
+      }
+    }
     return true;
   });
 }

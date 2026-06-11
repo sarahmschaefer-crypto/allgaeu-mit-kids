@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Detailseite — Variante A & B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f1e7; --card:#fffdf8; --ink:#1c2230; --ink-soft:#5b6072;
+    --navy:#070E70; --accent:#5b3df5; --pine:#5b3df5; --coral:#e0613a;
+    --line:#e4ddcd; --radius:18px;
+    --font-head:'Playfair Display',serif; --font-body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);line-height:1.55}
+  h1,h2,h3{font-family:var(--font-head);margin:0;line-height:1.2;color:var(--navy)}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  .switcher{position:sticky;top:0;z-index:10;background:rgba(246,241,231,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .switcher .wrap{display:flex;gap:10px;align-items:center;padding:14px 24px;flex-wrap:wrap}
+  .switcher b{font-family:var(--font-head);font-size:18px;color:var(--navy);margin-right:auto}
+  .seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px}
+  .seg button{border:0;background:transparent;font:inherit;font-weight:600;padding:8px 18px;border-radius:999px;cursor:pointer;color:var(--ink-soft)}
+  .seg button.on{background:var(--navy);color:#fff}
+  .panel{display:none;padding:42px 0 80px}
+  .panel.on{display:block}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  .back{display:inline-block;margin-bottom:22px;color:var(--ink-soft);text-decoration:none;font-weight:600;font-size:14px}
+  .ph{position:relative;overflow:hidden;border-radius:var(--radius);background:
+      linear-gradient(135deg,#cdd9c4,#aebfa0);display:flex;align-items:flex-end;color:#fff}
+  .ph span{font-family:var(--font-head);font-size:26px;padding:18px;text-shadow:0 1px 8px rgba(0,0,0,.3)}
+  .ph.alt{background:linear-gradient(135deg,#d8c9e8,#b59fd6)}
+  .stars{display:inline-flex;gap:5px;align-items:center;font-weight:700;font-size:14px;color:var(--ink-soft)}
+  .stars .s{color:var(--coral)}
+  .blurb{color:var(--ink-soft);font-size:16px}
+  .rule{border:0;border-top:1px solid var(--line);margin:24px 0}
+  .subhead{font-size:21px;margin-bottom:12px}
+  .hl{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+  .hl li{display:flex;gap:10px;align-items:flex-start;font-size:15px}
+  .hl .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);margin-top:7px;flex:0 0 auto}
+  .tags{display:flex;flex-wrap:wrap;gap:8px}
+  .tag{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);
+       border-radius:999px;padding:6px 13px;font-size:13px;font-weight:600;color:var(--ink-soft)}
+  .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .btn{border-radius:999px;padding:13px 22px;font-weight:700;font-size:15px;text-decoration:none;display:inline-block;cursor:pointer;border:1px solid transparent}
+  .btn-primary{background:var(--navy);color:#fff}
+  .btn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+  .note{max-width:680px;color:var(--ink-soft);font-size:14px;margin:0 0 30px;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+
+  /* ===== Variante A — Editorial Split ===== */
+  .A .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:46px;align-items:start}
+  .A .gallery{display:grid;gap:12px}
+  .A .gallery .hero{aspect-ratio:4/5}
+  .A .gallery .thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .A .gallery .thumbs .ph{aspect-ratio:1}
+  .A .gallery .thumbs .ph span{font-size:0}
+  .A h1{font-size:42px}
+  .A .place{color:var(--ink-soft);margin:4px 0 14px}
+  .A .info{display:grid;grid-template-columns:1fr 1fr;gap:16px 22px;margin:6px 0}
+  .A .info .item{display:flex;flex-direction:column;gap:2px}
+  .A .info .label{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft)}
+  .A .info .val{font-size:15px;font-weight:600}
+
+  /* ===== Variante B — Hero-led / Magazin ===== */
+  .B .cover{aspect-ratio:16/7;margin-bottom:8px}
+  .B .cover .ph{height:100%}
+  .B .titlebar{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;margin:18px 0 6px}
+  .B h1{font-size:48px}
+  .B .place{color:var(--ink-soft)}
+  .B .intro{max-width:760px;text-align:center;margin:18px auto 30px;font-size:18px;color:var(--ink-soft)}
+  .B .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 auto;max-width:860px}
+  .B .tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center}
+  .B .tile .ic{font-size:22px}
+  .B .tile .label{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);margin-top:6px}
+  .B .tile .val{font-size:15px;font-weight:600;margin-top:2px}
+  .B .lower{max-width:760px;margin:38px auto 0;text-align:center}
+  .B .lower .hl{justify-items:center}
+  .B .lower .hl li{justify-content:center}
+  .B .lower .tags,.B .lower .actions{justify-content:center}
+
+  @media(max-width:760px){
+    .A .grid{grid-template-columns:1fr;gap:28px}
+    .A .info{grid-template-columns:1fr}
+    .A h1{font-size:34px}
+    .B h1{font-size:34px}
+    .B .cover{aspect-ratio:4/3}
+    .B .tiles{grid-template-columns:1fr 1fr}
+    .B .titlebar{justify-content:flex-start}
+  }
+</style>
+</head>
+<body>
+  <div class="switcher">
+    <div class="wrap">
+      <b>Detailseite — Layout-Varianten</b>
+      <div class="seg">
+        <button id="btnA" class="on" onclick="show('A')">Variante A · Editorial Split</button>
+        <button id="btnB" onclick="show('B')">Variante B · Hero-led / Magazin</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ VARIANTE A ============ -->
+  <section id="A" class="panel on A">
+    <div class="wrap">
+      <a class="back" href="#">← Zurück zur Entdeckung</a>
+      <p class="note"><b>Variante A — „Editorial Split".</b> Galerie links, alle Infos rechts. Info-dicht, alles auf einen Blick. Aktuell so im Code.</p>
+      <div class="grid">
+        <div class="gallery">
+          <div class="ph hero"><span>Breitachklamm</span></div>
+          <div class="thumbs">
+            <div class="ph alt"><span>·</span></div>
+            <div class="ph"><span>·</span></div>
+            <div class="ph alt"><span>·</span></div>
+          </div>
+        </div>
+        <div>
+          <span class="kicker">Natur &amp; Wandern</span>
+          <h1>Breitachklamm</h1>
+          <div class="place">Oberstdorf · <span class="stars"><span class="s">★</span>4,8 (1.240)</span></div>
+          <p class="blurb">Tiefe Schlucht mit tosendem Wasser, Stegen und Brücken — ein kleines Abenteuer, das auch jüngere Kinder fasziniert.</p>
+          <hr class="rule" />
+          <div class="info">
+            <div class="item"><span class="label">📍 Ort</span><span class="val">Oberstdorf, Allgäu</span></div>
+            <div class="item"><span class="label">🅿️ Parkplatz</span><span class="val">Vorhanden, gebührenpflichtig</span></div>
+            <div class="item"><span class="label">💶 Preis</span><span class="val">Erw. 7 € · Kind 3,50 €</span></div>
+            <div class="item"><span class="label">🕒 Öffnungszeiten</span><span class="val">Tägl. 9–17 Uhr</span></div>
+            <div class="item"><span class="label">⏱️ Dauer</span><span class="val">ca. 1,5–2 Std.</span></div>
+            <div class="item"><span class="label">🚼 Wegbeschaffenheit</span><span class="val">Nicht kinderwagentauglich</span></div>
+          </div>
+          <hr class="rule" />
+          <h3 class="subhead">Highlights</h3>
+          <ul class="hl">
+            <li><span class="dot"></span>Tosende Wasserfälle hautnah auf sicheren Stegen</li>
+            <li><span class="dot"></span>Im Winter spektakuläre Eisformationen</li>
+            <li><span class="dot"></span>Einkehr direkt am Eingang</li>
+          </ul>
+          <h3 class="subhead" style="margin-top:22px">Tags</h3>
+          <div class="tags"><span class="tag">🥾 Wandern</span><span class="tag">💧 Wasser</span><span class="tag">🌦 Bei jedem Wetter</span></div>
+          <div class="actions">
+            <a class="btn btn-primary">Mehr passende Ziele finden</a>
+            <a class="btn btn-ghost">Ins Album sammeln</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VARIANTE B ============ -->
+  <section id="B" class="panel B">
+    <div class="wrap">
+      <a class="back" href="#">← Zurück zur Entdeckung</a>
+      <p class="note"><b>Variante B — „Hero-led / Magazin".</b> Bild zuerst, groß über die volle Breite. Darunter Fakten als Kachel-Grid, ruhig und zentriert. Bildstark &amp; emotional, mobil top.</p>
+      <div class="cover"><div class="ph"><span>Breitachklamm</span></div></div>
+      <div class="titlebar">
+        <div>
+          <span class="kicker">Natur &amp; Wandern</span>
+          <h1>Breitachklamm</h1>
+        </div>
+        <div class="place"><span class="stars"><span class="s">★</span>4,8 (1.240)</span> · Oberstdorf</div>
+      </div>
+      <p class="intro">Tiefe Schlucht mit tosendem Wasser, Stegen und Brücken — ein kleines Abenteuer, das auch jüngere Kinder fasziniert.</p>
+      <div class="tiles">
+        <div class="tile"><div class="ic">📍</div><div class="label">Ort</div><div class="val">Oberstdorf</div></div>
+        <div class="tile"><div class="ic">🅿️</div><div class="label">Parkplatz</div><div class="val">Gebührenpflichtig</div></div>
+        <div class="tile"><div class="ic">💶</div><div class="label">Preis</div><div class="val">ab 3,50 €</div></div>
+        <div class="tile"><div class="ic">🕒</div><div class="label">Öffnung</div><div class="val">9–17 Uhr</div></div>
+        <div class="tile"><div class="ic">⏱️</div><div class="label">Dauer</div><div class="val">1,5–2 Std.</div></div>
+        <div class="tile"><div class="ic">🚼</div><div class="label">Weg</div><div class="val">Nicht buggytauglich</div></div>
+      </div>
+      <div class="lower">
+        <hr class="rule" />
+        <h3 class="subhead">Highlights</h3>
+        <ul class="hl">
+          <li><span class="dot"></span>Tosende Wasserfälle hautnah auf sicheren Stegen</li>
+          <li><span class="dot"></span>Im Winter spektakuläre Eisformationen</li>
+          <li><span class="dot"></span>Einkehr direkt am Eingang</li>
+        </ul>
+        <h3 class="subhead" style="margin-top:22px">Tags</h3>
+        <div class="tags"><span class="tag">🥾 Wandern</span><span class="tag">💧 Wasser</span><span class="tag">🌦 Bei jedem Wetter</span></div>
+        <div class="actions">
+          <a class="btn btn-primary">Mehr passende Ziele finden</a>
+          <a class="btn btn-ghost">Ins Album sammeln</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<script>
+  function show(v){
+    document.getElementById('A').classList.toggle('on', v==='A');
+    document.getElementById('B').classList.toggle('on', v==='B');
+    document.getElementById('btnA').classList.toggle('on', v==='A');
+    document.getElementById('btnB').classList.toggle('on', v==='B');
+    window.scrollTo(0,0);
+  }
+</script>
+</body>
+</html>

@@ -12,6 +12,8 @@ import {
   BUDGETS,
   LUST_TAGS,
   ACCESS_OPTIONS,
+  TOWNS,
+  resolveCenter,
   filterDests,
   matchScore,
   getDest,
@@ -189,6 +191,8 @@ export function ExploreView({
     sel.ages.length + sel.times.length + sel.budgets.length + sel.cats.length + sel.types.length + sel.access.length +
     (sel.weather ? 1 : 0) + (sel.stroller ? 1 : 0) + (sel.parking ? 1 : 0) + (sel.ort.trim() ? 1 : 0)
 
+  const ortCenter = sel.ort.trim() ? resolveCenter(sel.ort) : null
+
   const ranked = filterDests(sel as Sel).map((d) => ({ d, m: matchScore(d, sel as Sel) }))
   if (sort === 'match') ranked.sort((a, b) => b.m - a.m || b.d.rating - a.d.rating)
   else if (sort === 'rating') ranked.sort((a, b) => b.d.rating - a.d.rating)
@@ -221,15 +225,37 @@ export function ExploreView({
             <hr className="rule" />
             <div style={{ marginTop: 20 }}>
               <div>
-                <div className="kicker" style={{ marginBottom: 13 }}>Ort suchen</div>
+                <div className="kicker" style={{ marginBottom: 13 }}>Ort & Umkreis</div>
                 <input
                   type="search"
+                  list="ort-towns"
                   value={sel.ort}
                   onChange={(e) => setSel((s) => ({ ...s, ort: e.target.value }))}
                   placeholder="z. B. Oberstdorf"
                   aria-label="Ort suchen"
                   style={{ width: '100%', boxSizing: 'border-box', padding: '10px 15px', borderRadius: 999, border: '1.5px solid var(--line)', background: 'var(--card)', color: 'var(--ink)', fontFamily: 'var(--font-body)', fontSize: 14.5 }}
                 />
+                <datalist id="ort-towns">
+                  {TOWNS.map((t) => (
+                    <option key={t} value={t} />
+                  ))}
+                </datalist>
+                {sel.ort.trim() && (ortCenter ? (
+                  <div style={{ marginTop: 13 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 7 }}>
+                      <span style={{ fontSize: 12.5, color: 'var(--ink-soft)', fontWeight: 600 }}>Umkreis</span>
+                      <span style={{ fontSize: 13.5, color: 'var(--ink)', fontWeight: 700 }}>{sel.radius} km</span>
+                    </div>
+                    <input
+                      type="range" min={5} max={80} step={5} value={sel.radius}
+                      onChange={(e) => setSel((s) => ({ ...s, radius: Number(e.target.value) }))}
+                      aria-label="Umkreis in Kilometern"
+                      style={{ width: '100%', accentColor: 'var(--accent)', cursor: 'pointer' }}
+                    />
+                  </div>
+                ) : (
+                  <p className="caption" style={{ fontSize: 12.5, marginTop: 8 }}>Ort nicht in der Liste – es werden Namenstreffer angezeigt.</p>
+                ))}
               </div>
               <FacetGroup title="Alter der Kinder" items={AGES} sel={sel.ages} onToggle={(id) => toggleIn('ages', id)} />
               <LustFacet sel={sel.types} onToggle={(id) => toggleIn('types', id)} />

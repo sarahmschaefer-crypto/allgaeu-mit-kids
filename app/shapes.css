@@ -71,10 +71,11 @@
 .shapes-root .chip[data-on="true"] { background: color-mix(in oklch, var(--cat, var(--accent)) 16%, var(--card)); border-color: var(--cat, var(--accent)); color: color-mix(in oklch, var(--cat, var(--accent)) 72%, var(--ink)); }
 
 /* category tags: coloured pill + masked design icon + name */
-.shapes-root .tag { display: inline-flex; align-items: center; gap: 7px; border: 1.5px solid transparent; border-radius: 999px; padding: 7px 14px 7px 11px; font-family: var(--font-body); font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: all .15s ease; background: color-mix(in oklch, var(--tag) 15%, var(--card)); color: color-mix(in oklch, var(--tag) 68%, var(--ink)); }
+.shapes-root .tag { display: inline-flex; align-items: center; gap: 7px; border: 1.5px solid var(--tag); border-radius: 999px; padding: 7px 14px 7px 11px; font-family: var(--font-body); font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: all .15s ease; background: transparent; color: color-mix(in oklch, var(--tag) 78%, var(--ink)); }
 .shapes-root .tag .tag-ico { width: 16px; height: 16px; flex: 0 0 16px; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: contain; mask-size: contain; background: currentColor; }
-.shapes-root .tag:hover { background: color-mix(in oklch, var(--tag) 24%, var(--card)); }
+.shapes-root .tag:hover { background: color-mix(in oklch, var(--tag) 12%, var(--card)); }
 .shapes-root .tag[data-on="true"] { background: var(--tag); border-color: var(--tag); color: #fff; }
+.shapes-root .tag[data-on="true"]:hover { background: var(--tag); }
 .shapes-root .tag[data-static="true"] { cursor: default; }
 
 /* buttons */

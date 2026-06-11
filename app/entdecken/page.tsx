@@ -38,6 +38,10 @@ export default async function EntdeckenPage({ searchParams }: { searchParams: Pr
     parking: one(sp.parking) === '1',
     access: list(one(sp.access), ACCESS_IDS),
     ort: one(sp.ort) ?? '',
+    radius: (() => {
+      const r = Number(one(sp.radius))
+      return Number.isFinite(r) && r > 0 ? Math.min(Math.max(r, 5), 80) : EMPTY_SEL.radius
+    })(),
   }
   const initialView = one(sp.view) === 'karte' ? 'karte' : 'liste'
   const fromQuiz = one(sp.from) === 'quiz'
