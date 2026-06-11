@@ -195,3 +195,37 @@
 .shapes-root .quiz-banner { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: color-mix(in oklch, var(--accent) 10%, var(--card)); border: 1px solid color-mix(in oklch, var(--accent) 35%, transparent); border-radius: var(--radius); padding: 13px 18px; margin-bottom: 24px; font-size: 14.5px; color: var(--ink); }
 .shapes-root .quiz-banner strong { font-weight: 700; }
 .shapes-root .quiz-banner button { background: none; border: none; color: var(--ink-faint); font-size: 20px; line-height: 1; padding: 0 4px; cursor: pointer; flex: 0 0 auto; }
+
+/* ===== Detail · Variante B "Magazin-Feature" ===== */
+.shapes-root .mag { max-width: 980px; margin: 0 auto; padding: clamp(28px, 5vw, 60px) clamp(20px, 5vw, 60px) 44px; display: flex; flex-direction: column; gap: clamp(28px, 4vw, 36px); }
+.shapes-root .mag-back { display: inline-block; text-decoration: none; color: var(--accent); }
+.shapes-root .mag-hair { border: 0; border-top: 1px solid var(--ink); margin: 0 0 16px; }
+
+.shapes-root .mag-top { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: clamp(24px, 4vw, 44px); align-items: start; }
+.shapes-root .mag-eyebrow { margin-bottom: 14px; color: var(--accent); }
+.shapes-root .mag-headline { font-family: var(--font-display); font-weight: 800; font-size: clamp(34px, 6vw, 60px); line-height: 1.12; letter-spacing: -0.015em; margin: 0; color: var(--ink); }
+.shapes-root .mag-intro { margin: 0; font-size: 15px; line-height: 1.55; color: var(--ink-soft, var(--ink-faint)); }
+
+.shapes-root .mag-mid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: clamp(24px, 4vw, 44px); align-items: start; }
+.shapes-root .mag-mid .gallery-main { aspect-ratio: 4 / 5; }
+.shapes-root .mag-mid .gallery-thumb { aspect-ratio: 1; }
+.shapes-root .mag-col { display: flex; flex-direction: column; gap: 26px; }
+.shapes-root .mag-h2 { font-family: var(--font-display); font-weight: 700; font-size: 23px; margin: 0 0 14px; line-height: 1.2; }
+
+.shapes-root .mag-facts { margin: 0; display: flex; flex-direction: column; gap: 13px; }
+.shapes-root .mag-factrow { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; border-bottom: 1px solid var(--line-soft); padding-bottom: 11px; }
+.shapes-root .mag-factrow dt { flex: 0 0 auto; }
+.shapes-root .mag-factval { margin: 0; font-family: var(--font-body); font-size: 14px; font-weight: 600; text-align: right; color: var(--ink); }
+
+.shapes-root .mag-hls { display: flex; flex-direction: column; }
+.shapes-root .mag-hl { display: flex; gap: 12px; align-items: baseline; padding: 7px 0; }
+.shapes-root .mag-hlnum { font-family: var(--font-display); font-weight: 800; font-size: 14px; color: var(--accent); flex: 0 0 auto; }
+.shapes-root .mag-hltext { font-size: 14.5px; font-weight: 600; line-height: 1.4; }
+
+.shapes-root .mag-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.shapes-root .mag-foot { margin-top: 8px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line-soft); padding-top: 16px; }
+.shapes-root .mag-pg { font-family: var(--font-display); font-weight: 800; font-size: 18px; color: var(--ink); }
+
+@media (max-width: 760px) {
+  .shapes-root .mag-top, .shapes-root .mag-mid { grid-template-columns: 1fr; }
+}

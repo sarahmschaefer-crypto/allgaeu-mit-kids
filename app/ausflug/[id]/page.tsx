@@ -1,11 +1,11 @@
-// app/ausflug/[id]/page.tsx — Shapes-styled destination detail
+// app/ausflug/[id]/page.tsx — Shapes-styled destination detail · Variante B "Magazin-Feature"
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ShapesBar } from '@/components/shapes/ShapesBar'
 import { DetailGallery } from '@/components/shapes/DetailGallery'
-import { Stars, Tag } from '@/components/shapes/primitives'
-import { DESTINATIONS, getDest, detailInfo, destTags } from '@/lib/shapes/data'
+import { Tag } from '@/components/shapes/primitives'
+import { DESTINATIONS, getDest, detailInfo, destTags, CATEGORIES } from '@/lib/shapes/data'
 
 export function generateStaticParams() {
   return DESTINATIONS.map((d) => ({ id: d.id }))
@@ -18,13 +18,22 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return { title: dest.name, description: dest.blurb }
 }
 
-const INFO_FIELDS: { key: keyof ReturnType<typeof detailInfo>; icon: string; label: string }[] = [
-  { key: 'ort', icon: '📍', label: 'Ort' },
-  { key: 'parkplatz', icon: '🅿️', label: 'Parkplatz' },
-  { key: 'preis', icon: '💶', label: 'Preis' },
-  { key: 'oeffnungszeiten', icon: '🕒', label: 'Öffnungszeiten' },
-  { key: 'dauer', icon: '⏱️', label: 'Dauer des Ausflugs' },
-]
+// "Für Kinder" range label from the age buckets present on a destination.
+function agesLabel(ages: string[]): string {
+  const order = ['0-2', '3-5', '6-9', '10+']
+  const present = order.filter((o) => ages.includes(o))
+  if (!present.length) return 'Jedes Alter'
+  const lo = present[0].split('-')[0]
+  const hi = present[present.length - 1]
+  if (hi === '10+') return `ab ${lo} Jahre`
+  return `${lo}–${hi.split('-')[1]} Jahre`
+}
+
+const WEATHER_LABEL: Record<string, string> = {
+  gut: 'Bei schönem Wetter',
+  regen: 'Auch bei Regen',
+  egal: 'Wetterunabhängig',
+}
 
 export default async function DetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -33,85 +42,98 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
 
   const info = detailInfo(dest)
   const tags = destTags(dest)
+  const cat = (CATEGORIES as Record<string, { label: string }>)[dest.cat]
+
+  // Single, consolidated "Auf einen Blick" — the 6 client categories merged with
+  // the extra facts (Für Kinder / Wetter) that weren't covered by them.
+  const facts: { label: string; value: string }[] = [
+    { label: 'Ort', value: info.ort },
+    { label: 'Für Kinder', value: agesLabel(dest.ages) },
+    { label: 'Dauer des Ausflugs', value: info.dauer },
+    { label: 'Öffnungszeiten', value: info.oeffnungszeiten },
+    { label: 'Preis', value: info.preis },
+    { label: 'Parkplatz', value: info.parkplatz },
+    { label: 'Wetter', value: WEATHER_LABEL[dest.weather] ?? '—' },
+    { label: 'Wegbeschaffenheit', value: info.wegbeschaffenheit.join(' · ') },
+  ]
 
   return (
     <div className="shapes-root">
       <ShapesBar />
-      <main className="detail-main fade-in">
-        <Link href="/entdecken" className="kicker detail-back">
+      <main className="mag fade-in">
+        <Link href="/entdecken" className="kicker mag-back">
           ← Zurück zur Entdeckung
         </Link>
 
-        <div className="detail-grid">
+        {/* TOP — oversized serif headline (teaser) + intro */}
+        <header className="mag-top">
+          <div className="mag-headcol">
+            <div className="kicker mag-eyebrow">
+              {dest.name} · {dest.place}
+            </div>
+            <h1 className="mag-headline">{dest.teaser ?? dest.name}</h1>
+          </div>
+          <div className="mag-introcol">
+            <hr className="mag-hair" />
+            <p className="mag-intro">{dest.blurb}</p>
+          </div>
+        </header>
+
+        {/* MIDDLE — 4:5 gallery + consolidated facts + highlights */}
+        <section className="mag-mid">
           <DetailGallery cat={dest.cat} name={dest.name} />
 
-          <div>
-            <div className="detail-head">
-              <h1 className="detail-title">{dest.name}</h1>
-              <Stars rating={dest.rating} reviews={dest.reviews} />
+          <div className="mag-col">
+            <div>
+              <h2 className="mag-h2">Auf einen Blick</h2>
+              <dl className="mag-facts">
+                {facts.map((f) => (
+                  <div className="mag-factrow" key={f.label}>
+                    <dt className="kicker">{f.label}</dt>
+                    <dd className="mag-factval">{f.value}</dd>
+                  </div>
+                ))}
+              </dl>
             </div>
-            <p className="caption detail-place">{dest.place}</p>
-            <p className="detail-blurb">{dest.blurb}</p>
 
-            <hr className="rule-soft" />
-
-            {/* the 6 categories */}
-            <div className="detail-info">
-              {INFO_FIELDS.map((f) => (
-                <div className="info-item" key={f.key}>
-                  <span className="info-label">
-                    <span aria-hidden="true">{f.icon}</span> {f.label}
-                  </span>
-                  <span className="info-value">{info[f.key] as string}</span>
-                </div>
-              ))}
-              <div className="info-item">
-                <span className="info-label">
-                  <span aria-hidden="true">🚼</span> Wegbeschaffenheit
-                </span>
-                <span className="info-tags">
-                  {info.wegbeschaffenheit.map((w) => (
-                    <span key={w} className="chip" style={{ cursor: 'default' }}>
-                      {w}
-                    </span>
-                  ))}
-                </span>
+            <div>
+              <h2 className="mag-h2">Highlights</h2>
+              <div className="mag-hls">
+                {dest.highlights.map((h, i) => (
+                  <div className="mag-hl" key={h}>
+                    <span className="mag-hlnum">{String(i + 1).padStart(2, '0')}</span>
+                    <span className="mag-hltext">{h}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <hr className="rule-soft" />
-
-            <h3 className="detail-subhead">Highlights</h3>
-            <ul className="detail-highlights">
-              {dest.highlights.map((h) => (
-                <li key={h}>
-                  <span className="hl-dot" style={{ background: `var(--c-${dest.cat})` }} />
-                  {h}
-                </li>
-              ))}
-            </ul>
-
             {tags.length > 0 && (
-              <>
-                <h3 className="detail-subhead">Tags</h3>
+              <div>
+                <h2 className="mag-h2">Themen</h2>
                 <div className="info-tags">
                   {tags.map((t) => (
                     <Tag key={t.id} label={t.label} icon={t.icon} color={t.color} />
                   ))}
                 </div>
-              </>
+              </div>
             )}
-
-            <div className="detail-actions">
-              <Link href="/quiz" className="btn btn--primary">
-                Mehr passende Ziele finden
-              </Link>
-              <Link href="/sammeln" className="btn btn--ghost">
-                Ins Album sammeln
-              </Link>
-            </div>
           </div>
+        </section>
+
+        <div className="mag-actions">
+          <Link href="/quiz" className="btn btn--primary">
+            Mehr passende Ziele finden
+          </Link>
+          <Link href="/sammeln" className="btn btn--ghost">
+            Ins Album sammeln
+          </Link>
         </div>
+
+        <footer className="mag-foot">
+          <span className="mag-pg">01</span>
+          <span className="kicker">Ausgabe · {cat?.label ?? 'Familie & Allgäu'}</span>
+        </footer>
       </main>
     </div>
   )

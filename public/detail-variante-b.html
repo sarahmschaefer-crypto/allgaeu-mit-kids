@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Detailseite — Variante B · Magazin-Feature</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f1e7; --card:#fffdf8; --ink:#1c2230; --ink-soft:#5b6072; --ink-faint:#9a9889;
+    --navy:#070E70; --accent:#5b3df5; --coral:#e0613a;
+    --line:#cbbfa6; --line-soft:#e4ddcd;
+    --font-display:'Playfair Display',serif; --font-body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.5}
+  .page{max-width:980px;margin:0 auto;padding:60px 60px 44px;display:flex;flex-direction:column;gap:36px}
+  .kicker{font-family:var(--font-body);font-weight:700;text-transform:uppercase;letter-spacing:.18em;font-size:11px;color:var(--ink-faint)}
+  .kicker.accent{color:var(--accent)}
+  .hair{height:1px;background:var(--ink);width:100%}
+  .hair.soft{background:var(--line)}
+  .back{display:inline-block;text-decoration:none;margin-bottom:4px}
+
+  /* ---- top: oversized serif headline + intro ---- */
+  .top{display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:start}
+  .head .kicker{margin-bottom:14px}
+  .headline{font-family:var(--font-display);font-weight:800;font-size:60px;line-height:1.12;letter-spacing:-.015em;margin:0;color:var(--navy)}
+  .intro .hair{margin-bottom:16px}
+  .intro p{margin:0;font-size:15px;line-height:1.55;color:var(--ink-soft)}
+
+  /* ---- middle: 4:5 gallery + facts/highlights ---- */
+  .mid{display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:start}
+  .gallery{margin:0}
+  .cover{position:relative;aspect-ratio:4/5;overflow:hidden;border-radius:2px;
+         background:linear-gradient(135deg,#cdd9c4,#a9bd9b);display:flex;align-items:flex-end}
+  .cover span{font-family:var(--font-display);font-weight:700;font-size:30px;color:#fff;padding:22px;text-shadow:0 2px 12px rgba(0,0,0,.35)}
+  .thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+  .thumb{aspect-ratio:1;border-radius:2px;cursor:pointer;background:linear-gradient(135deg,#d8c9e8,#b59fd6)}
+  .thumb:nth-child(2){background:linear-gradient(135deg,#cdd9c4,#a9bd9b)}
+  .thumb:nth-child(3){background:linear-gradient(135deg,#e8d6c2,#cbb091)}
+  .thumb:nth-child(4){background:linear-gradient(135deg,#c2dbe8,#92b6cb)}
+  figcaption{font-size:13px;margin-top:9px;line-height:1.35;color:var(--ink-faint);font-style:italic}
+
+  .col{display:flex;flex-direction:column;gap:24px}
+  .col h2{font-family:var(--font-display);font-weight:700;font-size:24px;margin:0 0 16px;line-height:1.2;color:var(--navy)}
+  .facts{display:flex;flex-direction:column;gap:14px}
+  .factrow{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid var(--line-soft);padding-bottom:11px}
+  .factrow span.v{font-size:14px;font-weight:600;text-align:right}
+  .hl{display:flex;gap:12px;align-items:baseline;padding:7px 0}
+  .hl .n{font-family:var(--font-display);font-weight:800;font-size:14px;color:var(--accent)}
+  .hl .t{font-size:14.5px;font-weight:600}
+
+  /* ---- 6 categories strip (deine finalen Kategorien) ---- */
+  .cats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .cat{padding:18px 16px;border-right:1px solid var(--line-soft);display:flex;flex-direction:column;gap:4px}
+  .cat:nth-child(3n){border-right:0}
+  .cat .ic{font-size:18px}
+  .cat .l{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
+  .cat .v{font-size:14.5px;font-weight:600}
+
+  .actions{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{border-radius:999px;padding:13px 22px;font-weight:700;font-size:15px;text-decoration:none;cursor:pointer;border:1px solid transparent}
+  .btn-primary{background:var(--navy);color:#fff}
+  .btn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+
+  .foot{margin-top:8px;display:flex;justify-content:space-between;align-items:center}
+  .foot .pg{font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--navy)}
+
+  @media(max-width:760px){
+    .page{padding:36px 22px 40px;gap:28px}
+    .top,.mid{grid-template-columns:1fr;gap:22px}
+    .headline{font-size:38px}
+    .cats{grid-template-columns:1fr 1fr}
+    .cat:nth-child(3n){border-right:1px solid var(--line-soft)}
+    .cat:nth-child(2n){border-right:0}
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <a class="back kicker accent" href="#">← Zurück zur Entdeckung</a>
+
+    <!-- TOP: serif headline = teaser -->
+    <div class="top">
+      <div class="head">
+        <div class="kicker accent">Breitachklamm · Oberstdorf</div>
+        <h1 class="headline">Wo das Wasser die Felsen durchschneidet.</h1>
+      </div>
+      <div class="intro">
+        <div class="hair"></div>
+        <p>Tiefste Schlucht der Alpen — auf sicheren Stegen wandert ihr direkt über dem tosenden Wasser. Ein kleines Abenteuer, das auch jüngere Kinder verzaubert, im Winter mit spektakulären Eisformationen.</p>
+      </div>
+    </div>
+
+    <!-- MIDDLE: 4:5 gallery + facts/highlights -->
+    <div class="mid">
+      <figure class="gallery">
+        <div class="cover"><span>Breitachklamm</span></div>
+        <div class="thumbs">
+          <div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div>
+        </div>
+        <figcaption>Oberstdorf — auf 1000 m gelegen. Bilder: Titelmotiv &amp; Galerie.</figcaption>
+      </figure>
+      <div class="col">
+        <div>
+          <h2>Auf einen Blick</h2>
+          <div class="facts">
+            <div class="factrow"><span class="kicker">Für Kinder</span><span class="v">3–12 Jahre</span></div>
+            <div class="factrow"><span class="kicker">Dauer</span><span class="v">1,5–2 Stunden</span></div>
+            <div class="factrow"><span class="kicker">Saison</span><span class="v">Ganzjährig</span></div>
+            <div class="factrow"><span class="kicker">Budget</span><span class="v">ab 3,50 €</span></div>
+            <div class="factrow"><span class="kicker">Wetter</span><span class="v">Wetterunabhängig</span></div>
+          </div>
+        </div>
+        <div>
+          <h2>Highlights</h2>
+          <div class="hl"><span class="n">01</span><span class="t">Tosende Wasserfälle hautnah auf sicheren Stegen</span></div>
+          <div class="hl"><span class="n">02</span><span class="t">Im Winter spektakuläre Eisformationen</span></div>
+          <div class="hl"><span class="n">03</span><span class="t">Gemütliche Einkehr direkt am Eingang</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 finale Kategorien -->
+    <div class="cats">
+      <div class="cat"><span class="ic">📍</span><span class="l">Ort</span><span class="v">Oberstdorf, Allgäu</span></div>
+      <div class="cat"><span class="ic">🅿️</span><span class="l">Parkplatz</span><span class="v">Vorhanden, gebührenpfl.</span></div>
+      <div class="cat"><span class="ic">💶</span><span class="l">Preis</span><span class="v">Erw. 7 € · Kind 3,50 €</span></div>
+      <div class="cat"><span class="ic">🕒</span><span class="l">Öffnungszeiten</span><span class="v">Täglich 9–17 Uhr</span></div>
+      <div class="cat"><span class="ic">⏱️</span><span class="l">Dauer</span><span class="v">ca. 1,5–2 Std.</span></div>
+      <div class="cat"><span class="ic">🚼</span><span class="l">Wegbeschaffenheit</span><span class="v">Nicht buggytauglich</span></div>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-primary">Mehr passende Ziele finden</a>
+      <a class="btn btn-ghost">Ins Album sammeln</a>
+    </div>
+
+    <div class="foot">
+      <span class="pg">01</span>
+      <span class="kicker">Ausgabe · Familie &amp; Allgäu</span>
+    </div>
+  </div>
+</body>
+</html>
