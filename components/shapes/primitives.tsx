@@ -6,6 +6,37 @@ import { Blob } from '@/components/shapes/decor'
 
 const CAT = CATEGORIES as Record<string, { id: string; label: string; short: string; hue: number; emoji: string }>
 
+// Coloured category tag: design-system icon (masked from /tags/<icon>.svg) + name.
+// Interactive (button, toggles) when `onClick` is given, otherwise a static label.
+export function Tag({
+  label,
+  icon,
+  color,
+  on = false,
+  onClick,
+}: {
+  label: string
+  icon: string
+  color: string
+  on?: boolean
+  onClick?: () => void
+}) {
+  const mask = { WebkitMaskImage: `url(/tags/${icon}.svg)`, maskImage: `url(/tags/${icon}.svg)` } as CSSProperties
+  const inner = (
+    <>
+      <span className="tag-ico" style={mask} aria-hidden="true" />
+      {label}
+    </>
+  )
+  const style = { '--tag': color } as CSSProperties
+  if (!onClick) return <span className="tag" data-static="true" style={style}>{inner}</span>
+  return (
+    <button type="button" className="tag" data-on={on} style={style} onClick={onClick} aria-pressed={on}>
+      {inner}
+    </button>
+  )
+}
+
 export function Container({
   children,
   style,

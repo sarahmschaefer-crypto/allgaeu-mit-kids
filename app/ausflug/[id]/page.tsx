@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ShapesBar } from '@/components/shapes/ShapesBar'
 import { DetailGallery } from '@/components/shapes/DetailGallery'
-import { Stars } from '@/components/shapes/primitives'
+import { Stars, Tag } from '@/components/shapes/primitives'
 import { DESTINATIONS, getDest, detailInfo, destTags } from '@/lib/shapes/data'
 
 export function generateStaticParams() {
@@ -96,9 +96,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                 <h3 className="detail-subhead">Tags</h3>
                 <div className="info-tags">
                   {tags.map((t) => (
-                    <span key={t} className="chip" style={{ cursor: 'default' }}>
-                      {t}
-                    </span>
+                    <Tag key={t.id} label={t.label} icon={t.icon} color={t.color} />
                   ))}
                 </div>
               </>

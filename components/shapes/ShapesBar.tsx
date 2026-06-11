@@ -14,7 +14,8 @@ export function ShapesBar({ active, overlay = false }: { active?: ShapesNavKey; 
     <header className={`shapes-bar${overlay ? ' shapes-bar--overlay' : ''}`}>
       <div className="shapes-bar-inner">
         <Link href="/" className="shapes-brand">
-          <i />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-allgaeu.png" alt="Allgäu mit Kindern" className="brand-logo" width={30} height={30} />
           <b>Allgäu&nbsp;mit&nbsp;Kindern</b>
         </Link>
         <nav className="shapes-nav">

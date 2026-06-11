@@ -70,6 +70,13 @@
 .shapes-root .chip:hover { border-color: var(--ink-faint); color: var(--ink); }
 .shapes-root .chip[data-on="true"] { background: color-mix(in oklch, var(--cat, var(--accent)) 16%, var(--card)); border-color: var(--cat, var(--accent)); color: color-mix(in oklch, var(--cat, var(--accent)) 72%, var(--ink)); }
 
+/* category tags: coloured pill + masked design icon + name */
+.shapes-root .tag { display: inline-flex; align-items: center; gap: 7px; border: 1.5px solid transparent; border-radius: 999px; padding: 7px 14px 7px 11px; font-family: var(--font-body); font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: all .15s ease; background: color-mix(in oklch, var(--tag) 15%, var(--card)); color: color-mix(in oklch, var(--tag) 68%, var(--ink)); }
+.shapes-root .tag .tag-ico { width: 16px; height: 16px; flex: 0 0 16px; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: contain; mask-size: contain; background: currentColor; }
+.shapes-root .tag:hover { background: color-mix(in oklch, var(--tag) 24%, var(--card)); }
+.shapes-root .tag[data-on="true"] { background: var(--tag); border-color: var(--tag); color: #fff; }
+.shapes-root .tag[data-static="true"] { cursor: default; }
+
 /* buttons */
 .shapes-root .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; border-radius: var(--radius-sm); border: none; font-weight: 700; font-size: 14.5px; padding: 14px 24px; transition: transform .12s ease, box-shadow .15s ease, background .15s; cursor: pointer; text-decoration: none; }
 .shapes-root .btn--primary { background: var(--accent); color: #fff; }
@@ -89,7 +96,7 @@
 .shapes-bar-inner { max-width: 1180px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; gap: 18px; }
 .shapes-brand { display: flex; align-items: center; gap: 9px; background: none; border: none; padding: 0; text-decoration: none; }
 .shapes-brand b { font-family: var(--font-display); font-weight: 800; font-size: 20px; color: var(--ink); letter-spacing: -0.01em; }
-.shapes-brand i { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+.shapes-brand .brand-logo { width: 30px; height: 30px; border-radius: 50%; display: block; flex: 0 0 30px; }
 .shapes-nav { margin-left: auto; display: flex; gap: 22px; }
 .shapes-cta { display: inline-flex; align-items: center; background: var(--accent); color: #fff; font-family: var(--font-body); font-weight: 700; font-size: 13px; letter-spacing: 0.02em; padding: 10px 18px; border-radius: 999px; text-decoration: none; white-space: nowrap; transition: transform .12s, box-shadow .15s; box-shadow: 0 8px 20px -10px color-mix(in oklch, var(--accent) 70%, transparent); }
 .shapes-cta:hover { transform: translateY(-1px); box-shadow: 0 12px 26px -10px color-mix(in oklch, var(--accent) 75%, transparent); }

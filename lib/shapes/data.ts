@@ -27,17 +27,26 @@ export const CATEGORIES = {
 // Activity TYPES — drawn from the uploaded icon set. Each destination carries a
 // few of these as badges. Badge background uses the brand poster palette; the
 // icon itself renders in navy on top.
+// Labels, icons (→ public/tags/<icon>.svg) and colours taken from the design
+// system (Tag.png / Icon set). Each tag renders as a coloured pill with a white
+// masked icon + name.
 export const TYPES = {
-  ausflug:    { id: "ausflug",    label: "Wandern",     icon: "ausflug",    color: "#F7C125" },
-  schwimmen:  { id: "schwimmen",  label: "Baden",       icon: "schwimmen",  color: "#BAA3FF" },
-  spielplatz: { id: "spielplatz", label: "Spielplatz",  icon: "spielplatz", color: "#FFA3EB" },
-  tierpark:   { id: "tierpark",   label: "Tiere",       icon: "tierpark",   color: "#FF932F" },
-  sport:      { id: "sport",      label: "Sport",       icon: "sport",      color: "#FF932F" },
-  attraktion: { id: "attraktion", label: "Attraktion",  icon: "attraktion", color: "#FFA3EB" },
-  kultur:     { id: "kultur",     label: "Kultur",      icon: "kultur",     color: "#BAA3FF" },
-  kreatives:  { id: "kreatives",  label: "Kreativ",     icon: "kreatives",  color: "#F7C125" },
-  gastro:     { id: "gastro",     label: "Einkehr",     icon: "gastro",     color: "#F7C125" },
+  ausflug:    { id: "ausflug",    label: "Ausflug",     icon: "ausflug",    color: "#8B8BF0" },
+  schwimmen:  { id: "schwimmen",  label: "Baden",       icon: "schwimmen",  color: "#A6C8EF" },
+  sport:      { id: "sport",      label: "Sport",       icon: "sport",      color: "#BBA4F0" },
+  spielplatz: { id: "spielplatz", label: "Spielplatz",  icon: "spielplatz", color: "#9B68E6" },
+  tierpark:   { id: "tierpark",   label: "Tiere",       icon: "tierpark",   color: "#F0922E" },
+  attraktion: { id: "attraktion", label: "Attraktion",  icon: "attraktion", color: "#BEBE3C" },
+  kultur:     { id: "kultur",     label: "Kultur",      icon: "kultur",     color: "#F3B95A" },
+  kreatives:  { id: "kreatives",  label: "Kreatives",   icon: "kreatives",  color: "#F2806A" },
+  gastro:     { id: "gastro",     label: "Gastro",      icon: "gastro",     color: "#F2A6D6" },
 };
+
+// Activity tags a destination carries, resolved from the inline `tags` field or
+// the central DEST_TAGS map. One source for filtering, matching and detail page.
+export function tagsOf(d: ShapesDest): string[] {
+  return d.tags ?? (DEST_TAGS as Record<string, string[]>)[d.id] ?? [];
+}
 
 export const DEST_TAGS = {
   "breitachklamm": ["ausflug", "sport"],
@@ -57,6 +66,16 @@ export const DEST_TAGS = {
   "iglu-indoorspielplatz": ["spielplatz", "kreatives"],
   "hündle": ["attraktion", "spielplatz"],
 };
+
+// The tags offered in the "Worauf habt ihr Lust?" filter — only those at least
+// one destination actually carries, in display order.
+const TAG_ORDER = ["ausflug", "schwimmen", "sport", "spielplatz", "tierpark", "attraktion", "kultur", "kreatives", "gastro"];
+export const LUST_TAGS = (() => {
+  const used = new Set(Object.values(DEST_TAGS).flat());
+  return TAG_ORDER.filter((id) => used.has(id)).map(
+    (id) => (TYPES as Record<string, { id: string; label: string; icon: string; color: string }>)[id],
+  );
+})();
 
 // Age buckets
 export const AGES = [
@@ -255,7 +274,7 @@ export function matchScore(dest: ShapesDest, sel: Sel) {
   const has = (arr: any[] | undefined) => arr && arr.length;
   if (has(sel.ages)) { max += 2; if (sel.ages?.some(a => dest.ages.includes(a))) score += 2; }
   if (has(sel.cats)) { max += 3; if (sel.cats?.includes(dest.cat)) score += 3; }
-  if (has(sel.types)) { max += 3; if (sel.types?.some(t => (dest.tags || []).includes(t))) score += 3; }
+  if (has(sel.types)) { max += 3; if (sel.types?.some(t => tagsOf(dest).includes(t))) score += 3; }
   if (has(sel.times)) { max += 1; if (sel.times?.includes(dest.time)) score += 1; }
   if (has(sel.budgets)) { max += 1; if (sel.budgets?.includes(dest.budget)) score += 1; }
   if (sel.weather === "regen") { max += 2; if (dest.weather === "regen") score += 2; }
@@ -269,7 +288,7 @@ export function filterDests(sel: Sel) {
   return DESTINATIONS.filter(d => {
     if (sel.ages?.length && !sel.ages?.some(a => d.ages.includes(a))) return false;
     if (sel.cats?.length && !sel.cats?.includes(d.cat)) return false;
-    if (sel.types?.length && !sel.types?.some(t => (d.tags || []).includes(t))) return false;
+    if (sel.types?.length && !sel.types?.some(t => tagsOf(d).includes(t))) return false;
     if (sel.times?.length && !sel.times?.includes(d.time)) return false;
     if (sel.budgets?.length && !sel.budgets?.includes(d.budget)) return false;
     if (sel.weather === "regen" && d.weather !== "regen") return false;
@@ -325,10 +344,11 @@ export function detailInfo(d: ShapesDest): DetailInfo {
   }
 }
 
-// Activity tags for a destination → human labels, for the detail page.
-export function destTags(d: ShapesDest): string[] {
-  const ids = d.tags ?? (DEST_TAGS as Record<string, string[]>)[d.id] ?? []
-  return ids
-    .map((tid) => (TYPES as Record<string, { label: string }>)[tid]?.label)
-    .filter((l): l is string => Boolean(l))
+// Activity tags for a destination → full tag objects (id/label/icon/color),
+// for the detail page and anywhere tags are rendered with their icon.
+export type TagDef = { id: string; label: string; icon: string; color: string }
+export function destTags(d: ShapesDest): TagDef[] {
+  return tagsOf(d)
+    .map((tid) => (TYPES as Record<string, TagDef>)[tid])
+    .filter((t): t is TagDef => Boolean(t))
 }

@@ -10,7 +10,7 @@ import {
   AGES,
   TIMES,
   BUDGETS,
-  CATEGORIES,
+  LUST_TAGS,
   ACCESS_OPTIONS,
   filterDests,
   matchScore,
@@ -19,7 +19,7 @@ import {
   type ShapesDest,
 } from '@/lib/shapes/data'
 import { EMPTY_SEL, type SelState } from '@/lib/shapes/explore'
-import { DestCard, Container, Photo, CatPill, Stars } from '@/components/shapes/primitives'
+import { DestCard, Container, Photo, CatPill, Stars, Tag } from '@/components/shapes/primitives'
 import { Squiggle } from '@/components/shapes/decor'
 
 type FacetItem = { id: string; label: string }
@@ -39,16 +39,13 @@ function FacetGroup({ title, items, sel, onToggle, first }: { title: string; ite
   )
 }
 
-function CategoryFacet({ sel, onToggle }: { sel: string[]; onToggle: (id: string) => void }) {
+function LustFacet({ sel, onToggle }: { sel: string[]; onToggle: (id: string) => void }) {
   return (
     <div style={{ paddingTop: 20, marginTop: 20, borderTop: '1px solid var(--line-soft)' }}>
       <div className="kicker" style={{ marginBottom: 13 }}>Worauf habt ihr Lust?</div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-        {Object.values(CATEGORIES).map((c) => (
-          <button key={c.id} className="chip" data-on={sel.includes(c.id)} onClick={() => onToggle(c.id)}>
-            <span style={{ width: 11, height: 11, borderRadius: '50%', background: `var(--c-${c.id})`, flex: '0 0 auto' }} />
-            {c.short}
-          </button>
+        {LUST_TAGS.map((t) => (
+          <Tag key={t.id} label={t.label} icon={t.icon} color={t.color} on={sel.includes(t.id)} onClick={() => onToggle(t.id)} />
         ))}
       </div>
     </div>
@@ -235,7 +232,7 @@ export function ExploreView({
                 />
               </div>
               <FacetGroup title="Alter der Kinder" items={AGES} sel={sel.ages} onToggle={(id) => toggleIn('ages', id)} />
-              <CategoryFacet sel={sel.cats} onToggle={(id) => toggleIn('cats', id)} />
+              <LustFacet sel={sel.types} onToggle={(id) => toggleIn('types', id)} />
               <FacetGroup title="Verfügbare Zeit" items={TIMES} sel={sel.times} onToggle={(id) => toggleIn('times', id)} />
               <FacetGroup title="Budget" items={BUDGETS} sel={sel.budgets} onToggle={(id) => toggleIn('budgets', id)} />
               <FacetGroup title="Wegbeschaffenheit" items={[...ACCESS_OPTIONS]} sel={sel.access} onToggle={(id) => toggleIn('access', id)} />
