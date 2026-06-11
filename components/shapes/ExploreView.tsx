@@ -238,7 +238,7 @@ export function ExploreView({
               <div className="kicker" style={{ marginBottom: 8 }}>{active > 0 ? 'Gefilterte Ergebnisse' : 'Alle Ausflugsziele'}</div>
               <h2 style={{ fontSize: 34, lineHeight: 1.3 }}>{results.length} {results.length === 1 ? 'Ziel' : 'Ziele'}</h2>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 18, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 12 }}>
               <div className="view-toggle">
                 <SegBtn v="liste">Liste</SegBtn>
                 <SegBtn v="karte">Karte</SegBtn>
@@ -262,8 +262,8 @@ export function ExploreView({
             <MapPanel results={results} />
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 24 }}>
-              {ranked.map(({ d, m }) => (
-                <DestCard key={d.id} dest={d} match={active > 0 ? m : undefined} />
+              {results.map((d) => (
+                <DestCard key={d.id} dest={d} />
               ))}
             </div>
           )}

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { ShapesBar } from '@/components/shapes/ShapesBar'
 import { DetailGallery } from '@/components/shapes/DetailGallery'
 import { Stars } from '@/components/shapes/primitives'
-import { DESTINATIONS, getDest, detailInfo } from '@/lib/shapes/data'
+import { DESTINATIONS, getDest, detailInfo, destTags } from '@/lib/shapes/data'
 
 export function generateStaticParams() {
   return DESTINATIONS.map((d) => ({ id: d.id }))
@@ -32,6 +32,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
   if (!dest) notFound()
 
   const info = detailInfo(dest)
+  const tags = destTags(dest)
 
   return (
     <div className="shapes-root">
@@ -89,6 +90,19 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                 </li>
               ))}
             </ul>
+
+            {tags.length > 0 && (
+              <>
+                <h3 className="detail-subhead">Tags</h3>
+                <div className="info-tags">
+                  {tags.map((t) => (
+                    <span key={t} className="chip" style={{ cursor: 'default' }}>
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </>
+            )}
 
             <div className="detail-actions">
               <Link href="/quiz" className="btn btn--primary">

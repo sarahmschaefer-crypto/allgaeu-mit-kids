@@ -305,3 +305,11 @@ export function detailInfo(d: ShapesDest): DetailInfo {
     wegbeschaffenheit: d.stroller ? ['Kinderwagen', 'Laufrad'] : ['Fahrrad'],
   }
 }
+
+// Activity tags for a destination → human labels, for the detail page.
+export function destTags(d: ShapesDest): string[] {
+  const ids = d.tags ?? (DEST_TAGS as Record<string, string[]>)[d.id] ?? []
+  return ids
+    .map((tid) => (TYPES as Record<string, { label: string }>)[tid]?.label)
+    .filter((l): l is string => Boolean(l))
+}

@@ -93,17 +93,12 @@ export function MetaRow({ dest }: { dest: ShapesDest }) {
   )
 }
 
-export function DestCard({ dest, match }: { dest: ShapesDest; match?: number }) {
+export function DestCard({ dest }: { dest: ShapesDest }) {
   return (
     <Link href={`/ausflug/${dest.id}`} className="dc-link" style={{ textDecoration: 'none', color: 'inherit' }}>
       <article style={{ display: 'flex', flexDirection: 'column', gap: 13, cursor: 'pointer' }}>
         <div style={{ position: 'relative', aspectRatio: '4 / 5', overflow: 'hidden', borderRadius: 'var(--radius)' }}>
           <Photo label={dest.name} cat={dest.cat} style={{ position: 'absolute', inset: 0 }} rounded={false} seed={dest.name.length + 2} />
-          {match != null && (
-            <div style={{ position: 'absolute', top: 0, right: 0, background: 'var(--ink)', color: 'var(--bg)', padding: '5px 11px', fontSize: 12, fontWeight: 700 }}>
-              {Math.round(match * 100)}%
-            </div>
-          )}
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
           <CatPill cat={dest.cat} />
