@@ -1,55 +1,41 @@
 'use client'
-// components/story/JourneyScene.tsx — section 1: the winding reference path. As
-// you scroll, it draws FLOWING (not pinned). The already-driven part is a solid
-// continuous stroke; the part ahead stays dashed. Each possibility crops up with
-// an image. Draw is done with a growing clip (robust under the stretched canvas),
-// so the solid part never looks dashed.
+// components/story/JourneyScene.tsx — section 1: the winding reference path draws
+// FLOWING (not pinned) as you scroll. The driven part is a solid continuous
+// stroke, the part ahead stays dashed — both are the SAME path (perfect overlap),
+// and the reveal runs along the path length (stroke-dashoffset) so it's smooth
+// and organic, never jumpy. Each possibility crops up with an image.
 import { useEffect, useRef } from 'react'
 import type { CSSProperties } from 'react'
-import { clamp, useScrollScene } from '@/lib/story/scroll'
+import { clamp } from '@/lib/story/scroll'
 import { POSSIBILITIES, LINE_COLORS } from '@/lib/story/destinations'
 import { JOURNEY_DATA } from '@/lib/story/journeyData'
 import { Placeholder } from '@/components/story/Placeholder'
 import { useTweaks } from '@/components/Tweaks'
 
-function pointAtY(meas: SVGPathElement, L: number, targetY: number) {
-  let lo = 0
-  let hi = L
-  for (let i = 0; i < 14; i++) {
-    const mid = (lo + hi) / 2
-    if (meas.getPointAtLength(mid).y < targetY) lo = mid
-    else hi = mid
-  }
-  return meas.getPointAtLength((lo + hi) / 2)
-}
-
 export function JourneyScene() {
   const { direkt } = useTweaks()
   const sec = useRef<HTMLElement>(null)
-  const measureRef = useRef<SVGPathElement>(null)
-  const clipRef = useRef<SVGRectElement>(null)
+  const canvasRef = useRef<HTMLDivElement>(null)
+  const lineRef = useRef<SVGPathElement>(null) // the drawn (solid) path = our measure
   const nodeRefs = useRef<(HTMLDivElement | null)[]>([])
-  const nodeY = useRef<number[]>([])
   const tipRef = useRef<HTMLSpanElement>(null)
   const footRef = useRef<HTMLParagraphElement>(null)
   const lenRef = useRef(0)
 
   const D = JOURNEY_DATA
 
-  const apply = (prog: number) => {
-    const f = clamp((prog - 0.04) / 0.9) // 0..1 how far we've driven
-    const frontY = f * D.vh
-    if (clipRef.current) clipRef.current.setAttribute('height', String(frontY))
-    const meas = measureRef.current
-    if (tipRef.current && meas && lenRef.current) {
-      const pt = pointAtY(meas, lenRef.current, frontY)
+  const apply = (f: number) => {
+    const L = lenRef.current || 1
+    if (lineRef.current) lineRef.current.style.strokeDashoffset = String(L * (1 - f))
+    if (tipRef.current && lineRef.current) {
+      const pt = lineRef.current.getPointAtLength(L * f)
       tipRef.current.style.left = (pt.x / D.vw) * 100 + '%'
       tipRef.current.style.top = (pt.y / D.vh) * 100 + '%'
-      tipRef.current.style.opacity = f > 0.01 && f < 0.99 ? '1' : '0'
+      tipRef.current.style.opacity = f > 0.01 && f < 0.985 ? '1' : '0'
     }
     nodeRefs.current.forEach((el, i) => {
       if (!el) return
-      const k = clamp((frontY - (nodeY.current[i] ?? D.vh)) / (D.vh * 0.03))
+      const k = clamp((f - POSSIBILITIES[i].t) / 0.05)
       el.style.opacity = String(k)
       el.style.setProperty('--k', (0.7 + k * 0.3).toFixed(3))
     })
@@ -57,24 +43,46 @@ export function JourneyScene() {
   }
 
   useEffect(() => {
-    const meas = measureRef.current
-    if (!meas) return
-    const L = meas.getTotalLength()
+    const line = lineRef.current
+    if (!line) return
+    const L = line.getTotalLength()
     lenRef.current = L
+    // one dash the whole length → offset reveals it progressively
+    line.style.strokeDasharray = String(L)
+    line.style.strokeDashoffset = String(L)
     nodeRefs.current.forEach((el, i) => {
       if (!el) return
-      const pt = meas.getPointAtLength(L * POSSIBILITIES[i].t)
+      const pt = line.getPointAtLength(L * POSSIBILITIES[i].t)
       el.style.left = (pt.x / D.vw) * 100 + '%'
       el.style.top = (pt.y / D.vh) * 100 + '%'
       el.classList.toggle('poss-left', pt.x > D.vw * 0.5)
       el.classList.toggle('poss-right', pt.x <= D.vw * 0.5)
-      nodeY.current[i] = pt.y
     })
     apply(0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useScrollScene(sec, apply)
+  // draw progress tied to the CANVAS scrolling through the viewport (so it goes
+  // a clean 0 → 1 as the path travels past, not faster than the canvas itself)
+  useEffect(() => {
+    const onScroll = () => {
+      const c = canvasRef.current
+      if (!c) return
+      const r = c.getBoundingClientRect()
+      const vh = window.innerHeight
+      const start = vh * 0.88 // begins drawing as the canvas enters
+      const range = vh * 0.66 + r.height // finishes as it leaves the top
+      apply(clamp((start - r.top) / range))
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <section className="scene journey" ref={sec}>
@@ -87,23 +95,19 @@ export function JourneyScene() {
         </h2>
       </div>
 
-      <div className="journey-canvas">
-        <svg className="journey-svg" viewBox={D.viewBox} preserveAspectRatio="none" aria-hidden="true">
+      <div className="journey-canvas" ref={canvasRef}>
+        <svg className="journey-svg" viewBox={D.viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
           <defs>
-            <clipPath id="journeyDrawn">
-              <rect ref={clipRef} x="0" y="0" width={D.vw} height="0" />
-            </clipPath>
+            <linearGradient id="journeyGrad" x1="0" y1="0" x2="0.25" y2="1">
+              {LINE_COLORS.map((c, i) => (
+                <stop key={i} offset={`${(i / (LINE_COLORS.length - 1)) * 100}%`} stopColor={c} />
+              ))}
+            </linearGradient>
           </defs>
-          {/* not-yet-driven: dashed */}
-          <path className="journey-ghost" d={D.combinedD} vectorEffect="non-scaling-stroke" />
-          {/* measure path (invisible) */}
-          <path ref={measureRef} d={D.combinedD} fill="none" stroke="none" />
-          {/* already-driven: solid continuous, revealed by the growing clip */}
-          <g clipPath="url(#journeyDrawn)">
-            {D.segments.map((s, i) => (
-              <path key={i} className="journey-line" d={s.d} style={{ stroke: s.color }} vectorEffect="non-scaling-stroke" />
-            ))}
-          </g>
+          {/* ahead of the front: dashed (same path → perfect overlap) */}
+          <path className="journey-ghost" d={D.combinedD} />
+          {/* driven part: solid, revealed along its length by stroke-dashoffset */}
+          <path ref={lineRef} className="journey-line" d={D.combinedD} stroke="url(#journeyGrad)" />
         </svg>
 
         <span className="journey-tip" ref={tipRef} aria-hidden="true" />
