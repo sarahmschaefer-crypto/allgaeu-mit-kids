@@ -2,6 +2,16 @@
 
 Familien-Ausflugsplattform fürs Allgäu. Next.js 15 · React 19 · Tailwind 4 · TypeScript.
 
+## ⚡ Arbeitsweise mit Sarah (WICHTIG — Tempo!)
+- **Sarah prüft visuell SELBST** auf `localhost:3000` (eigener Browser / DevTools-Mobilansicht).
+  NICHT Zeit mit dem instabilen Preview-Server + Screenshots verbrennen — der stürzt ab & scrollt
+  nicht zuverlässig. Nur **`tsc` (Typen) + kurze DOM-Checks** zum Selbstcheck, dann Sarah schauen lassen.
+- **Kurze, fokussierte Schleifen.** Eine Sache pro Runde, dann Feedback. Nicht stundenlang allein verifizieren.
+- **Offene Unzufriedenheit (Stand letzter Chat):**
+  1. **Journey/Pfad-Animation (§1)** war wiederholt fiddlig/problematisch → wenn es wieder hakt:
+     einen **einfacheren, robusten Ansatz vorschlagen** statt weiter am SVG-`dashoffset` zu feilen.
+  2. **Gesamteindruck** soll runder werden (UX, Übergänge, „aus einem Guss") — holistischer Politur-Pass.
+
 ## Start / Verifizieren
 - **Repo:** `~/Developer/allgaeu-mit-kids` (NICHT in iCloud legen — iCloud lagert .git aus & korrumpiert das Repo).
 - **Dev-Server:** `npm run dev` HÄNGT hier. Stattdessen:
