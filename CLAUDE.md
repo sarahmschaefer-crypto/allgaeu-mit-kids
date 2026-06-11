@@ -24,4 +24,18 @@ Familien-Ausflugsplattform fürs Allgäu. Next.js 15 · React 19 · Tailwind 4 �
 - **CSS-Klassen statt Inline-Styles.** Wiederkehrende Muster (Karten, Info-Zeilen, Galerie) als Klasse in `shapes.css`/`story.css`, nicht als wiederholtes `style={{…}}`.
 - **Edit statt Write** für kleine Änderungen.
 - Bausteine in `components/shapes/`: `DestCard`, `CatPill`, `Photo`, `Stars`, `Container`, `ShapesBar` (Navbar), `decor.tsx` (Blob/Squiggle).
-- Story-Szenen in `components/story/`: Hero, Journey, (Matcher), Horizontal, SammelnTeaser, Resolution.
+- Story-Szenen in `components/story/`: Hero, Journey, LandingQuiz, Horizontal, SammelnTeaser, Resolution.
+
+## Stehende Entscheidungen (von Sarah — IMMER beachten)
+Diese Festlegungen gelten dauerhaft. Bei neuen dauerhaften Anweisungen hier ergänzen.
+- **Bilder:** Platzhalter, bis echte Fotos kommen. Hero = `public/hero-lake.jpg` (Allgäu-See).
+- **Navbar:** primärer „Ausflugsziel finden"-Button (→ /quiz). KEIN schwebender Floating-CTA.
+- **Hero:** Foto im Allgäu-Umriss, KEIN gezeichneter Stroke/Umrandung.
+- **Journey (§1):** gewundener Pfad, NICHT gepinnt — zeichnet sich beim Mitscrollen entlang der
+  Pfadlänge (`stroke-dashoffset`, smooth, keine Sprünge). Befahren = durchgezogen, davor = gestrichelt
+  (derselbe Pfad → deckungsgleich). **KEIN Gradient** — einfarbig (`--pine`). Jeder Ort mit Bild.
+- **Landing-Aufbau:** Hero → §1 Pfad → §2 Schritt-für-Schritt-Quiz (füttert MatchContext) →
+  §3 „Das Allgäu öffnet sich" = echte Treffer als Entdecken-Karten (+ Leerzustand) →
+  §4 Abschluss allgemein („weiterstöbern", NICHT treffer-bezogen).
+- **Eine Sprache:** Quiz, Matcher, Filter nutzen dieselben Kategorien (`cats`).
+- **Detail:** 6 Kategorien (Ort, Parkplatz, Preis, Öffnungszeiten, Dauer, Wegbeschaffenheit) + Bilder-Galerie.

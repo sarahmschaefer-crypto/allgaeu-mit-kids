@@ -134,7 +134,7 @@
 #story-root .journey-canvas { position: relative; width: min(760px, 92vw); aspect-ratio: 598 / 939; margin: 0 auto; }
 #story-root .journey-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 #story-root .journey-ghost { fill: none; stroke: var(--ink-mute); opacity: .25; stroke-width: 2; stroke-dasharray: 2 10; stroke-linecap: round; }
-#story-root .journey-line { fill: none; stroke-width: 5.5; stroke-linecap: round; stroke-linejoin: round; }
+#story-root .journey-line { fill: none; stroke: var(--pine); stroke-width: 5.5; stroke-linecap: round; stroke-linejoin: round; }
 #story-root .journey-tip { position: absolute; width: 20px; height: 20px; border-radius: 50%; background: var(--paper); border: 4px solid var(--ink); transform: translate(-50%,-50%); box-shadow: 0 6px 16px -6px oklch(0 0 0 / .4); opacity: 0; z-index: 7; }
 #story-root .poss { position: absolute; opacity: 0; transform: translate(-50%, -50%) scale(var(--k, .7)); transform-origin: center; will-change: transform, opacity; z-index: 6; }
 #story-root .poss-dot { display: block; width: 16px; height: 16px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 5px color-mix(in oklab, var(--c) 24%, transparent); }

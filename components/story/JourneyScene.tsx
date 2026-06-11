@@ -97,17 +97,10 @@ export function JourneyScene() {
 
       <div className="journey-canvas" ref={canvasRef}>
         <svg className="journey-svg" viewBox={D.viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-          <defs>
-            <linearGradient id="journeyGrad" x1="0" y1="0" x2="0.25" y2="1">
-              {LINE_COLORS.map((c, i) => (
-                <stop key={i} offset={`${(i / (LINE_COLORS.length - 1)) * 100}%`} stopColor={c} />
-              ))}
-            </linearGradient>
-          </defs>
           {/* ahead of the front: dashed (same path → perfect overlap) */}
           <path className="journey-ghost" d={D.combinedD} />
-          {/* driven part: solid, revealed along its length by stroke-dashoffset */}
-          <path ref={lineRef} className="journey-line" d={D.combinedD} stroke="url(#journeyGrad)" />
+          {/* driven part: solid single-colour, revealed along its length */}
+          <path ref={lineRef} className="journey-line" d={D.combinedD} />
         </svg>
 
         <span className="journey-tip" ref={tipRef} aria-hidden="true" />
