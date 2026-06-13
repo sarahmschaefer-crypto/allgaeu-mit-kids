@@ -141,10 +141,13 @@ textarea.field { min-height: 120px; resize: vertical; }
 .lofi-divider { border: none; height: 1px; background: var(--line); margin: 48px 0; }
 
 /* ── Typography ──────────────────────────────────────────────── */
+/* Globale Überschriften = Display-Schrift (Playfair) — eine Quelle.
+   Früher: var(--font-courier) (Lo-Fi-Prototyp) — bewusst entfernt, damit
+   Karten-/Seiten-Titel überall die Referenz-Schrift erben. */
 h1, h2, h3, h4 {
-  font-family: var(--font-courier), 'Courier New', monospace;
+  font-family: var(--font-display), Georgia, serif;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 /* .label is defined in the unified UI primitives block above */
