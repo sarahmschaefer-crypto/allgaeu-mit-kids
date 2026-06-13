@@ -5,6 +5,8 @@ const TABS = [
   { href: '/entdecken', key: 'entdecken', label: 'Entdecken' },
   { href: '/quiz', key: 'quiz', label: 'Quiz' },
   { href: '/sammeln', key: 'sammeln', label: 'Sammeln' },
+  { href: '/about', key: 'about', label: 'Über uns' },
+  { href: '/kontakt', key: 'kontakt', label: 'Kontakt' },
 ] as const
 
 export type ShapesNavKey = (typeof TABS)[number]['key']
@@ -15,8 +17,8 @@ export function ShapesBar({ active, overlay = false }: { active?: ShapesNavKey; 
       <div className="shapes-bar-inner">
         <Link href="/" className="shapes-brand">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo-allgaeu.png" alt="Allgäu mit Kindern" className="brand-logo" width={30} height={30} />
-          <b>Allgäu&nbsp;mit&nbsp;Kindern</b>
+          <img src="/logo-allgaeu.png" alt="Allgäu mit Kids" className="brand-logo" width={30} height={30} />
+          <b>Allgäu&nbsp;mit&nbsp;Kids</b>
         </Link>
         <nav className="shapes-nav">
           {TABS.map((t) => (
