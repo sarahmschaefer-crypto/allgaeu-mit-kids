@@ -30,16 +30,21 @@ export const CATEGORIES = {
 // Labels, icons (→ public/tags/<icon>.svg) and colours taken from the design
 // system (Tag.png / Icon set). Each tag renders as a coloured pill with a white
 // masked icon + name.
+// Die 11 Kategorie-Tags des Design-Systems (Figma „Shapes Tag"), jeweils mit
+// eigenem Icon (public/tags/<icon>.svg). Vollständiger Satz — auch Kategorien,
+// die (noch) kein Ziel trägt, gehören zur Komponente.
 export const TYPES = {
   ausflug:    { id: "ausflug",    label: "Ausflug",     icon: "ausflug",    color: "#8B8BF0" },
   schwimmen:  { id: "schwimmen",  label: "Baden",       icon: "schwimmen",  color: "#A6C8EF" },
   sport:      { id: "sport",      label: "Sport",       icon: "sport",      color: "#BBA4F0" },
+  shop:       { id: "shop",       label: "Shop",        icon: "shop",       color: "#56C3C0" },
   spielplatz: { id: "spielplatz", label: "Spielplatz",  icon: "spielplatz", color: "#9B68E6" },
-  tierpark:   { id: "tierpark",   label: "Tiere",       icon: "tierpark",   color: "#F0922E" },
   attraktion: { id: "attraktion", label: "Attraktion",  icon: "attraktion", color: "#BEBE3C" },
-  kultur:     { id: "kultur",     label: "Kultur",      icon: "kultur",     color: "#F3B95A" },
-  kreatives:  { id: "kreatives",  label: "Kreatives",   icon: "kreatives",  color: "#F2806A" },
   gastro:     { id: "gastro",     label: "Gastro",      icon: "gastro",     color: "#F2A6D6" },
+  tierpark:   { id: "tierpark",   label: "Tiere",       icon: "tierpark",   color: "#F0922E" },
+  kreatives:  { id: "kreatives",  label: "Kreatives",   icon: "kreatives",  color: "#F2806A" },
+  unterkunft: { id: "unterkunft", label: "Unterkunft",  icon: "unterkunft", color: "#86CF7A" },
+  kultur:     { id: "kultur",     label: "Kultur",      icon: "kultur",     color: "#F3B95A" },
 };
 
 // Activity tags a destination carries, resolved from the inline `tags` field or
@@ -69,7 +74,7 @@ export const DEST_TAGS = {
 
 // The tags offered in the "Worauf habt ihr Lust?" filter — only those at least
 // one destination actually carries, in display order.
-const TAG_ORDER = ["ausflug", "schwimmen", "sport", "spielplatz", "tierpark", "attraktion", "kultur", "kreatives", "gastro"];
+const TAG_ORDER = ["ausflug", "schwimmen", "sport", "shop", "spielplatz", "attraktion", "gastro", "tierpark", "kreatives", "unterkunft", "kultur"];
 export const LUST_TAGS = (() => {
   const used = new Set(Object.values(DEST_TAGS).flat());
   return TAG_ORDER.filter((id) => used.has(id)).map(
