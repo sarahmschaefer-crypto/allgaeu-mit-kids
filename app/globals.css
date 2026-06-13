@@ -78,6 +78,13 @@ body {
 .btn--primary:hover, .btn-primary:hover, .lofi-btn:hover { transform: translateY(-1px); }
 .btn--ghost, .btn-ghost, .lofi-btn-outline { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
 .btn--ghost:hover, .btn-ghost:hover, .lofi-btn-outline:hover { background: var(--ink); color: var(--paper); }
+/* Text / Link button — gehört zur Button-Familie, teilt die Button-Typografie (.btn-Basis) */
+.btn--text { background: transparent; border: none; padding: 8px 6px; color: var(--ink); }
+.btn--text:hover { background: transparent; color: var(--accent); transform: none; box-shadow: none; }
+/* States für alle Button-Varianten */
+.btn:disabled, .btn[disabled], .btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; pointer-events: none; transform: none; box-shadow: none; }
+.btn:focus-visible { outline: 2px solid var(--field-focus); outline-offset: 2px; }
+.btn:active { transform: translateY(0); }
 
 /* Chip — Story-Gewinner (.on und data-on werden beide unterstützt) */
 .chip {
