@@ -136,7 +136,8 @@ export function DestCard({ dest }: { dest: ShapesDest }) {
           {/* Display-Schrift explizit: DestCard wird auch in #story-root (Landing)
               gerendert, wo sonst die globale h3-Regel erben würde → Leak schließen. */}
           <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 23, lineHeight: 1.3 }}>{dest.name}</h3>
-          <div className="caption" style={{ fontSize: 15 }}>{dest.place}</div>
+          {/* Figma DestCard: Untertitel = Nunito Regular ink-soft (nicht Playfair-Kursiv) */}
+          <div style={{ fontFamily: 'var(--font-body)', fontSize: 15, color: 'var(--ink-soft)' }}>{dest.place}</div>
         </div>
       </article>
     </Link>
