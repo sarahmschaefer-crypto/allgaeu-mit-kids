@@ -96,6 +96,8 @@ body {
 }
 .chip:hover { border-color: var(--accent); color: var(--accent); }
 .chip.on, .chip[data-on="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.chip:disabled, .chip[disabled], .chip[aria-disabled="true"] { opacity: .45; cursor: not-allowed; pointer-events: none; }
+.chip:focus-visible { outline: 2px solid var(--field-focus); outline-offset: 2px; }
 
 /* Eyebrow / Label — vereinheitlicht (Nunito; default ink-soft, accent terra) */
 .label, .kicker, .eyebrow {
@@ -104,12 +106,8 @@ body {
 }
 .label--accent, .eyebrow { color: var(--terra); }
 
-/* Dashed divider */
-.lofi-divider {
-  border: none;
-  border-top: 2px dashed #c4b9ae;
-  margin: 48px 0;
-}
+/* Divider — vereinheitlicht: dünne Linie über Tokens (war: dashed Lo-Fi) */
+.lofi-divider { border: none; height: 1px; background: var(--line); margin: 48px 0; }
 
 /* ── Typography ──────────────────────────────────────────────── */
 h1, h2, h3, h4 {
