@@ -5,7 +5,7 @@
    ========================================================================= */
 :root {
   /* paper / ink (Shapes editorial cream + navy) */
-  --paper: oklch(0.962 0.018 88);
+  --paper: #f7f2e5; /* Figma core/paper */
   --paper-2: oklch(0.942 0.022 86);
   --paper-3: oklch(0.915 0.024 84);
   --ink: #070e70;
@@ -17,12 +17,13 @@
      und Map-Pins fielen auf transparent zurück (Navbar ohne Füllung). */
   --bg: var(--paper);
 
-  /* accent / primary — overwritten by Tweaks (default violet) */
-  --accent: oklch(0.55 0.21 300);
+  /* accent / primary — Quelle: Figma Tokens core/accent (#8747d7) */
+  --accent: #8747d7;
+  --accent-deep: #552a8a; /* Figma core/accent-deep */
   --story-primary: var(--accent);
   --pine: var(--story-primary);
-  --pine-deep: color-mix(in oklab, var(--story-primary) 72%, #000);
-  --terra: oklch(0.72 0.17 50); /* warm eyebrow accent */
+  --pine-deep: var(--accent-deep);
+  --terra: #f67f2f; /* Figma core/terra */
   --lake: oklch(0.55 0.13 255);
 
   /* type */

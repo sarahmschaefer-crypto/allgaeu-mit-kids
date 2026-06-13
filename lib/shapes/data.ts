@@ -34,17 +34,17 @@ export const CATEGORIES = {
 // eigenem Icon (public/tags/<icon>.svg). Vollständiger Satz — auch Kategorien,
 // die (noch) kein Ziel trägt, gehören zur Komponente.
 export const TYPES = {
-  ausflug:    { id: "ausflug",    label: "Ausflug",     icon: "ausflug",    color: "#8B8BF0" },
-  schwimmen:  { id: "schwimmen",  label: "Baden",       icon: "schwimmen",  color: "#A6C8EF" },
-  sport:      { id: "sport",      label: "Sport",       icon: "sport",      color: "#BBA4F0" },
-  shop:       { id: "shop",       label: "Shop",        icon: "shop",       color: "#56C3C0" },
-  spielplatz: { id: "spielplatz", label: "Spielplatz",  icon: "spielplatz", color: "#9B68E6" },
-  attraktion: { id: "attraktion", label: "Attraktion",  icon: "attraktion", color: "#BEBE3C" },
-  gastro:     { id: "gastro",     label: "Gastro",      icon: "gastro",     color: "#F2A6D6" },
-  tierpark:   { id: "tierpark",   label: "Tiere",       icon: "tierpark",   color: "#F0922E" },
-  kreatives:  { id: "kreatives",  label: "Kreatives",   icon: "kreatives",  color: "#F2806A" },
-  unterkunft: { id: "unterkunft", label: "Unterkunft",  icon: "unterkunft", color: "#86CF7A" },
-  kultur:     { id: "kultur",     label: "Kultur",      icon: "kultur",     color: "#F3B95A" },
+  ausflug:    { id: "ausflug",    label: "Ausflug",     icon: "ausflug",    color: "#9ba1ff" },
+  schwimmen:  { id: "schwimmen",  label: "Baden",       icon: "schwimmen",  color: "#7ee6c5" },
+  sport:      { id: "sport",      label: "Sport",       icon: "sport",      color: "#baa3ff" },
+  shop:       { id: "shop",       label: "Shop",        icon: "shop",       color: "#7ccbff" },
+  spielplatz: { id: "spielplatz", label: "Spielplatz",  icon: "spielplatz", color: "#b175ff" },
+  attraktion: { id: "attraktion", label: "Attraktion",  icon: "attraktion", color: "#d0c75d" },
+  gastro:     { id: "gastro",     label: "Gastro",      icon: "gastro",     color: "#ffa3eb" },
+  tierpark:   { id: "tierpark",   label: "Tiere",       icon: "tierpark",   color: "#f0922e" },
+  kreatives:  { id: "kreatives",  label: "Kreatives",   icon: "kreatives",  color: "#ff8d7c" },
+  unterkunft: { id: "unterkunft", label: "Unterkunft",  icon: "unterkunft", color: "#ff9f44" },
+  kultur:     { id: "kultur",     label: "Kultur",      icon: "kultur",     color: "#8de189" },
 };
 
 // Activity tags a destination carries, resolved from the inline `tags` field or

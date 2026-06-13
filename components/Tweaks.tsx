@@ -14,7 +14,7 @@ export type Tweaks = {
 }
 
 export const TWEAK_DEFAULTS: Tweaks = {
-  accent: 'oklch(0.55 0.21 300)', // violet (Shapes default)
+  accent: '#8747d7', // Figma Tokens core/accent
   headingFont: 'Playfair Display',
   radius: 6,
   motion: 'Ausgewogen',
@@ -22,7 +22,7 @@ export const TWEAK_DEFAULTS: Tweaks = {
 }
 
 const ACCENTS = [
-  'oklch(0.55 0.21 300)', // violet
+  '#8747d7', // Figma core/accent (violet)
   'oklch(0.72 0.17 50)', // orange
   'oklch(0.74 0.14 35)', // coral
   'oklch(0.55 0.13 255)', // blue
