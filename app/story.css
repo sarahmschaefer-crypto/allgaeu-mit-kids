@@ -55,7 +55,7 @@
 }
 
 /* type ------------------------------------------------------------------ */
-#story-root .eyebrow { font-family: var(--font-mono); font-size: clamp(11px,1vw,13px); letter-spacing: .32em; text-transform: uppercase; font-weight: 500; color: var(--terra); margin: 0; }
+/* .eyebrow → vereinheitlicht als Label/Accent (global in globals.css) */
 #story-root .display { font-family: var(--font-display); font-weight: 600; line-height: 1.04; letter-spacing: -.01em; margin: 0; text-wrap: balance; }
 #story-root .h-xl { font-size: clamp(2.8rem, 9vw, 7.6rem); }
 #story-root .h-lg { font-size: clamp(2.1rem, 5.6vw, 4.4rem); }
@@ -71,12 +71,7 @@
 #story-root .layer { position: absolute; inset: 0; will-change: transform; }
 #story-root .wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad); }
 
-/* buttons --------------------------------------------------------------- */
-#story-root .btn { font-family: var(--font-body); font-weight: 700; font-size: 1rem; border: none; cursor: pointer; border-radius: 999px; padding: 16px 30px; display: inline-flex; align-items: center; gap: 10px; transition: transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s, background .25s; text-decoration: none; }
-#story-root .btn-primary { background: var(--pine); color: var(--paper); box-shadow: 0 10px 30px -12px color-mix(in oklab, var(--pine) 80%, #000); }
-#story-root .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 18px 40px -14px color-mix(in oklab, var(--pine) 90%, #000); }
-#story-root .btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
-#story-root .btn-ghost:hover { border-color: var(--pine); color: var(--pine); }
+/* buttons → vereinheitlicht (global in globals.css; .btn-primary/.btn-ghost als Aliasse) */
 
 /* placeholder ----------------------------------------------------------- */
 #story-root .ph { position: relative; overflow: hidden; background: repeating-linear-gradient(135deg, var(--ph-a, var(--paper-2)) 0 14px, var(--ph-b, var(--paper-3)) 14px 28px); display: grid; place-items: center; }
@@ -167,9 +162,7 @@
 #story-root .ctrl-label { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.05rem; color: var(--ink); margin-bottom: 14px; }
 #story-root .ctrl-num { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--terra); letter-spacing: .06em; }
 #story-root .chiprow { display: flex; flex-wrap: wrap; gap: 10px; }
-#story-root .chip { font-family: var(--font-body); font-weight: 600; font-size: .95rem; color: var(--ink-soft); background: transparent; border: 1.5px solid var(--line); border-radius: 999px; padding: 10px 18px; cursor: pointer; transition: all .2s cubic-bezier(.2,.7,.2,1); }
-#story-root .chip:hover { border-color: var(--pine); color: var(--pine); transform: translateY(-1px); }
-#story-root .chip.on { background: var(--pine); border-color: var(--pine); color: var(--paper); box-shadow: 0 8px 20px -12px var(--pine-deep); }
+/* .chip → vereinheitlicht (global in globals.css) */
 #story-root .matcher-results { background: color-mix(in oklab, var(--paper-2) 70%, var(--paper)); border: 1px solid var(--line); border-radius: 24px; padding: clamp(22px,3vw,34px); position: sticky; top: 24px; }
 #story-root .results-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--line); }
 #story-root .results-count { display: flex; align-items: baseline; gap: 12px; }
@@ -190,9 +183,7 @@
 #story-root .rescard-name { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; margin: 0; color: var(--ink); }
 #story-root .rescard-area { font-family: var(--font-mono); font-size: 11px; color: var(--ink-mute); white-space: nowrap; }
 #story-root .rescard-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-#story-root .tag { font-family: var(--font-mono); font-size: 11px; padding: 3px 9px; border-radius: 999px; background: var(--paper-2); color: var(--ink-soft); white-space: nowrap; }
-#story-root .tag-terra { background: color-mix(in oklab, var(--terra) 22%, var(--paper)); color: color-mix(in oklab, var(--terra) 60%, var(--ink)); }
-#story-root .tag-ghost { background: transparent; border: 1px solid var(--line); color: var(--ink-mute); }
+/* Story .tag / tag-terra / tag-ghost entfernt (Legacy – Matcher ersetzt) */
 
 /* ======================================================== HORIZONTAL === */
 #story-root .horizontal { height: 380vh; }

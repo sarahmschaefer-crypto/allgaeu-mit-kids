@@ -63,39 +63,39 @@ body {
   box-shadow: 5px 5px 0px #1a1a1a;
 }
 
-.lofi-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 22px;
-  border: 1.5px solid #1a1a1a;
-  background: #1a1a1a;
-  color: #F5EFE8;
-  font-family: var(--font-source-code), 'Courier New', monospace;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  cursor: pointer;
-  box-shadow: 3px 3px 0px #B49139;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
-  text-decoration: none;
+/* ===== Unified UI primitives — single GLOBAL source of truth =====
+   Winner-System: Button = Shapes · Chip = Story (.on) · Label = Nunito.
+   Alte Klassennamen (.lofi-btn, .btn-primary, .kicker, .eyebrow …) sind
+   als Aliasse hier mit aufgeführt, damit bestehendes Markup gültig bleibt. */
+.btn, .lofi-btn, .lofi-btn-outline {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  border-radius: var(--radius-sm, 4px); border: none;
+  font-family: var(--font-body); font-weight: 700; font-size: 14.5px;
+  padding: 14px 24px; cursor: pointer; text-decoration: none;
+  transition: transform .12s ease, box-shadow .15s ease, background .15s ease;
 }
-.lofi-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0px #B49139;
-}
+.btn--primary, .btn-primary, .lofi-btn { background: var(--accent); color: #fff; }
+.btn--primary:hover, .btn-primary:hover, .lofi-btn:hover { transform: translateY(-1px); }
+.btn--ghost, .btn-ghost, .lofi-btn-outline { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
+.btn--ghost:hover, .btn-ghost:hover, .lofi-btn-outline:hover { background: var(--ink); color: var(--paper); }
 
-.lofi-btn-outline {
-  background: transparent;
-  color: #1a1a1a;
-  box-shadow: 3px 3px 0px #1a1a1a;
+/* Chip — Story-Gewinner (.on und data-on werden beide unterstützt) */
+.chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1.5px solid var(--line); background: transparent; color: var(--ink-soft);
+  border-radius: 999px; padding: 10px 18px;
+  font-family: var(--font-body); font-weight: 600; font-size: 15px;
+  cursor: pointer; white-space: nowrap; transition: all .18s ease;
 }
-.lofi-btn-outline:hover {
-  background: #1a1a1a;
-  color: #F5EFE8;
-  box-shadow: 5px 5px 0px #1a1a1a;
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+.chip.on, .chip[data-on="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* Eyebrow / Label — vereinheitlicht (Nunito; default ink-soft, accent terra) */
+.label, .kicker, .eyebrow {
+  font-family: var(--font-body); font-weight: 600; font-size: 12px;
+  text-transform: uppercase; letter-spacing: 0.22em; color: var(--ink-soft); margin: 0;
 }
+.label--accent, .eyebrow { color: var(--terra); }
 
 /* Dashed divider */
 .lofi-divider {
@@ -111,11 +111,4 @@ h1, h2, h3, h4 {
   line-height: 1.1;
 }
 
-.label {
-  font-family: var(--font-source-code), 'Courier New', monospace;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: #7a7068;
-}
+/* .label is defined in the unified UI primitives block above */

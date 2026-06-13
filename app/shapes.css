@@ -65,10 +65,7 @@
 .shapes-root .ph { position: relative; overflow: hidden; background: oklch(0.91 0.055 var(--ph-h, 88)); display: flex; align-items: center; justify-content: center; }
 .shapes-root .ph__label { position: relative; z-index: 2; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.34 0.06 var(--ph-h, 88)); background: oklch(1 0 0 / 0.6); padding: 4px 9px; }
 
-/* chip */
-.shapes-root .chip { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--line); background: transparent; color: var(--ink-soft); border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 600; transition: all .15s ease; white-space: nowrap; cursor: pointer; }
-.shapes-root .chip:hover { border-color: var(--ink-faint); color: var(--ink); }
-.shapes-root .chip[data-on="true"] { background: color-mix(in oklch, var(--cat, var(--accent)) 16%, var(--card)); border-color: var(--cat, var(--accent)); color: color-mix(in oklch, var(--cat, var(--accent)) 72%, var(--ink)); }
+/* chip → vereinheitlicht (global in globals.css, Story-Look mit .on/data-on) */
 
 /* category tags: coloured pill + masked design icon + name */
 .shapes-root .tag { display: inline-flex; align-items: center; gap: 7px; border: 1.5px solid var(--tag); border-radius: 999px; padding: 7px 14px 7px 11px; font-family: var(--font-body); font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: all .15s ease; background: transparent; color: color-mix(in oklch, var(--tag) 78%, var(--ink)); }
@@ -78,12 +75,7 @@
 .shapes-root .tag[data-on="true"]:hover { background: var(--tag); }
 .shapes-root .tag[data-static="true"] { cursor: default; }
 
-/* buttons */
-.shapes-root .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; border-radius: var(--radius-sm); border: none; font-weight: 700; font-size: 14.5px; padding: 14px 24px; transition: transform .12s ease, box-shadow .15s ease, background .15s; cursor: pointer; text-decoration: none; }
-.shapes-root .btn--primary { background: var(--accent); color: #fff; }
-.shapes-root .btn--primary:hover { transform: translateY(-1px); }
-.shapes-root .btn--ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
-.shapes-root .btn--ghost:hover { background: var(--ink); color: var(--bg); }
+/* buttons → vereinheitlicht (global in globals.css) */
 
 .shapes-root .link-arrow { display: inline-flex; align-items: center; gap: 7px; background: none; border: none; padding: 0; font-family: var(--font-body); font-weight: 700; font-size: 14px; color: var(--ink); white-space: nowrap; border-bottom: 1.5px solid var(--ink); padding-bottom: 2px; transition: gap .15s, color .15s; text-decoration: none; cursor: pointer; }
 .shapes-root .link-arrow:hover { gap: 12px; color: var(--accent); border-color: var(--accent); }
