@@ -7,7 +7,6 @@
 @theme {
   --color-paper: #F7F2E5;
   --color-ink:   #070E70;
-  --font-mono:   var(--font-source-code);
 }
 
 /* ── Base ────────────────────────────────────────────────────── */

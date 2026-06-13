@@ -1,30 +1,12 @@
 // app/layout.tsx
+// Schriften kommen komplett über den Google-Fonts <link> unten:
+// Playfair Display (Display), Nunito (Body), JetBrains Mono (Mono).
+// Die alten Lo-Fi-Loader (Courier Prime, Lora, Source Code Pro) wurden mit dem
+// Legacy-System entfernt — keine Konsumenten mehr.
 import type { Metadata } from 'next'
-import { Courier_Prime, Source_Code_Pro, Lora } from 'next/font/google'
 import './globals.css'
 import './story.css'
 import './shapes.css'
-
-const courierPrime = Courier_Prime({
-  weight: ['400', '700'],
-  subsets: ['latin'],
-  variable: '--font-courier',
-  display: 'swap',
-})
-
-const sourceCodePro = Source_Code_Pro({
-  weight: ['400', '700'],
-  subsets: ['latin'],
-  variable: '--font-source-code',
-  display: 'swap',
-})
-
-const lora = Lora({
-  weight: ['400', '700'],
-  subsets: ['latin'],
-  variable: '--font-lora',
-  display: 'swap',
-})
 
 export const metadata: Metadata = {
   title: {
@@ -43,7 +25,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className={`${courierPrime.variable} ${sourceCodePro.variable} ${lora.variable}`}>
+    <html lang="de">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
