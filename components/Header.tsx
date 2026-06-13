@@ -1,4 +1,6 @@
-// components/Header.tsx
+// components/Header.tsx — site header, vereinheitlicht auf die ShapesBar-Chrome
+// (gleiches Look&Feel wie auf den Entdecken/Quiz/Sammeln-Seiten). Eigene
+// Site-Nav-Links bleiben erhalten.
 import Link from 'next/link'
 
 const NAV = [
@@ -10,35 +12,25 @@ const NAV = [
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b-2 border-ink bg-paper/95 backdrop-blur-sm">
-      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-
-        {/* Logo */}
-        <Link
-          href="/"
-          className="font-[family-name:var(--font-courier)] font-bold text-sm tracking-widest uppercase text-ink hover:text-gold transition-colors"
-        >
-          Allgäu mit Kids
+    <header className="shapes-bar">
+      <div className="shapes-bar-inner">
+        <Link href="/" className="shapes-brand">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-allgaeu.png" alt="Allgäu mit Kids" className="brand-logo" width={30} height={30} />
+          <b>Allgäu&nbsp;mit&nbsp;Kids</b>
         </Link>
 
-        {/* Nav */}
-        <nav className="flex items-center gap-6">
+        <nav className="shapes-nav">
           {NAV.map(({ label, href }) => (
-            <Link
-              key={href}
-              href={href}
-              className="label text-ink hover:text-gold transition-colors hidden sm:block"
-            >
+            <Link key={href} href={href}>
               {label}
             </Link>
           ))}
-
-          {/* CTA */}
-          <Link href="/entdecken" className="lofi-btn text-xs py-2 px-4">
-            Entdecken
-          </Link>
         </nav>
 
+        <Link href="/entdecken" className="shapes-cta">
+          Entdecken
+        </Link>
       </div>
     </header>
   )
