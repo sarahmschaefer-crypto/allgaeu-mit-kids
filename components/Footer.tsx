@@ -16,10 +16,10 @@ export default function Footer() {
 
           {/* Brand */}
           <div className="space-y-2">
-            <p className="font-bold text-sm tracking-widest uppercase" style={{ fontFamily: 'var(--font-courier)' }}>
+            <p className="font-bold text-xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
               Allgäu mit Kids
             </p>
-            <p className="text-xs text-ink/60" style={{ fontFamily: 'var(--font-lora)' }}>
+            <p className="text-sm" style={{ fontFamily: 'var(--font-body)', color: 'var(--ink-soft)' }}>
               Die schönsten Familienausflüge im Allgäu
             </p>
           </div>
