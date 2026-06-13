@@ -63,6 +63,22 @@ body {
   box-shadow: 5px 5px 0px #1a1a1a;
 }
 
+/* Unified soft surface/panel — Referenz-Look (löst die harte Lo-Fi-Karte ab).
+   Token-basiert: cremefarbene Karte, dünne Navy-Linie, weicher Schatten. */
+.surface {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+/* Akzent-getöntes Panel (z. B. Mission/Callout) — statt harter Gold-Schatten. */
+.surface--accent {
+  background: color-mix(in oklch, var(--accent) 8%, var(--card));
+  border: 1px solid color-mix(in oklch, var(--accent) 32%, transparent);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
 /* ===== Unified UI primitives — single GLOBAL source of truth =====
    Winner-System: Button = Shapes · Chip = Story (.on) · Label = Nunito.
    Alte Klassennamen (.lofi-btn, .btn-primary, .kicker, .eyebrow …) sind

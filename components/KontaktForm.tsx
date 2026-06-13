@@ -22,7 +22,7 @@ export default function KontaktForm() {
 
   if (status === 'sent') {
     return (
-      <div className="lofi-card p-10 text-center space-y-4">
+      <div className="surface p-10 text-center space-y-4">
         <p className="text-4xl">✉️</p>
         <h2 className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
           Nachricht gesendet!
@@ -41,7 +41,7 @@ export default function KontaktForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="lofi-card p-8 space-y-5">
+    <form onSubmit={handleSubmit} className="surface p-8 space-y-5">
       <p className="label mb-2">Nachricht schreiben</p>
 
       <div className="grid grid-cols-2 gap-4">

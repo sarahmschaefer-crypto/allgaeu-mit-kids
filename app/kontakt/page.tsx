@@ -20,15 +20,15 @@ export default function KontaktPage() {
           <div className="space-y-8">
             <div className="space-y-4">
               <p className="label">Kontakt</p>
-              <h1 className="text-5xl font-bold leading-tight" style={{ fontFamily: 'var(--font-courier)' }}>
+              <h1 className="text-5xl font-bold leading-tight">
                 Sag<br />
-                <span style={{ color: '#B49139' }}>Hallo.</span>
+                <span style={{ color: 'var(--terra)' }}>Hallo.</span>
               </h1>
             </div>
 
             <hr className="lofi-divider" />
 
-            <div className="space-y-6" style={{ fontFamily: 'var(--font-lora)' }}>
+            <div className="space-y-6" style={{ color: 'var(--ink-soft)' }}>
               <p className="text-base leading-relaxed">
                 Kennst du ein Ausflugsziel, das hier noch fehlt? Hast du einen Fehler entdeckt?
                 Oder willst du einfach Hallo sagen? Schreib uns — wir freuen uns über jede Nachricht.
@@ -49,12 +49,12 @@ export default function KontaktPage() {
             </div>
 
             {/* Direct email */}
-            <div className="lofi-card p-5">
-              <p className="label text-ink/50 mb-2">Direkt per Mail</p>
+            <div className="surface p-5">
+              <p className="label mb-2" style={{ color: 'var(--ink-mute)' }}>Direkt per Mail</p>
               <a
                 href="mailto:hallo@allgaeu-mit-kids.de"
                 className="font-bold text-sm hover:underline"
-                style={{ fontFamily: 'var(--font-courier)', color: '#B49139' }}
+                style={{ fontFamily: 'var(--font-body)', color: 'var(--accent)' }}
               >
                 hallo@allgaeu-mit-kids.de
               </a>
