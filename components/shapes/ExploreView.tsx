@@ -22,6 +22,7 @@ import {
 } from '@/lib/shapes/data'
 import { EMPTY_SEL, type SelState } from '@/lib/shapes/explore'
 import { DestCard, Container, Photo, CatPill, Stars, Tag } from '@/components/shapes/primitives'
+import { Segmented, SortSelect } from '@/components/shapes/controls'
 import { Squiggle } from '@/components/shapes/decor'
 
 type FacetItem = { id: string; label: string }
@@ -199,10 +200,6 @@ export function ExploreView({
   else ranked.sort((a, b) => a.d.name.localeCompare(b.d.name, 'de'))
   const results = ranked.map((r) => r.d)
 
-  const SegBtn = ({ v, children }: { v: 'liste' | 'karte'; children: React.ReactNode }) => (
-    <button onClick={() => setView(v)} className={`view-seg${view === v ? ' on' : ''}`}>{children}</button>
-  )
-
   return (
     <Container style={{ paddingTop: 30, paddingBottom: 70 }} className="fade-in">
       {banner && (
@@ -277,19 +274,25 @@ export function ExploreView({
               <h2 style={{ fontSize: 34, lineHeight: 1.3 }}>{results.length} {results.length === 1 ? 'Ziel' : 'Ziele'}</h2>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 12 }}>
-              <div className="view-toggle">
-                <SegBtn v="liste">Liste</SegBtn>
-                <SegBtn v="karte">Karte</SegBtn>
-              </div>
+              <Segmented
+                ariaLabel="Ansicht"
+                value={view}
+                onChange={setView}
+                options={[
+                  { value: 'liste', label: 'Liste' },
+                  { value: 'karte', label: 'Karte' },
+                ]}
+              />
               {view === 'liste' && (
-                <label style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 12, color: 'var(--ink-soft)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.16em' }}>
-                  Sortieren
-                  <select value={sort} onChange={(e) => setSort(e.target.value as 'match' | 'rating' | 'name')} style={{ fontFamily: 'var(--font-body)', fontSize: 13.5, fontWeight: 700, color: 'var(--ink)', padding: '9px 22px 9px 2px', cursor: 'pointer', textTransform: 'none', letterSpacing: 0 }}>
-                    <option value="match">Beste Übereinstimmung</option>
-                    <option value="rating">Bewertung</option>
-                    <option value="name">Name (A–Z)</option>
-                  </select>
-                </label>
+                <SortSelect
+                  value={sort}
+                  onChange={setSort}
+                  options={[
+                    { value: 'match', label: 'Beste Übereinstimmung' },
+                    { value: 'rating', label: 'Bewertung' },
+                    { value: 'name', label: 'Name (A–Z)' },
+                  ]}
+                />
               )}
             </div>
           </div>

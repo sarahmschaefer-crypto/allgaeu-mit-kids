@@ -135,9 +135,7 @@
 @media (max-width: 460px) { .shapes-root .detail-info { grid-template-columns: 1fr; } }
 
 /* Liste ⇄ Karte segmented toggle */
-.shapes-root .view-toggle { display: inline-flex; padding: 3px; border-radius: 999px; background: rgba(7, 14, 112, 0.07); }
-.shapes-root .view-seg { border: 0; background: transparent; color: var(--ink-soft); font-family: var(--font-body); font-weight: 700; font-size: 13px; padding: 8px 18px; border-radius: 999px; cursor: pointer; transition: background .15s, color .15s; }
-.shapes-root .view-seg.on { background: var(--accent); color: #fff; }
+/* view-toggle / view-seg → vereinheitlicht als .segmented (global in globals.css) */
 
 /* Sammelalbum — collecting game */
 .shapes-root .album-meter { margin-bottom: 30px; }

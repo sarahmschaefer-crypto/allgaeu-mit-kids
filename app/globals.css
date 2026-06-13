@@ -153,6 +153,38 @@ textarea.field { min-height: 120px; resize: vertical; }
 .switch[aria-checked="true"] > span, .switch[data-on="true"] > span { left: 21px; }
 .switch:focus-visible { outline: 2px solid var(--field-focus); outline-offset: 2px; }
 
+/* Segmented control — eine globale Quelle (Aliasse: .view-toggle / .view-seg) */
+.segmented, .view-toggle {
+  display: inline-flex; gap: 3px; padding: 3px; border-radius: 999px;
+  background: color-mix(in oklch, var(--ink) 7%, transparent);
+}
+.segmented__btn, .view-seg {
+  border: 0; background: transparent; color: var(--ink-soft);
+  font-family: var(--font-body); font-weight: 700; font-size: 13px;
+  padding: 8px 18px; border-radius: 999px; cursor: pointer; white-space: nowrap;
+  transition: background .15s, color .15s;
+}
+.segmented__btn:hover, .view-seg:hover { color: var(--ink); }
+.segmented__btn[aria-selected="true"], .segmented__btn.on, .view-seg.on { background: var(--accent); color: #fff; }
+.segmented__btn:focus-visible, .view-seg:focus-visible { outline: 2px solid var(--field-focus); outline-offset: 2px; }
+
+/* Select — token-gestyltes natives Select mit Chevron */
+.select { position: relative; display: inline-flex; align-items: center; }
+.select select {
+  appearance: none; -webkit-appearance: none;
+  font-family: var(--font-body); font-weight: 700; font-size: 13.5px;
+  color: var(--ink); background: transparent; border: none;
+  padding: 9px 26px 9px 2px; cursor: pointer; border-radius: var(--radius-sm);
+  text-transform: none; letter-spacing: 0;
+}
+.select::after {
+  content: ''; position: absolute; right: 8px; top: 50%; width: 8px; height: 8px;
+  transform: translateY(-65%) rotate(45deg);
+  border-right: 2px solid var(--ink-soft); border-bottom: 2px solid var(--ink-soft);
+  pointer-events: none;
+}
+.select select:focus-visible { outline: 2px solid var(--field-focus); outline-offset: 2px; border-radius: var(--radius-sm); }
+
 /* Divider — vereinheitlicht: dünne Linie über Tokens (war: dashed Lo-Fi) */
 .lofi-divider { border: none; height: 1px; background: var(--line); margin: 48px 0; }
 
