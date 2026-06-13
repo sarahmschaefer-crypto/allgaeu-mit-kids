@@ -1,35 +1,13 @@
 @import "tailwindcss";
 
-/* ── Lo-Fi Design Tokens ─────────────────────────────────────── */
+/* ── Design-System-Tokens für Tailwind-Utilities ─────────────────
+   Nur die Referenz-Basiswerte (Navy/Creme) für text-ink/bg-paper. Die alten
+   Lo-Fi-Tokens (Gold, Courier, Lora, Kategorie-Farben, harte Schatten) wurden
+   bewusst entfernt — eine Quelle, kein Parallelsystem. */
 @theme {
-  /* Colors */
-  --color-paper:     #F5EFE8;
-  --color-ink:       #1a1a1a;
-  --color-gold:      #B49139;
-  --color-muted:     #7a7068;
-
-  /* Category colors */
-  --color-ausflug:    #022D53;
-  --color-baden:      #00436C;
-  --color-sport:      #276299;
-  --color-shop:       #307A9A;
-  --color-spielplatz: #399CAA;
-  --color-attraktion: #399CAA;
-  --color-gastro:     #67C0C0;
-  --color-tierpark:   #88D3C1;
-  --color-kreatives:  #9CDEAF;
-  --color-unterkunft: #AADC93;
-  --color-kultur:     #B8CB6E;
-
-  /* Fonts */
-  --font-headline: var(--font-courier);
-  --font-body:     var(--font-lora);
-  --font-mono:     var(--font-source-code);
-
-  /* Lo-Fi shadows */
-  --shadow-lofi:    3px 3px 0px #1a1a1a;
-  --shadow-lofi-lg: 5px 5px 0px #1a1a1a;
-  --shadow-lofi-gold: 3px 3px 0px #B49139;
+  --color-paper: #F7F2E5;
+  --color-ink:   #070E70;
+  --font-mono:   var(--font-source-code);
 }
 
 /* ── Base ────────────────────────────────────────────────────── */
@@ -40,27 +18,11 @@ html {
 }
 
 body {
-  background-color: #F5EFE8;
-  color: #1a1a1a;
-  font-family: var(--font-lora), Georgia, serif;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body), system-ui, sans-serif;
   /* Subtle paper grain via SVG noise */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-}
-
-/* ── Lo-Fi Utilities ─────────────────────────────────────────── */
-.shadow-lofi     { box-shadow: 3px 3px 0px #1a1a1a; }
-.shadow-lofi-lg  { box-shadow: 5px 5px 0px #1a1a1a; }
-.shadow-lofi-gold{ box-shadow: 3px 3px 0px #B49139; }
-
-.lofi-card {
-  background: #F5EFE8;
-  border: 1.5px solid #1a1a1a;
-  box-shadow: 3px 3px 0px #1a1a1a;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-.lofi-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0px #1a1a1a;
 }
 
 /* Unified soft surface/panel — Referenz-Look (löst die harte Lo-Fi-Karte ab).
