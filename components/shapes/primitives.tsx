@@ -97,7 +97,7 @@ export function CatPill({ cat, light, full }: { cat: string; light?: boolean; fu
   const c = CAT[cat]
   if (!c) return null
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: 'var(--font-body)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.16em', fontSize: 11.5, color: light ? 'rgba(255,255,255,0.95)' : 'var(--ink-soft)', whiteSpace: 'nowrap' }}>
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: 'var(--font-body)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.16em', fontSize: 11.5, color: light ? 'rgba(255,255,255,0.95)' : 'var(--ink)', whiteSpace: 'nowrap' }}>
       <span style={{ width: 9, height: 9, borderRadius: '50%', background: `var(--c-${cat})`, boxShadow: light ? '0 0 0 1.5px rgba(255,255,255,0.5)' : 'none', flex: '0 0 auto' }} />
       {full ? c.label : c.short}
     </span>
