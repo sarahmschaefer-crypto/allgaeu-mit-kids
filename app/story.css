@@ -13,6 +13,10 @@
   --ink-mute: rgba(7, 14, 112, 0.5);
   --line: rgba(7, 14, 112, 0.16);
 
+  /* Basis-Hintergrund (Alias auf Paper). War nie definiert → .shapes-bar/.shapes-root
+     und Map-Pins fielen auf transparent zurück (Navbar ohne Füllung). */
+  --bg: var(--paper);
+
   /* accent / primary — overwritten by Tweaks (default violet) */
   --accent: oklch(0.55 0.21 300);
   --story-primary: var(--accent);
