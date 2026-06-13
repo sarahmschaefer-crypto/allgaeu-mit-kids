@@ -56,15 +56,15 @@ function LustFacet({ sel, onToggle }: { sel: string[]; onToggle: (id: string) =>
 
 function Toggle({ label, sub, on, onClick }: { label: string; sub?: string; on: boolean; onClick: () => void }) {
   return (
-    <button onClick={onClick} style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '9px 0', cursor: 'pointer' }}>
-      <span style={{ width: 42, height: 24, borderRadius: 999, background: on ? 'var(--accent)' : 'transparent', border: on ? 'none' : '1.5px solid var(--line)', position: 'relative', transition: 'all .18s', flex: '0 0 auto' }}>
-        <span style={{ position: 'absolute', top: on ? 3 : 2.5, left: on ? 21 : 3, width: 18, height: 18, borderRadius: '50%', background: on ? '#fff' : 'var(--ink-faint)', transition: 'left .18s' }} />
-      </span>
-      <span>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', padding: '9px 0' }}>
+      <button type="button" role="switch" aria-checked={on} aria-label={label} className="switch" data-on={on} onClick={onClick}>
+        <span />
+      </button>
+      <span onClick={onClick} style={{ cursor: 'pointer' }}>
         <span style={{ fontWeight: 700, fontSize: 14.5, color: 'var(--ink)' }}>{label}</span>
         {sub && <span style={{ display: 'block', fontSize: 12.5, color: 'var(--ink-faint)' }}>{sub}</span>}
       </span>
-    </button>
+    </div>
   )
 }
 
@@ -229,11 +229,11 @@ export function ExploreView({
                 <input
                   type="search"
                   list="ort-towns"
+                  className="field field--search"
                   value={sel.ort}
                   onChange={(e) => setSel((s) => ({ ...s, ort: e.target.value }))}
                   placeholder="z. B. Oberstdorf"
                   aria-label="Ort suchen"
-                  style={{ width: '100%', boxSizing: 'border-box', padding: '10px 15px', borderRadius: 999, border: '1.5px solid var(--line)', background: 'var(--card)', color: 'var(--ink)', fontFamily: 'var(--font-body)', fontSize: 14.5 }}
                 />
                 <datalist id="ort-towns">
                   {TOWNS.map((t) => (
@@ -248,9 +248,9 @@ export function ExploreView({
                     </div>
                     <input
                       type="range" min={5} max={80} step={5} value={sel.radius}
+                      className="slider"
                       onChange={(e) => setSel((s) => ({ ...s, radius: Number(e.target.value) }))}
                       aria-label="Umkreis in Kilometern"
-                      style={{ width: '100%', accentColor: 'var(--accent)', cursor: 'pointer' }}
                     />
                   </div>
                 ) : (
