@@ -135,9 +135,9 @@ export function DestCard({ dest }: { dest: ShapesDest }) {
           <CatPill cat={dest.cat} />
           {/* Display-Schrift explizit: DestCard wird auch in #story-root (Landing)
               gerendert, wo sonst die globale h3-Regel erben würde → Leak schließen. */}
-          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 23, lineHeight: 1.3 }}>{dest.name}</h3>
+          <h3 className="dc-title" style={{ fontFamily: 'var(--font-display)' }}>{dest.name}</h3>
           {/* Figma DestCard: Untertitel = Nunito Regular ink-soft (nicht Playfair-Kursiv) */}
-          <div style={{ fontFamily: 'var(--font-body)', fontSize: 15, color: 'var(--ink-soft)' }}>{dest.place}</div>
+          <div className="dc-place" style={{ fontFamily: 'var(--font-body)', color: 'var(--ink-soft)' }}>{dest.place}</div>
         </div>
       </article>
     </Link>

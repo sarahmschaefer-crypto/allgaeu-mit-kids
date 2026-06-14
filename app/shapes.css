@@ -93,6 +93,7 @@
 .shapes-nav { margin-left: auto; display: flex; gap: 22px; }
 .shapes-cta { display: inline-flex; align-items: center; background: var(--accent); color: #fff; font-family: var(--font-body); font-weight: 700; font-size: 13px; letter-spacing: 0.02em; padding: 10px 18px; border-radius: 999px; text-decoration: none; white-space: nowrap; transition: transform .12s, box-shadow .15s; box-shadow: 0 8px 20px -10px color-mix(in oklch, var(--accent) 70%, transparent); }
 .shapes-cta:hover { transform: translateY(-1px); box-shadow: 0 12px 26px -10px color-mix(in oklch, var(--accent) 75%, transparent); }
+.shapes-cta .cta-mini { display: none; } /* Desktop: nur volles Label; Mobile flippt das */
 @media (max-width: 680px) { .shapes-cta { padding: 9px 14px; font-size: 12px; } }
 .shapes-nav a { background: none; border: none; padding: 4px 0; color: var(--ink-faint); font-family: var(--font-body); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.16em; border-bottom: 2px solid transparent; transition: color .15s; text-decoration: none; }
 .shapes-nav a:hover { color: var(--ink); }
@@ -108,8 +109,12 @@
 .shapes-menu { display: none; }
 @media (max-width: 820px) {
   .shapes-nav { display: none; }
-  .shapes-bar-inner > .shapes-cta { display: none; }
-  .shapes-burger { display: inline-flex; }
+  /* CTA bleibt dauerhaft sichtbar in der (sticky) Mobile-Nav — kompakt, rechtsbündig */
+  .shapes-bar-inner > .shapes-cta { display: inline-flex; margin-left: auto; padding: 9px 14px; font-size: 12.5px; }
+  .shapes-cta .cta-long { display: none; }
+  .shapes-cta .cta-mini { display: inline; }
+  .shapes-brand b { font-size: 17px; }
+  .shapes-burger { display: inline-flex; margin-left: 10px; padding: 10px 0 10px 2px; }
   .shapes-menu { display: flex; flex-direction: column; padding: 8px 24px 18px; background: color-mix(in oklch, var(--bg) 96%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
   .shapes-menu a { padding: 13px 2px; color: var(--ink); font-family: var(--font-body); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.12em; text-decoration: none; border-bottom: 1px solid var(--line-soft); }
   .shapes-menu a.on { color: var(--accent); }

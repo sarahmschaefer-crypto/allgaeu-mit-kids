@@ -32,7 +32,8 @@ export function ShapesBar({ active, overlay = false }: { active?: ShapesNavKey; 
           ))}
         </nav>
         <Link href="/quiz" className="shapes-cta">
-          Ausflugsziel finden
+          <span className="cta-long">Ausflugsziel finden</span>
+          <span className="cta-mini">Ziel finden</span>
         </Link>
         <button
           type="button"
@@ -53,9 +54,6 @@ export function ShapesBar({ active, overlay = false }: { active?: ShapesNavKey; 
               {t.label}
             </Link>
           ))}
-          <Link href="/quiz" className="shapes-cta shapes-menu-cta" onClick={() => setOpen(false)}>
-            Ausflugsziel finden
-          </Link>
         </nav>
       )}
     </header>

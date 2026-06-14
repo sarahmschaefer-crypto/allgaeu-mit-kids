@@ -222,6 +222,7 @@ export function ExploreView({
       </button>
       <div className="filter-layout" style={{ display: 'flex', gap: 44, alignItems: 'flex-start' }}>
         <aside className={`explore-filters${filtersOpen ? ' is-open' : ''}`} style={{ width: 268, flex: '0 0 268px' }}>
+          <button type="button" className="filter-close" aria-label="Filter schließen" onClick={() => setFiltersOpen(false)}>✕</button>
           <div style={{ position: 'sticky', top: 92 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 18 }}>
               <h3 style={{ fontSize: 26 }}>Filter</h3>
@@ -275,6 +276,9 @@ export function ExploreView({
               <Toggle label="Nur mit Parkplatz" sub="Parkplatz vor Ort" on={sel.parking} onClick={() => setSel((s) => ({ ...s, parking: !s.parking }))} />
             </div>
           </div>
+          <button type="button" className="filter-apply" onClick={() => setFiltersOpen(false)}>
+            {results.length} {results.length === 1 ? 'Ziel' : 'Ziele'} anzeigen
+          </button>
         </aside>
 
         <main style={{ flex: 1, minWidth: 0 }}>
@@ -312,7 +316,7 @@ export function ExploreView({
           ) : view === 'karte' ? (
             <MapPanel results={results} />
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 24 }}>
+            <div className="results-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 24 }}>
               {results.map((d) => (
                 <DestCard key={d.id} dest={d} />
               ))}
@@ -321,15 +325,21 @@ export function ExploreView({
         </main>
       </div>
       <style>{`
-        .filter-toggle { display: none; }
+        .filter-toggle, .filter-close, .filter-apply { display: none; }
         @media (max-width: 820px){
           .filter-layout{ flex-direction: column; }
-          .filter-layout aside{ width:100% !important; flex-basis:auto !important; }
-          .filter-layout aside > div{ position: static !important; }
           .filter-toggle{ display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; margin-bottom: 20px; padding: 13px 20px; border: 1.5px solid var(--ink); border-radius: 999px; background: transparent; font-family: var(--font-body); font-weight: 700; font-size: 14px; color: var(--ink); cursor: pointer; }
           .filter-toggle span:last-child{ color: var(--ink-soft); font-weight: 600; font-size: 13px; }
+          /* Filter als Vollbild-Overlay */
           .explore-filters{ display: none; }
-          .explore-filters.is-open{ display: block; margin-bottom: 8px; }
+          .explore-filters.is-open{ display: block; position: fixed; inset: 0; z-index: 80; width: 100% !important; flex-basis: auto !important; background: var(--paper); overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 64px 22px 92px; }
+          .explore-filters.is-open > div{ position: static !important; }
+          .filter-close{ display: flex; align-items: center; justify-content: center; position: fixed; top: 14px; right: 18px; z-index: 81; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); font-size: 18px; cursor: pointer; }
+          .filter-apply{ display: flex; align-items: center; justify-content: center; position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 81; padding: 15px; border: none; border-radius: 999px; background: var(--accent); color: #fff; font-family: var(--font-body); font-weight: 700; font-size: 15px; cursor: pointer; box-shadow: 0 12px 30px -10px color-mix(in oklch, var(--accent) 70%, transparent); }
+          /* Ergebnisse im 2er-Grid */
+          .results-grid{ grid-template-columns: 1fr 1fr !important; gap: 14px !important; }
+          .results-grid .dc-title{ font-size: 16.5px; }
+          .results-grid .dc-place{ font-size: 13px; }
         }
       `}</style>
     </Container>
