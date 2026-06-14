@@ -2,7 +2,7 @@
 // components/shapes/ShapesBar.tsx — persistent top navigation for all flows.
 // Mobile: nav-Links kollabieren in ein Hamburger-Menü (kein horizontaler Überlauf).
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const TABS = [
   { href: '/entdecken', key: 'entdecken', label: 'Entdecken' },
@@ -16,8 +16,16 @@ export type ShapesNavKey = (typeof TABS)[number]['key']
 
 export function ShapesBar({ active, overlay = false }: { active?: ShapesNavKey; overlay?: boolean }) {
   const [open, setOpen] = useState(false)
+  // Hohe Navbar als Default, schrumpft beim Scrollen zu einer kompakten Leiste.
+  const [scrolled, setScrolled] = useState(false)
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
   return (
-    <header className={`shapes-bar${overlay ? ' shapes-bar--overlay' : ''}`}>
+    <header className={`shapes-bar${overlay ? ' shapes-bar--overlay' : ''}${scrolled ? ' is-scrolled' : ''}`}>
       <div className="shapes-bar-inner">
         <Link href="/" className="shapes-brand" onClick={() => setOpen(false)} aria-label="Allgäu mit Kids — Startseite">
           {/* eslint-disable-next-line @next/next/no-img-element */}

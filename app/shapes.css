@@ -86,13 +86,16 @@
 /* top bar for the discovery flows */
 .shapes-bar { position: sticky; top: 0; z-index: 50; background: color-mix(in oklch, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--ink); }
 .shapes-bar--overlay { position: fixed; left: 0; right: 0; top: 0; border-bottom-color: var(--line); }
-.shapes-bar-inner { max-width: 1180px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; gap: 18px; }
+.shapes-bar-inner { max-width: 1180px; margin: 0 auto; padding: 0 24px; height: 100px; display: flex; align-items: center; gap: 18px; transition: height .28s ease; }
+.shapes-bar.is-scrolled .shapes-bar-inner { height: 58px; }
 .shapes-brand { display: flex; align-items: center; gap: 9px; background: none; border: none; padding: 0; text-decoration: none; }
 .shapes-brand b { font-family: var(--font-display); font-weight: 800; font-size: 20px; color: var(--ink); letter-spacing: -0.01em; }
-.shapes-brand .brand-logo { height: 42px; width: auto; display: block; }
+.shapes-brand .brand-logo { height: 68px; width: auto; display: block; transition: height .28s ease; }
+.shapes-bar.is-scrolled .shapes-brand .brand-logo { height: 34px; }
 .shapes-nav { margin-left: auto; display: flex; gap: 22px; }
-.shapes-cta { display: inline-flex; align-items: center; background: var(--accent); color: #fff; font-family: var(--font-body); font-weight: 700; font-size: 13px; letter-spacing: 0.02em; padding: 10px 18px; border-radius: 999px; text-decoration: none; white-space: nowrap; transition: transform .12s, box-shadow .15s; box-shadow: 0 8px 20px -10px color-mix(in oklch, var(--accent) 70%, transparent); }
-.shapes-cta:hover { transform: translateY(-1px); box-shadow: 0 12px 26px -10px color-mix(in oklch, var(--accent) 75%, transparent); }
+/* Eckiger Primary-Button (radius 4 = Figma-Button) — runder Pill-CTA abgeschafft */
+.shapes-cta { display: inline-flex; align-items: center; background: var(--accent); color: #fff; font-family: var(--font-body); font-weight: 700; font-size: 13px; letter-spacing: 0.02em; padding: 12px 20px; border-radius: var(--radius-sm); text-decoration: none; white-space: nowrap; transition: transform .12s, background .15s; }
+.shapes-cta:hover { background: var(--accent-deep); transform: translateY(-1px); }
 .shapes-cta .cta-mini { display: none; } /* Desktop: nur volles Label; Mobile flippt das */
 @media (max-width: 680px) { .shapes-cta { padding: 9px 14px; font-size: 12px; } }
 .shapes-nav a { background: none; border: none; padding: 4px 0; color: var(--ink-faint); font-family: var(--font-body); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.16em; border-bottom: 2px solid transparent; transition: color .15s; text-decoration: none; }
@@ -113,7 +116,10 @@
   .shapes-bar-inner > .shapes-cta { display: inline-flex; margin-left: auto; padding: 9px 14px; font-size: 12.5px; }
   .shapes-cta .cta-long { display: none; }
   .shapes-cta .cta-mini { display: inline; }
-  .shapes-brand .brand-logo { height: 34px; }
+  .shapes-bar-inner { height: 76px; }
+  .shapes-bar.is-scrolled .shapes-bar-inner { height: 54px; }
+  .shapes-brand .brand-logo { height: 50px; }
+  .shapes-bar.is-scrolled .shapes-brand .brand-logo { height: 32px; }
   .shapes-burger { display: inline-flex; margin-left: 10px; padding: 10px 0 10px 2px; }
   .shapes-menu { display: flex; flex-direction: column; padding: 8px 24px 18px; background: color-mix(in oklch, var(--bg) 96%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
   .shapes-menu a { padding: 13px 2px; color: var(--ink); font-family: var(--font-body); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.12em; text-decoration: none; border-bottom: 1px solid var(--line-soft); }
