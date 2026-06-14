@@ -63,7 +63,7 @@
 
 /* image placeholder — flat editorial color field */
 .shapes-root .ph { position: relative; overflow: hidden; background: oklch(0.91 0.055 var(--ph-h, 88)); display: flex; align-items: center; justify-content: center; }
-.shapes-root .ph__label { position: relative; z-index: 2; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.34 0.06 var(--ph-h, 88)); background: oklch(1 0 0 / 0.6); padding: 4px 9px; }
+.shapes-root .ph__label { position: relative; z-index: 2; font-family: var(--font-body); font-weight: 700; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); background: oklch(1 0 0 / 0.6); padding: 4px 9px; }
 
 /* chip → vereinheitlicht (global in globals.css, Story-Look mit .on/data-on) */
 
