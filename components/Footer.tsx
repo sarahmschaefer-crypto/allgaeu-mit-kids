@@ -9,16 +9,15 @@ const LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="border-t-2 border-ink">
+    <footer style={{ borderTop: '1px solid var(--line)' }}>
       <div className="max-w-6xl mx-auto px-6 py-12">
 
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
 
           {/* Brand */}
-          <div className="space-y-2">
-            <p className="font-bold text-xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-              Allgäu mit Kids
-            </p>
+          <div className="space-y-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-allgaeu.svg" alt="Allgäu mit Kids" style={{ height: 64, width: 'auto', display: 'block' }} />
             <p className="text-sm" style={{ fontFamily: 'var(--font-body)', color: 'var(--ink-soft)' }}>
               Die schönsten Familienausflüge im Allgäu
             </p>
@@ -38,7 +37,7 @@ export default function Footer() {
         <hr className="lofi-divider" />
 
         <p className="text-center text-xs text-ink/40 label">
-          © {new Date().getFullYear()} Allgäu mit Kids · Mit ♥ gemacht
+          © {new Date().getFullYear()} Allgäu mit Kids · Design mit ❤️ gemacht by sarahfordesign.com
         </p>
 
       </div>

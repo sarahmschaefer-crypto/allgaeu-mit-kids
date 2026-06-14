@@ -19,10 +19,9 @@ export function ShapesBar({ active, overlay = false }: { active?: ShapesNavKey; 
   return (
     <header className={`shapes-bar${overlay ? ' shapes-bar--overlay' : ''}`}>
       <div className="shapes-bar-inner">
-        <Link href="/" className="shapes-brand" onClick={() => setOpen(false)}>
+        <Link href="/" className="shapes-brand" onClick={() => setOpen(false)} aria-label="Allgäu mit Kids — Startseite">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo-allgaeu.png" alt="Allgäu mit Kids" className="brand-logo" width={30} height={30} />
-          <b>Allgäu&nbsp;mit&nbsp;Kids</b>
+          <img src="/logo-allgaeu.svg" alt="Allgäu mit Kids" className="brand-logo" />
         </Link>
         <nav className="shapes-nav">
           {TABS.map((t) => (
