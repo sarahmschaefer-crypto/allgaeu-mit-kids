@@ -1,9 +1,11 @@
 'use client'
-// components/story/JourneyScene.tsx — section 1: the winding reference path draws
-// FLOWING (not pinned) as you scroll. The driven part is a solid continuous
-// stroke, the part ahead stays dashed — both are the SAME path (perfect overlap),
-// and the reveal runs along the path length (stroke-dashoffset) so it's smooth
-// and organic, never jumpy. Each possibility crops up with an image.
+// components/story/JourneyScene.tsx — section 2: the winding reference path draws
+// FLOWING (not pinned) as you scroll. The path is the design's MULTI-COLOUR
+// "active" path (Path.svg) — each segment keeps its own colour + thickness. The
+// driven part is revealed segment-by-segment along the total length; the part
+// ahead stays a faint dashed ghost (same shape → perfect overlap). The reveal is
+// driven by stroke-dashoffset so it's smooth and organic, never jumpy. Each
+// possibility crops up with an image. preserveAspectRatio="meet" → never distorts.
 import { useEffect, useRef } from 'react'
 import type { CSSProperties } from 'react'
 import { clamp } from '@/lib/story/scroll'
@@ -16,21 +18,40 @@ export function JourneyScene() {
   const { direkt } = useTweaks()
   const sec = useRef<HTMLElement>(null)
   const canvasRef = useRef<HTMLDivElement>(null)
-  const lineRef = useRef<SVGPathElement>(null) // the drawn (solid) path = our measure
+  const segRefs = useRef<(SVGPathElement | null)[]>([]) // the coloured drawn segments
+  const segLen = useRef<number[]>([]) // length of each segment
+  const segStart = useRef<number[]>([]) // cumulative start offset of each segment
+  const totalLen = useRef(0)
   const nodeRefs = useRef<(HTMLDivElement | null)[]>([])
   const nodeFracY = useRef<number[]>([]) // each node's y as a fraction of the path height
   const tipRef = useRef<HTMLSpanElement>(null)
   const footRef = useRef<HTMLParagraphElement>(null)
-  const lenRef = useRef(0)
 
   const D = JOURNEY_DATA
+  const SEGS = D.segments
 
-  // draw the path + tip for a given progress f (0..1 along the path)
+  // point at a global length across the ordered segments
+  const pointAt = (g: number) => {
+    const lens = segLen.current
+    const starts = segStart.current
+    let k = 0
+    while (k < lens.length - 1 && g > starts[k] + lens[k]) k++
+    const p = segRefs.current[k]
+    const local = Math.min(Math.max(g - starts[k], 0), lens[k])
+    return p ? p.getPointAtLength(local) : { x: 0, y: 0 }
+  }
+
+  // draw the path + tip for a given progress f (0..1 along the whole path)
   const drawPath = (f: number) => {
-    const L = lenRef.current || 1
-    if (lineRef.current) lineRef.current.style.strokeDashoffset = String(L * (1 - f))
-    if (tipRef.current && lineRef.current) {
-      const pt = lineRef.current.getPointAtLength(L * f)
+    const L = totalLen.current || 1
+    const drawn = L * f
+    segRefs.current.forEach((p, k) => {
+      if (!p) return
+      const local = Math.min(Math.max(drawn - segStart.current[k], 0), segLen.current[k])
+      p.style.strokeDashoffset = String(segLen.current[k] - local)
+    })
+    if (tipRef.current && segRefs.current.length) {
+      const pt = pointAt(drawn)
       tipRef.current.style.left = (pt.x / D.vw) * 100 + '%'
       tipRef.current.style.top = (pt.y / D.vh) * 100 + '%'
       tipRef.current.style.opacity = f > 0.01 && f < 0.985 ? '1' : '0'
@@ -38,17 +59,23 @@ export function JourneyScene() {
     if (footRef.current) footRef.current.style.opacity = String(clamp((f - 0.9) / 0.1))
   }
 
+  // measure segment lengths + place the cards along the path
   useEffect(() => {
-    const line = lineRef.current
-    if (!line) return
-    const L = line.getTotalLength()
-    lenRef.current = L
-    // one dash the whole length → offset reveals it progressively
-    line.style.strokeDasharray = String(L)
-    line.style.strokeDashoffset = String(L)
+    let cum = 0
+    segRefs.current.forEach((p, k) => {
+      if (!p) return
+      const L = p.getTotalLength()
+      segLen.current[k] = L
+      segStart.current[k] = cum
+      cum += L
+      // one dash the whole length → offset reveals it progressively
+      p.style.strokeDasharray = String(L)
+      p.style.strokeDashoffset = String(L)
+    })
+    totalLen.current = cum
     nodeRefs.current.forEach((el, i) => {
       if (!el) return
-      const pt = line.getPointAtLength(L * POSSIBILITIES[i].t)
+      const pt = pointAt(cum * POSSIBILITIES[i].t)
       el.style.left = (pt.x / D.vw) * 100 + '%'
       el.style.top = (pt.y / D.vh) * 100 + '%'
       el.classList.toggle('poss-left', pt.x > D.vw * 0.5)
@@ -68,12 +95,7 @@ export function JourneyScene() {
       if (!c) return
       const r = c.getBoundingClientRect()
       const vh = window.innerHeight
-      // path draw: clean 0→1 as the canvas travels through the viewport
       drawPath(clamp((vh * 0.88 - r.top) / (vh * 0.66 + r.height)))
-      // card reveal: each image is fully visible only near the MIDDLE of the
-      // viewport and fades above/below — so it pops up centred, is never shown
-      // off-screen, and cards never stack on top of each other (works on any
-      // screen size).
       nodeRefs.current.forEach((el, i) => {
         if (!el) return
         const screenY = r.top + (nodeFracY.current[i] ?? 0.5) * r.height
@@ -105,11 +127,21 @@ export function JourneyScene() {
       </div>
 
       <div className="journey-canvas" ref={canvasRef}>
-        <svg className="journey-svg" viewBox={D.viewBox} preserveAspectRatio="none" aria-hidden="true">
-          {/* ahead of the front: dashed (same path → perfect overlap) */}
+        <svg className="journey-svg" viewBox={D.viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          {/* ahead of the front: faint dashed ghost of the whole shape */}
           <path className="journey-ghost" d={D.combinedD} />
-          {/* driven part: solid single-colour, revealed along its length */}
-          <path ref={lineRef} className="journey-line" d={D.combinedD} />
+          {/* driven part: the multi-colour active segments, revealed along their length */}
+          {SEGS.map((s, k) => (
+            <path
+              key={k}
+              ref={(el) => {
+                segRefs.current[k] = el
+              }}
+              className="journey-seg"
+              d={s.d}
+              stroke={s.color}
+            />
+          ))}
         </svg>
 
         <span className="journey-tip" ref={tipRef} aria-hidden="true" />
