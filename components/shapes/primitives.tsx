@@ -86,7 +86,7 @@ export function Photo({
 export function Stars({ rating, reviews, light }: { rating: number; reviews?: number; light?: boolean }) {
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 700, color: light ? 'rgba(255,255,255,0.95)' : 'var(--ink-soft)' }}>
-      <span style={{ color: 'var(--coral)' }}>★</span>
+      <span style={{ color: 'var(--terra)' }}>★</span>
       {rating.toFixed(1)}
       {reviews != null && <span style={{ opacity: 0.7, fontWeight: 600 }}>({reviews.toLocaleString('de-DE')})</span>}
     </span>

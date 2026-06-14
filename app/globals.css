@@ -115,26 +115,29 @@ textarea.field:focus { border-bottom-color: var(--line); border-color: var(--ink
 .slider::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #fff; border: 2px solid var(--accent); cursor: pointer; }
 .slider:focus-visible { box-shadow: 0 0 0 3px color-mix(in oklch, var(--field-focus) 18%, transparent); }
 
-/* Switch — accessible toggle */
-.switch { position: relative; display: inline-flex; align-items: center; width: 42px; height: 24px; border-radius: 999px; border: none; background: var(--line); cursor: pointer; transition: background .18s ease; flex: 0 0 auto; padding: 0; }
-.switch[aria-checked="true"], .switch[data-on="true"] { background: var(--accent); }
-.switch > span { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: left .18s ease; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
-.switch[aria-checked="true"] > span, .switch[data-on="true"] > span { left: 21px; }
+/* Switch — Quelle: Figma "Switch" (184:16). Ink-basiert: Off = Outline + Ink-Daumen,
+   On = Ink-Füllung + weißer Daumen (war: Line-Füllung / Accent). */
+.switch { position: relative; display: inline-flex; align-items: center; width: 42px; height: 24px; border-radius: 999px; border: 1.5px solid var(--ink); background: transparent; cursor: pointer; transition: background .18s ease; flex: 0 0 auto; padding: 0; }
+.switch[aria-checked="true"], .switch[data-on="true"] { background: var(--ink); border-color: var(--ink); }
+.switch > span { position: absolute; top: 2px; left: 2px; width: 17px; height: 17px; border-radius: 50%; background: var(--ink); transition: left .18s ease, background .18s ease; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+.switch[aria-checked="true"] > span, .switch[data-on="true"] > span { left: 21px; background: #fff; }
 .switch:focus-visible { outline: 2px solid var(--field-focus); outline-offset: 2px; }
 
 /* Segmented control — eine globale Quelle (Aliasse: .view-toggle / .view-seg) */
+/* Segmented — Quelle: Figma "Segmented" (204:85): Ink-Outline-Container,
+   aktiver Tab Ink-gefüllt/weiß, inaktiv Ink-Text (war: Ink@7%-Füllung / Accent). */
 .segmented, .view-toggle {
   display: inline-flex; gap: 3px; padding: 3px; border-radius: 999px;
-  background: color-mix(in oklch, var(--ink) 7%, transparent);
+  background: transparent; border: 1.5px solid var(--ink);
 }
 .segmented__btn, .view-seg {
-  border: 0; background: transparent; color: var(--ink-soft);
+  border: 0; background: transparent; color: var(--ink);
   font-family: var(--font-body); font-weight: 700; font-size: 13px;
   padding: 8px 18px; border-radius: 999px; cursor: pointer; white-space: nowrap;
   transition: background .15s, color .15s;
 }
 .segmented__btn:hover, .view-seg:hover { color: var(--ink); }
-.segmented__btn[aria-selected="true"], .segmented__btn.on, .view-seg.on { background: var(--accent); color: #fff; }
+.segmented__btn[aria-selected="true"], .segmented__btn.on, .view-seg.on { background: var(--ink); color: #fff; }
 .segmented__btn:focus-visible, .view-seg:focus-visible { outline: 2px solid var(--field-focus); outline-offset: 2px; }
 
 /* Select — token-gestyltes natives Select mit Chevron */
