@@ -184,6 +184,7 @@ export function ExploreView({
   const [sort, setSort] = useState<'match' | 'rating' | 'name'>('match')
   const [view, setView] = useState<'liste' | 'karte'>(initialView)
   const [banner, setBanner] = useState(fromQuiz)
+  const [filtersOpen, setFiltersOpen] = useState(false) // nur Mobile: Filter standardmäßig eingeklappt
 
   const toggleIn = (key: 'ages' | 'times' | 'budgets' | 'cats' | 'types' | 'access', id: string) =>
     setSel((s) => ({ ...s, [key]: s[key].includes(id) ? s[key].filter((x) => x !== id) : [...s[key], id] }))
@@ -210,8 +211,17 @@ export function ExploreView({
           <button onClick={() => setBanner(false)} aria-label="Hinweis schließen">×</button>
         </div>
       )}
+      <button
+        type="button"
+        className="filter-toggle"
+        aria-expanded={filtersOpen}
+        onClick={() => setFiltersOpen((o) => !o)}
+      >
+        <span>Filter{active > 0 ? ` · ${active} aktiv` : ''}</span>
+        <span aria-hidden="true">{filtersOpen ? 'schließen ✕' : 'anzeigen ▾'}</span>
+      </button>
       <div className="filter-layout" style={{ display: 'flex', gap: 44, alignItems: 'flex-start' }}>
-        <aside style={{ width: 268, flex: '0 0 268px' }}>
+        <aside className={`explore-filters${filtersOpen ? ' is-open' : ''}`} style={{ width: 268, flex: '0 0 268px' }}>
           <div style={{ position: 'sticky', top: 92 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 18 }}>
               <h3 style={{ fontSize: 26 }}>Filter</h3>
@@ -310,7 +320,18 @@ export function ExploreView({
           )}
         </main>
       </div>
-      <style>{`@media (max-width: 820px){ .filter-layout{ flex-direction: column; } .filter-layout aside{ width:100% !important; flex-basis:auto !important; } .filter-layout aside > div{ position: static !important; } }`}</style>
+      <style>{`
+        .filter-toggle { display: none; }
+        @media (max-width: 820px){
+          .filter-layout{ flex-direction: column; }
+          .filter-layout aside{ width:100% !important; flex-basis:auto !important; }
+          .filter-layout aside > div{ position: static !important; }
+          .filter-toggle{ display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; margin-bottom: 20px; padding: 13px 20px; border: 1.5px solid var(--ink); border-radius: 999px; background: transparent; font-family: var(--font-body); font-weight: 700; font-size: 14px; color: var(--ink); cursor: pointer; }
+          .filter-toggle span:last-child{ color: var(--ink-soft); font-weight: 600; font-size: 13px; }
+          .explore-filters{ display: none; }
+          .explore-filters.is-open{ display: block; margin-bottom: 8px; }
+        }
+      `}</style>
     </Container>
   )
 }
