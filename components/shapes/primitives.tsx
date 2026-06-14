@@ -1,10 +1,8 @@
 // components/shapes/primitives.tsx — editorial UI primitives (Shapes design)
 import Link from 'next/link'
 import type { CSSProperties, ReactNode } from 'react'
-import { CATEGORIES, TYPES, primaryTagOf, BUDGETS, TIMES, type ShapesDest } from '@/lib/shapes/data'
+import { TYPES, primaryTagOf, BUDGETS, TIMES, type ShapesDest } from '@/lib/shapes/data'
 import { Blob } from '@/components/shapes/decor'
-
-const CAT = CATEGORIES as Record<string, { id: string; label: string; short: string; hue: number; emoji: string }>
 
 // Coloured category tag: design-system icon (masked from /tags/<icon>.svg) + name.
 // Interactive (button, toggles) when `onClick` is given, otherwise a static label.
@@ -66,7 +64,9 @@ export function Photo({
   rounded?: boolean
   seed?: number
 }) {
-  const hue = CAT[cat]?.hue ?? 88
+  // Neutral/einheitlich — keine Kategorie-Farbe mehr (cat nur noch fürs Seed/Label irrelevant).
+  void cat
+  const hue = 88
   return (
     <div
       className="ph"

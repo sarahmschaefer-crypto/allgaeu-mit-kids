@@ -96,7 +96,7 @@ function MapPin({ dest, active, hovered, onClick, onHover }: { dest: ShapesDest;
       style={{ position: 'absolute', left: dest.map.x + '%', top: dest.map.y + '%', transform: `translate(-50%, -50%) scale(${big ? 1.25 : 1})`, transformOrigin: 'center', background: 'none', border: 'none', padding: 0, cursor: 'pointer', zIndex: big ? 20 : 5, transition: 'transform .15s ease', filter: big ? 'drop-shadow(0 5px 9px rgba(40,30,90,.28))' : 'drop-shadow(0 2px 3px rgba(40,30,90,.2))' }}
       aria-label={dest.name}
     >
-      <span style={{ display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: '50%', background: `var(--c-${dest.cat})`, border: '2.5px solid var(--bg)' }}>
+      <span style={{ display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: '50%', background: 'var(--ink)', border: '2.5px solid var(--bg)' }}>
         <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--bg)' }} />
       </span>
     </button>
@@ -187,11 +187,11 @@ export function ExploreView({
   const [banner, setBanner] = useState(fromQuiz)
   const [filtersOpen, setFiltersOpen] = useState(false) // nur Mobile: Filter standardmäßig eingeklappt
 
-  const toggleIn = (key: 'ages' | 'times' | 'budgets' | 'cats' | 'types' | 'access', id: string) =>
+  const toggleIn = (key: 'ages' | 'times' | 'budgets' | 'types' | 'access', id: string) =>
     setSel((s) => ({ ...s, [key]: s[key].includes(id) ? s[key].filter((x) => x !== id) : [...s[key], id] }))
 
   const active =
-    sel.ages.length + sel.times.length + sel.budgets.length + sel.cats.length + sel.types.length + sel.access.length +
+    sel.ages.length + sel.times.length + sel.budgets.length + sel.types.length + sel.access.length +
     (sel.weather ? 1 : 0) + (sel.stroller ? 1 : 0) + (sel.parking ? 1 : 0) + (sel.ort.trim() ? 1 : 0)
 
   const ortCenter = sel.ort.trim() ? resolveCenter(sel.ort) : null

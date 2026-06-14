@@ -3,14 +3,14 @@
 // (ported from view_quiz.jsx).
 import { useState } from 'react'
 import Link from 'next/link'
-import { filterDests } from '@/lib/shapes/data'
+import { filterDests, TYPES } from '@/lib/shapes/data'
 import { QUESTIONS } from '@/lib/shapes/questions'
 import { Container } from '@/components/shapes/primitives'
 import { Squiggle } from '@/components/shapes/decor'
 import { buildExploreHref } from '@/lib/shapes/explore'
 
-type SelState = { ages: string[]; cats: string[]; times: string | null; budgets: string | null; weather: string | null }
-const EMPTY: SelState = { ages: [], cats: [], times: null, budgets: null, weather: null }
+type SelState = { ages: string[]; types: string[]; times: string | null; budgets: string | null; weather: string | null }
+const EMPTY: SelState = { ages: [], types: [], times: null, budgets: null, weather: null }
 
 export function QuizFlow() {
   const [step, setStep] = useState(0)
@@ -21,7 +21,7 @@ export function QuizFlow() {
   const choose = (id: string) => {
     setSel((s) => {
       if (cur.multi) {
-        const arr = s[cur.key as 'ages' | 'cats']
+        const arr = s[cur.key as 'ages' | 'types']
         return { ...s, [cur.key]: arr.includes(id) ? arr.filter((x) => x !== id) : [...arr, id] }
       }
       return { ...s, [cur.key]: s[cur.key as 'times' | 'budgets' | 'weather'] === id ? null : id }
@@ -41,7 +41,7 @@ export function QuizFlow() {
   // quiz answers → shared filter shape (arrays), the language Entdecken speaks
   const handoffSel = {
     ages: sel.ages,
-    cats: sel.cats,
+    types: sel.types,
     times: sel.times ? [sel.times] : [],
     budgets: sel.budgets ? [sel.budgets] : [],
     weather: sel.weather === 'regen' ? 'regen' : null,
@@ -120,7 +120,7 @@ export function QuizFlow() {
             const on = cur.multi ? (curVal as string[]).includes(opt.id) : curVal === opt.id
             return (
               <button key={opt.id} type="button" className="chip quiz-chip" data-on={on} onClick={() => choose(opt.id)}>
-                {cur.key === 'cats' && <span className="quiz-chip-dot" style={{ background: `var(--c-${opt.id})` }} />}
+                {cur.key === 'types' && <span className="quiz-chip-dot" style={{ background: (TYPES as Record<string, { color: string }>)[opt.id]?.color }} />}
                 {opt.label}
               </button>
             )

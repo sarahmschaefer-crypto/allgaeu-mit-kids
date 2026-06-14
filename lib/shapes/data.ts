@@ -10,19 +10,11 @@ export type ShapesDest = {
   tags?: string[]; teaser?: string;
 }
 export type Sel = {
-  ages?: string[]; cats?: string[]; types?: string[]; times?: string[];
+  ages?: string[]; types?: string[]; times?: string[];
   budgets?: string[]; weather?: string | null; stroller?: boolean;
   parking?: boolean; access?: string[]; ort?: string; radius?: number;
 }
 
-
-export const CATEGORIES = {
-  natur:   { id: "natur",   label: "Natur & Wandern",     short: "Natur",    hue: 150, emoji: "🌲" },
-  wasser:  { id: "wasser",  label: "Wasser & Baden",      short: "Wasser",   hue: 255, emoji: "💧" },
-  tiere:   { id: "tiere",   label: "Tiere & Bauernhof",   short: "Tiere",    hue: 45,  emoji: "🐄" },
-  action:  { id: "action",  label: "Action & Spaß",       short: "Action",   hue: 300, emoji: "🎢" },
-  regen:   { id: "regen",   label: "Regentag & Indoor",   short: "Indoor",   hue: 295, emoji: "🌧️" },
-};
 
 // Activity TYPES — drawn from the uploaded icon set. Each destination carries a
 // few of these as badges. Badge background uses the brand poster palette; the
@@ -292,7 +284,6 @@ export function matchScore(dest: ShapesDest, sel: Sel) {
   let score = 0, max = 0;
   const has = (arr: any[] | undefined) => arr && arr.length;
   if (has(sel.ages)) { max += 2; if (sel.ages?.some(a => dest.ages.includes(a))) score += 2; }
-  if (has(sel.cats)) { max += 3; if (sel.cats?.includes(dest.cat)) score += 3; }
   if (has(sel.types)) { max += 3; if (sel.types?.some(t => tagsOf(dest).includes(t))) score += 3; }
   if (has(sel.times)) { max += 1; if (sel.times?.includes(dest.time)) score += 1; }
   if (has(sel.budgets)) { max += 1; if (sel.budgets?.includes(dest.budget)) score += 1; }
@@ -380,7 +371,6 @@ export function filterDests(sel: Sel) {
   // Hard filter (must match every chosen facet group that is set)
   return DESTINATIONS.filter(d => {
     if (sel.ages?.length && !sel.ages?.some(a => d.ages.includes(a))) return false;
-    if (sel.cats?.length && !sel.cats?.includes(d.cat)) return false;
     if (sel.types?.length && !sel.types?.some(t => tagsOf(d).includes(t))) return false;
     if (sel.times?.length && !sel.times?.includes(d.time)) return false;
     if (sel.budgets?.length && !sel.budgets?.includes(d.budget)) return false;

@@ -4,9 +4,9 @@
 import { createContext, useContext, useMemo, useState } from 'react'
 import { filterDests, type ShapesDest, type Sel } from '@/lib/shapes/data'
 
-export type ArrField = 'ages' | 'cats' | 'times' | 'budgets'
-export type MatchSel = { ages: string[]; cats: string[]; times: string[]; budgets: string[]; weather: string | null }
-const DEFAULT: MatchSel = { ages: [], cats: [], times: [], budgets: [], weather: null }
+export type ArrField = 'ages' | 'types' | 'times' | 'budgets'
+export type MatchSel = { ages: string[]; types: string[]; times: string[]; budgets: string[]; weather: string | null }
+const DEFAULT: MatchSel = { ages: [], types: [], times: [], budgets: [], weather: null }
 
 type Ctx = {
   sel: MatchSel

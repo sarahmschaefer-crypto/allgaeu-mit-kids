@@ -3,7 +3,7 @@
 import type { Metadata } from 'next'
 import { ShapesBar } from '@/components/shapes/ShapesBar'
 import { ExploreView } from '@/components/shapes/ExploreView'
-import { EMPTY_SEL, CATEGORY_KEYS, type SelState } from '@/lib/shapes/explore'
+import { EMPTY_SEL, type SelState } from '@/lib/shapes/explore'
 
 export const metadata: Metadata = {
   title: 'Ausflugsziele entdecken',
@@ -31,7 +31,6 @@ export default async function EntdeckenPage({ searchParams }: { searchParams: Pr
     ages: list(one(sp.ages), AGE_IDS),
     times: list(one(sp.times), TIME_IDS),
     budgets: list(one(sp.budgets), BUDGET_IDS),
-    cats: list(one(sp.cats), CATEGORY_KEYS),
     types: list(one(sp.types), TYPE_IDS),
     weather: one(sp.weather) === 'regen' ? 'regen' : null,
     stroller: one(sp.stroller) === '1',
