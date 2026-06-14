@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { ShapesBar } from '@/components/shapes/ShapesBar'
 import { DetailGallery } from '@/components/shapes/DetailGallery'
 import { Tag } from '@/components/shapes/primitives'
-import { DESTINATIONS, getDest, detailInfo, destTags, CATEGORIES } from '@/lib/shapes/data'
+import { DESTINATIONS, getDest, detailInfo, destTags, TYPES, primaryTagOf } from '@/lib/shapes/data'
 
 export function generateStaticParams() {
   return DESTINATIONS.map((d) => ({ id: d.id }))
@@ -42,7 +42,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
 
   const info = detailInfo(dest)
   const tags = destTags(dest)
-  const cat = (CATEGORIES as Record<string, { label: string }>)[dest.cat]
+  const ptag = (TYPES as Record<string, { label: string }>)[primaryTagOf(dest)]
 
   // Single, consolidated "Auf einen Blick" — the 6 client categories merged with
   // the extra facts (Für Kinder / Wetter) that weren't covered by them.
@@ -81,7 +81,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
 
         {/* MIDDLE — 4:5 gallery + consolidated facts + highlights */}
         <section className="mag-mid">
-          <DetailGallery cat={dest.cat} name={dest.name} />
+          <DetailGallery cat={dest.cat} tag={primaryTagOf(dest)} name={dest.name} />
 
           <div className="mag-col">
             <div>
@@ -132,7 +132,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
 
         <footer className="mag-foot">
           <span className="mag-pg">01</span>
-          <span className="kicker">Ausgabe · {cat?.label ?? 'Familie & Allgäu'}</span>
+          <span className="kicker">Ausgabe · {ptag?.label ?? 'Familie & Allgäu'}</span>
         </footer>
       </main>
     </div>

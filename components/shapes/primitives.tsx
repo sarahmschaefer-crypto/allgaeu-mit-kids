@@ -1,7 +1,7 @@
 // components/shapes/primitives.tsx — editorial UI primitives (Shapes design)
 import Link from 'next/link'
 import type { CSSProperties, ReactNode } from 'react'
-import { CATEGORIES, BUDGETS, TIMES, type ShapesDest } from '@/lib/shapes/data'
+import { CATEGORIES, TYPES, primaryTagOf, BUDGETS, TIMES, type ShapesDest } from '@/lib/shapes/data'
 import { Blob } from '@/components/shapes/decor'
 
 const CAT = CATEGORIES as Record<string, { id: string; label: string; short: string; hue: number; emoji: string }>
@@ -93,13 +93,16 @@ export function Stars({ rating, reviews, light }: { rating: number; reviews?: nu
   )
 }
 
-export function CatPill({ cat, light, full }: { cat: string; light?: boolean; full?: boolean }) {
-  const c = CAT[cat]
-  if (!c) return null
+// Tag-Label-Variante: farbiger Punkt (Tag-Farbe) + Tag-Name. Ersetzt das alte
+// CatPill (Kategorie) als Karten-Label. "ein variant von den Tags".
+const TAGS = TYPES as Record<string, { id: string; label: string; icon: string; color: string }>
+export function TagLabel({ tag, light }: { tag: string; light?: boolean }) {
+  const t = TAGS[tag]
+  if (!t) return null
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: 'var(--font-body)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.16em', fontSize: 11.5, color: light ? 'rgba(255,255,255,0.95)' : 'var(--ink)', whiteSpace: 'nowrap' }}>
-      <span style={{ width: 9, height: 9, borderRadius: '50%', background: `var(--c-${cat})`, boxShadow: light ? '0 0 0 1.5px rgba(255,255,255,0.5)' : 'none', flex: '0 0 auto' }} />
-      {full ? c.label : c.short}
+      <span style={{ width: 9, height: 9, borderRadius: '50%', background: t.color, boxShadow: light ? '0 0 0 1.5px rgba(255,255,255,0.5)' : 'none', flex: '0 0 auto' }} />
+      {t.label}
     </span>
   )
 }
@@ -132,7 +135,7 @@ export function DestCard({ dest }: { dest: ShapesDest }) {
           <Photo label={dest.name} cat={dest.cat} style={{ position: 'absolute', inset: 0 }} rounded={false} seed={dest.name.length + 2} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <CatPill cat={dest.cat} />
+          <TagLabel tag={primaryTagOf(dest)} />
           {/* Display-Schrift explizit: DestCard wird auch in #story-root (Landing)
               gerendert, wo sonst die globale h3-Regel erben würde → Leak schließen. */}
           <h3 className="dc-title" style={{ fontFamily: 'var(--font-display)' }}>{dest.name}</h3>

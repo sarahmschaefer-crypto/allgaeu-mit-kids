@@ -53,6 +53,20 @@ export function tagsOf(d: ShapesDest): string[] {
   return d.tags ?? (DEST_TAGS as Record<string, string[]>)[d.id] ?? [];
 }
 
+// Kuratierter Haupt-Tag je Ziel — treibt das Karten-Label (Tag-Dot-Variante).
+// Ersetzt die alten 5 Kategorien (natur/action/…), die es nicht mehr gibt.
+export const PRIMARY_TAG: Record<string, string> = {
+  "breitachklamm": "ausflug", "skywalk": "ausflug", "alpsee-coaster": "attraktion",
+  "skyline-park": "attraktion", "ziegelwies": "ausflug", "eistobel": "ausflug",
+  "aquaria": "schwimmen", "bergbauernmuseum": "tierpark", "soellereck": "attraktion",
+  "sturmannshoehle": "ausflug", "neuschwanstein": "kultur", "kletterwald-bärenfalle": "sport",
+  "moorbad-schwarzenberg": "schwimmen", "vogelpark": "tierpark", "iglu-indoorspielplatz": "spielplatz",
+  "hündle": "attraktion",
+};
+export function primaryTagOf(d: ShapesDest): string {
+  return PRIMARY_TAG[d.id] || tagsOf(d)[0] || "ausflug";
+}
+
 export const DEST_TAGS = {
   "breitachklamm": ["ausflug", "sport"],
   "skywalk": ["ausflug", "spielplatz"],

@@ -5,8 +5,8 @@
 // No swiping. Persists in localStorage.
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { DESTINATIONS } from '@/lib/shapes/data'
-import { Photo, CatPill, Container } from '@/components/shapes/primitives'
+import { DESTINATIONS, primaryTagOf } from '@/lib/shapes/data'
+import { Photo, TagLabel, Container } from '@/components/shapes/primitives'
 
 const STORAGE_KEY = 'amk-album'
 const TOTAL = DESTINATIONS.length
@@ -160,7 +160,7 @@ export function Sammelalbum() {
                 <span className="vorrat-hint" aria-hidden="true">+ Einkleben</span>
               </div>
               <div className="vorrat-meta">
-                <CatPill cat={d.cat} />
+                <TagLabel tag={primaryTagOf(d)} />
                 <span className="vorrat-name">{d.name}</span>
               </div>
             </button>

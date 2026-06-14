@@ -17,11 +17,12 @@ import {
   filterDests,
   matchScore,
   getDest,
+  primaryTagOf,
   type Sel,
   type ShapesDest,
 } from '@/lib/shapes/data'
 import { EMPTY_SEL, type SelState } from '@/lib/shapes/explore'
-import { DestCard, Container, Photo, CatPill, Stars, Tag } from '@/components/shapes/primitives'
+import { DestCard, Container, Photo, TagLabel, Stars, Tag } from '@/components/shapes/primitives'
 import { Segmented, SortSelect } from '@/components/shapes/controls'
 import { Squiggle } from '@/components/shapes/decor'
 
@@ -137,7 +138,7 @@ function MapPanel({ results }: { results: ShapesDest[] }) {
               <Photo cat={activeDest.cat} style={{ width: 116, flex: '0 0 116px' }} rounded={false} seed={5} />
               <div style={{ padding: '14px 16px', flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'flex-start' }}>
-                  <CatPill cat={activeDest.cat} />
+                  <TagLabel tag={primaryTagOf(activeDest)} />
                   <button onClick={() => setActive(null)} style={{ background: 'none', border: 'none', color: 'var(--ink-faint)', fontSize: 20, lineHeight: 1.3, padding: 0 }} aria-label="Schließen">×</button>
                 </div>
                 <h3 style={{ fontSize: 20, margin: '9px 0 2px' }}>{activeDest.name}</h3>
@@ -156,7 +157,7 @@ function MapPanel({ results }: { results: ShapesDest[] }) {
             <Photo cat={d.cat} style={{ width: 54, height: 54, borderRadius: 'var(--radius-sm)', flex: '0 0 54px' }} seed={d.name.length} />
             <span style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: 3, flex: 1 }}>
               <span style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'center' }}>
-                <CatPill cat={d.cat} />
+                <TagLabel tag={primaryTagOf(d)} />
                 <Stars rating={d.rating} />
               </span>
               <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 17, lineHeight: 1.3 }}>{d.name}</span>
