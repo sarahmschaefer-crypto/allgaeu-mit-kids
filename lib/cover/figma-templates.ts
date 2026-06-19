@@ -116,14 +116,6 @@ FIGMA_TEMPLATES.push(
     ],
   },
   {
-    id: "rahmen-blob-2", name: "Rahmen Blob 2", bg: "purple",
-    layers: [
-      { type: "photo", x: 150, y: 10, w: 930, h: 1240, mask: "blob2", rot: -25 },
-      { type: "text", field: "overline", x: 74, y: 781, size: 41.5, color: "white", font: "nunito", lh: 1, tracking: 6.64, upper: true, weight: 700 },
-      { type: "stamp", x: 868, y: 60, size: 152 },
-    ],
-  },
-  {
     id: "rahmen-blob-3", name: "Rahmen Blob 3", bg: "pink",
     layers: [
       { type: "photo", x: 60, y: 60, w: 960, h: 943, radius: [460, 460, 460, 460] },
