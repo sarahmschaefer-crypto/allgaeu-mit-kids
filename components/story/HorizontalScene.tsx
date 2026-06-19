@@ -131,9 +131,7 @@ export function ResolutionScene() {
             <Link className="btn btn-primary" href="/entdecken">
               Alle Ausflugsziele entdecken<span aria-hidden="true">→</span>
             </Link>
-            <Link className="btn btn-ghost" href="/sammeln">
-              Mit den Kindern sammeln
-            </Link>
+            {/* "Mit den Kindern sammeln" → /sammeln vorerst deaktiviert (Sammeln versteckt) */}
           </div>
         </div>
       </div>

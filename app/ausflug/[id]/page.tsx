@@ -122,12 +122,10 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
         </section>
 
         <div className="mag-actions">
-          <Link href="/quiz" className="btn btn--primary">
+          <Link href="/entdecken" className="btn btn--primary">
             Mehr passende Ziele finden
           </Link>
-          <Link href="/sammeln" className="btn btn--ghost">
-            Ins Album sammeln
-          </Link>
+          {/* "Ins Album sammeln" → /sammeln vorerst deaktiviert (Sammeln versteckt) */}
         </div>
 
         <footer className="mag-foot">

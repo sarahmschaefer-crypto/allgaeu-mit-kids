@@ -8,7 +8,8 @@ import { HeroScene } from '@/components/story/HeroScene'
 import { JourneyScene } from '@/components/story/JourneyScene'
 import { LandingQuiz } from '@/components/story/LandingQuiz'
 import { HorizontalScene, ResolutionScene } from '@/components/story/HorizontalScene'
-import { SammelnTeaser } from '@/components/story/SammelnTeaser'
+// SammelnTeaser vorerst deaktiviert (Sammeln-Experience versteckt) — REVERSIBEL: Import + Szene unten wieder aktivieren.
+// import { SammelnTeaser } from '@/components/story/SammelnTeaser'
 import { ProgressNav } from '@/components/story/StoryNav'
 import { ShapesBar } from '@/components/shapes/ShapesBar'
 
@@ -22,7 +23,7 @@ function StoryInner() {
       <JourneyScene />
       <LandingQuiz />
       <HorizontalScene />
-      <SammelnTeaser />
+      {/* <SammelnTeaser /> — vorerst deaktiviert (Sammeln versteckt) */}
       <ResolutionScene />
 
       <footer className="story-foot">

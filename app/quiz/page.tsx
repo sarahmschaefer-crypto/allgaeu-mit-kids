@@ -1,5 +1,6 @@
 // app/quiz/page.tsx
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 import { ShapesBar } from '@/components/shapes/ShapesBar'
 import { QuizFlow } from '@/components/shapes/QuizFlow'
 
@@ -9,6 +10,9 @@ export const metadata: Metadata = {
 }
 
 export default function QuizPage() {
+  // /quiz vorerst deaktiviert → leitet auf die Filterseite. REVERSIBEL: nächste Zeile
+  // entfernen, dann ist das Quiz wieder erreichbar (Code unten bleibt erhalten).
+  redirect('/entdecken')
   return (
     <div className="shapes-root">
       <ShapesBar active="quiz" />

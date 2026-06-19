@@ -14,6 +14,11 @@ const TABS = [
 
 export type ShapesNavKey = (typeof TABS)[number]['key']
 
+// Vorerst aus der Nav versteckt — REVERSIBEL: Key hier entfernen = Reiter wieder da.
+// entdecken: Reiter obsolet (CTA "Ziel finden" führt dorthin). quiz/sammeln: deaktiviert.
+const HIDDEN_NAV = new Set<ShapesNavKey>(['entdecken', 'quiz', 'sammeln'])
+const NAV_TABS = TABS.filter((t) => !HIDDEN_NAV.has(t.key))
+
 export function ShapesBar({ active, overlay = false }: { active?: ShapesNavKey; overlay?: boolean }) {
   const [open, setOpen] = useState(false)
   // Hohe Navbar als Default, schrumpft beim Scrollen zu einer kompakten Leiste.
@@ -32,13 +37,13 @@ export function ShapesBar({ active, overlay = false }: { active?: ShapesNavKey; 
           <img src="/logo-allgaeu.svg" alt="Allgäu mit Kids" className="brand-logo" />
         </Link>
         <nav className="shapes-nav">
-          {TABS.map((t) => (
+          {NAV_TABS.map((t) => (
             <Link key={t.href} href={t.href} className={active === t.key ? 'on' : ''}>
               {t.label}
             </Link>
           ))}
         </nav>
-        <Link href="/quiz" className="shapes-cta">
+        <Link href="/entdecken" className="shapes-cta">
           <span className="cta-long">Ausflugsziel finden</span>
           <span className="cta-mini">Ziel finden</span>
         </Link>
@@ -56,7 +61,7 @@ export function ShapesBar({ active, overlay = false }: { active?: ShapesNavKey; 
       </div>
       {open && (
         <nav className="shapes-menu">
-          {TABS.map((t) => (
+          {NAV_TABS.map((t) => (
             <Link key={t.href} href={t.href} className={active === t.key ? 'on' : ''} onClick={() => setOpen(false)}>
               {t.label}
             </Link>
