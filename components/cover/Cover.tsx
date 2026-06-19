@@ -8,7 +8,7 @@ const col = (c?: CoverColor) => (c ? COVER_COLORS[c] : undefined);
 
 function Headline({ spec }: { spec: CoverSpec }) {
   const color = col(spec.textColor) ?? "#fff";
-  const shadow = spec.scrim && !spec.bar ? "0 4px 30px rgba(0,0,0,.55)" : undefined;
+  const shadow = undefined; // keine Schatten — Lesbarkeit kommt vom (schwarzen) Scrim
   const inner = spec.bar
     ? <span className="bar" style={{ background: col(spec.bar), color: col(spec.barText) ?? COVER_COLORS.ink }}>{spec.slogan}</span>
     : spec.slogan;

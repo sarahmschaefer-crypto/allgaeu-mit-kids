@@ -65,7 +65,7 @@ function Grid({ children, min }: { children: React.ReactNode; min: number }) {
 function Cell({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <div style={{ borderRadius: 14, overflow: "hidden", boxShadow: "0 6px 18px rgba(7,14,112,.15)" }}>{children}</div>
+      <div style={{ borderRadius: 14, overflow: "hidden" }}>{children}</div>
       <div style={{ fontSize: 13, fontWeight: 700, color: "#070e70" }}>{label}</div>
     </div>
   );
