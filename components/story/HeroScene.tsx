@@ -11,6 +11,7 @@ export function HeroScene() {
   const { fx, direkt } = useTweaks()
   const sec = useRef<HTMLElement>(null)
   const mapWrap = useRef<HTMLDivElement>(null)
+  const photo = useRef<HTMLImageElement>(null)
   const scrimRef = useRef<HTMLDivElement>(null)
   const copy = useRef<HTMLDivElement>(null)
   const sub = useRef<HTMLParagraphElement>(null)
@@ -22,7 +23,11 @@ export function HeroScene() {
 
   useScrollScene(sec, (p) => {
     const grow = easeOut(clamp(p / 0.82))
-    if (mapWrap.current) mapWrap.current.style.transform = `scale(${1 + grow * 5.4})`
+    // Silhouette zoomt nach vorne (Sog); das Foto wird gegen-skaliert (1/s),
+    // damit es optisch verankert stehen bleibt — das Fenster gibt es nur frei.
+    const s = 1 + grow * 5.4
+    if (mapWrap.current) mapWrap.current.style.transform = `scale(${s})`
+    if (photo.current) photo.current.style.transform = `translate(-50%, -50%) scale(${1 / s})`
     if (scrimRef.current) scrimRef.current.style.opacity = String(1 - clamp((p - 0.2) / 0.55) * 0.85)
     if (copy.current) {
       const out = clamp((p - 0.05) / 0.4)
@@ -55,7 +60,7 @@ export function HeroScene() {
         <div className="hero-map-wrap" ref={mapWrap}>
           <div className="hero-photo-box" style={{ aspectRatio: `${shape.vw} / ${shape.vh}` }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className="hero-photo" src="/hero-lake.jpg" alt="" style={{ opacity: 1 }} />
+            <img ref={photo} className="hero-photo" src="/hero-lake.jpg" alt="" style={{ opacity: 1 }} />
             <div className="hero-photo-scrim" ref={scrimRef} />
           </div>
         </div>
