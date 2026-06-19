@@ -30,3 +30,7 @@ yarn-error.log*
 # build info
 tsconfig.tsbuildinfo
 .DS_Store
+
+# admin-cms runtime artifacts (Phase 1: lokaler Datei-Store + lokale Uploads)
+/data/content.json
+/public/uploads/
