@@ -25,6 +25,7 @@ export type FTMarker = {
   type: "marker"; x: number; y: number; gap: number; size: number;
   barColor: CoverColor; textColor: CoverColor;
   pad: [number, number, number, number]; radius: number; tracking: number;
+  align?: "left" | "center"; w?: number;
 };
 export type FTBand = { type: "band"; color: CoverColor; x: number; y: number; w: number; h: number };
 export type FTStamp = { type: "stamp"; x: number; y: number; size: number };
@@ -137,6 +138,45 @@ FIGMA_TEMPLATES.push(
       { type: "graphic", asset: "path", x: -160, y: -50, w: 420, rot: 47 },
       { type: "stamp", x: 868, y: 60, size: 152 },
       { type: "marker", x: 60, y: 820, gap: 12, size: 100, barColor: "yellow", textColor: "pink", pad: [10, 24, 12, 24], radius: 14, tracking: -1 },
+    ],
+  },
+);
+
+FIGMA_TEMPLATES.push(
+  {
+    id: "vollbild-grafik-schrift-2", name: "Vollbild Grafik & Schrift 2",
+    layers: [
+      { type: "photo", x: 0, y: 0, w: 1080, h: 1350, scrim: { y: 710, h: 640, to: 0.88 } },
+      { type: "graphic", asset: "path", x: -160, y: -50, w: 420, rot: 47 },
+      { type: "stamp", x: 868, y: 60, size: 152 },
+      { type: "text", field: "slogan", x: 60, y: 900, w: 960, size: 156, color: "white", font: "mango", lh: 0.92, tracking: -1.56 },
+    ],
+  },
+  {
+    id: "stil16", name: "Stil16",
+    layers: [
+      { type: "photo", x: 0, y: 0, w: 1080, h: 1350 },
+      { type: "text", field: "overline", x: 79, y: 729, size: 41.5, color: "white", font: "nunito", lh: 1, tracking: 6.64, upper: true, weight: 700 },
+      { type: "stamp", x: 868, y: 60, size: 152 },
+      { type: "marker", x: 60, y: 820, gap: 12, size: 100, barColor: "yellow", textColor: "purple", pad: [10, 24, 12, 24], radius: 14, tracking: -1 },
+    ],
+  },
+  {
+    id: "stil17", name: "Stil17", bg: "orange",
+    layers: [
+      { type: "text", field: "slogan", x: 60, y: 230, w: 960, size: 132, color: "pink", font: "mango", lh: 0.92, tracking: -1.32, align: "center" },
+      { type: "graphic", asset: "logo-bade", x: 314, y: 660, w: 451 },
+      { type: "stamp", x: 868, y: 60, size: 152 },
+    ],
+  },
+  {
+    id: "teaser-2", name: "Teaser 2", bg: "pink",
+    layers: [
+      { type: "graphic", asset: "footprints", x: 116, y: 128, w: 296, h: 410 },
+      { type: "text", value: "9", x: 331, y: 245, w: 418, size: 300, color: "orange", font: "mango", lh: 0.92, tracking: -3, align: "center" },
+      { type: "marker", x: 0, y: 540, w: 1080, align: "center", gap: 12, size: 100, barColor: "yellow", textColor: "pink", pad: [10, 24, 12, 24], radius: 14, tracking: -1 },
+      { type: "text", field: "overline", x: 0, y: 1048, w: 1080, size: 41.5, color: "white", font: "nunito", lh: 1, tracking: 6.64, upper: true, weight: 700, align: "center" },
+      { type: "stamp", x: 868, y: 60, size: 152 },
     ],
   },
 );

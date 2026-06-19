@@ -7,10 +7,10 @@ const W = 340;
 const R = (n: string) => `/cover/demo/figma/${n}`;
 
 const rows: { id: string; ref: string; content: FigmaContent }[] = [
-  { id: "rahmen-viereck-2", ref: R("ref_viereck2.png"), content: { photo: FP, slogan: "Lieblings-\nAusflüge im Allgäu", number: "9", stampCategory: "ausflug" } },
-  { id: "rahmen-blob-2", ref: R("ref_blob2.png"), content: { photo: FP, slogan: "", place: "Overline zb Ort", stampCategory: "schwimmen" } },
-  { id: "rahmen-blob-3", ref: R("ref_blob3.png"), content: { photo: FP, slogan: "Lamaland\nJolerhof", stampCategory: "tierpark" } },
-  { id: "textmarker-1", ref: R("ref_textmarker1.png"), content: { photo: FP, slogan: "Sommer-\nrodelbahn\nHündle", stampCategory: "attraktion" } },
+  { id: "vollbild-grafik-schrift-2", ref: R("ref_grafik2.png"), content: { photo: FP, slogan: "Raus &\nentdecken", stampCategory: "ausflug" } },
+  { id: "stil16", ref: R("ref_stil16.png"), content: { photo: FP, slogan: "Sommer-\nrodelbahn\nHündle", place: "Overline zb Ort", stampCategory: "attraktion" } },
+  { id: "stil17", ref: R("ref_stil17.png"), content: { photo: FP, slogan: "Das beste\nAusflugsziel\nbei Regen?", stampCategory: "schwimmen" } },
+  { id: "teaser-2", ref: R("ref_teaser2.png"), content: { photo: FP, slogan: "Sommer-\nrodelbahn\nHündle", number: "9", place: "Overline zb Ort", stampCategory: "schwimmen" } },
 ];
 
 export default function FigmaCheck() {

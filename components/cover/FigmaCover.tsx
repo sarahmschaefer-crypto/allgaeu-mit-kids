@@ -68,7 +68,7 @@ function Layer({ layer, content }: { layer: FTLayer; content: FigmaContent }) {
   if (layer.type === "marker") {
     const lines = content.slogan.split("\n");
     return (
-      <div style={{ position: "absolute", left: layer.x, top: layer.y, display: "flex", flexDirection: "column", gap: layer.gap, alignItems: "flex-start" }}>
+      <div style={{ position: "absolute", left: layer.x, top: layer.y, width: layer.w, display: "flex", flexDirection: "column", gap: layer.gap, alignItems: layer.align === "center" ? "center" : "flex-start" }}>
         {lines.map((ln, i) => (
           <div key={i} style={{
             background: col(layer.barColor), color: col(layer.textColor),
