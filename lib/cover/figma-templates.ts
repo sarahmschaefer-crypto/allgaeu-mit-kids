@@ -162,7 +162,7 @@ FIGMA_TEMPLATES.push(
     ],
   },
   {
-    id: "teaser-2", name: "Teaser 2", bg: "pink",
+    id: "teaser-2", name: "Teaser 2", bg: "pink", needs: { number: true },
     layers: [
       { type: "graphic", asset: "footprints", x: 116, y: 128, w: 296, h: 410 },
       { type: "text", value: "9", x: 331, y: 245, w: 418, size: 300, color: "orange", font: "mango", lh: 0.92, tracking: -3, align: "center" },
