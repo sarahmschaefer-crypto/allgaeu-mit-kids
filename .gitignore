@@ -34,3 +34,6 @@ tsconfig.tsbuildinfo
 # admin-cms runtime artifacts (Phase 1: lokaler Datei-Store + lokale Uploads)
 /data/content.json
 /public/uploads/
+
+# Drive-Import Staging (lokale Roh-Inhalte)
+/scripts/.drive-staging/
