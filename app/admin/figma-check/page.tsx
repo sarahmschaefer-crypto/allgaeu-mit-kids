@@ -1,34 +1,50 @@
-// TEMP 1:1-Vergleich — meine FigmaCover (links) vs. Figma-Referenz (rechts). Wird gelöscht.
+// Galerie aller 1:1 aus Figma nachgebauten Cover/Feed-Templates.
 import { FigmaCover, type FigmaContent } from "@/components/cover/FigmaCover";
-import { figmaTemplate, type FigmaTemplate } from "@/lib/cover/figma-templates";
+import { FIGMA_TEMPLATES } from "@/lib/cover/figma-templates";
 
-const FP = "/cover/demo/figma/vollbild.png";
-const W = 340;
-const R = (n: string) => `/cover/demo/figma/${n}`;
+export const metadata = { title: "Figma-Templates 1:1 · Admin" };
 
-const rows: { id: string; ref: string; content: FigmaContent }[] = [
-  { id: "vollbild-grafik-schrift-2", ref: R("ref_grafik2.png"), content: { photo: FP, slogan: "Raus &\nentdecken", stampCategory: "ausflug" } },
-  { id: "stil16", ref: R("ref_stil16.png"), content: { photo: FP, slogan: "Sommer-\nrodelbahn\nHündle", place: "Overline zb Ort", stampCategory: "attraktion" } },
-  { id: "stil17", ref: R("ref_stil17.png"), content: { photo: FP, slogan: "Das beste\nAusflugsziel\nbei Regen?", stampCategory: "schwimmen" } },
-  { id: "teaser-2", ref: R("ref_teaser2.png"), content: { photo: FP, slogan: "Sommer-\nrodelbahn\nHündle", number: "9", place: "Overline zb Ort", stampCategory: "schwimmen" } },
-];
+const sample: FigmaContent = {
+  photo: "/cover/demo/01.jpg",
+  slogan: "Der schönste\nAusflug?",
+  place: "Oberstdorf",
+  number: "9",
+  stampCategory: "ausflug",
+};
 
-export default function FigmaCheck() {
+// Templates mit eigener typischer Beschriftung
+const text: Record<string, Partial<FigmaContent>> = {
+  "rahmen-viereck-1": { slogan: "Lieblings-\nAusflüge im Allgäu" },
+  "rahmen-viereck-2": { slogan: "Lieblings-\nAusflüge im Allgäu" },
+  stil19: { slogan: "Lieblings-\nAusflüge im Allgäu" },
+  "vollbild-grafik-schrift": { slogan: "Raus &\nentdecken" },
+  "vollbild-grafik-schrift-2": { slogan: "Raus &\nentdecken" },
+  "vollbild-grafik-schrift-3": { slogan: "Funtastico\nIndoor", stampCategory: "spielplatz" },
+  "vollbild-grafik-schrift-4": { slogan: "Funtastico\nIndoor", stampCategory: "spielplatz" },
+  "textmarker-1": { slogan: "Sommer-\nrodelbahn\nHündle", stampCategory: "attraktion" },
+  "textmarker-2": { slogan: "Sommer-\nrodelbahn\nHündle", stampCategory: "attraktion" },
+  stil16: { slogan: "Sommer-\nrodelbahn\nHündle", stampCategory: "attraktion" },
+  "teaser-1": { slogan: "Das beste\nAusflugsziel\nbei Regen?", stampCategory: "schwimmen" },
+  "teaser-2": { slogan: "Sommer-\nrodelbahn\nHündle", stampCategory: "schwimmen" },
+  stil17: { slogan: "Das beste\nAusflugsziel\nbei Regen?", stampCategory: "schwimmen" },
+  stil20: { slogan: "Das beste\nAusflugsziel\nbei Regen?", stampCategory: "schwimmen" },
+  "rahmen-blob-1": { slogan: "Lamaland\nJolerhof", stampCategory: "tierpark" },
+  "rahmen-blob-3": { slogan: "Lamaland\nJolerhof", stampCategory: "tierpark" },
+};
+
+export default function FigmaTemplatesGallery() {
   return (
-    <main style={{ padding: 24, background: "#cfcabb", fontFamily: "Nunito", display: "flex", flexDirection: "column", gap: 24 }}>
-      {rows.map((r) => {
-        const t = figmaTemplate(r.id) as FigmaTemplate;
-        return (
-          <div key={r.id}>
-            <b style={{ color: "#070e70" }}>{t.name}</b>
-            <div style={{ display: "flex", gap: 14, alignItems: "flex-start", marginTop: 4 }}>
-              <div><div style={{ fontSize: 11 }}>MEIN RENDER</div><FigmaCover template={t} content={r.content} width={W} /></div>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <div><div style={{ fontSize: 11 }}>FIGMA</div><img src={r.ref} alt="" style={{ width: W, height: W * 1.25, objectFit: "cover", display: "block" }} /></div>
-            </div>
+    <main style={{ padding: "32px clamp(20px,4vw,56px)", background: "#e9e4d6", minHeight: "100vh", fontFamily: "Nunito, system-ui" }}>
+      <h1 style={{ fontFamily: "'Baby Mango', system-ui", fontSize: 44, color: "#070e70" }}>Figma-Templates 1:1</h1>
+      <p style={{ color: "#555", marginBottom: 28 }}>Alle {FIGMA_TEMPLATES.length} Stile aus „Cover / Feed (4:5)" pixelgenau nachgebaut.</p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, max-content))", gap: 24 }}>
+        {FIGMA_TEMPLATES.map((t) => (
+          <div key={t.id} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <FigmaCover template={t} content={{ ...sample, ...text[t.id] }} width={260} />
+            <div style={{ fontSize: 13, fontWeight: 800, color: "#070e70" }}>{t.name}</div>
           </div>
-        );
-      })}
+        ))}
+      </div>
     </main>
   );
 }

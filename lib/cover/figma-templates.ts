@@ -181,4 +181,51 @@ FIGMA_TEMPLATES.push(
   },
 );
 
+FIGMA_TEMPLATES.push(
+  {
+    id: "stil19", name: "Stil19", bg: "purple", needs: { number: true },
+    layers: [
+      { type: "photo", x: 60, y: 60, w: 960, h: 792, radius: [40, 80, 40, 40] },
+      { type: "stamp", x: 868, y: 60, size: 152 },
+      { type: "text", field: "number", x: 83, y: 675, w: 861, size: 360, color: "pink", font: "mango", lh: 0.92, tracking: -3.6 },
+      { type: "text", field: "slogan", x: 60, y: 970, w: 960, size: 120, color: "white", font: "mango", lh: 0.92, tracking: -1.2 },
+    ],
+  },
+  {
+    id: "stil20", name: "Stil20", bg: "purple",
+    layers: [
+      { type: "text", field: "slogan", x: 60, y: 230, w: 960, size: 132, color: "yellow", font: "mango", lh: 0.92, tracking: -1.32, align: "center" },
+      { type: "graphic", asset: "logo-bade", x: 314, y: 660, w: 451 },
+      { type: "stamp", x: 868, y: 60, size: 152 },
+    ],
+  },
+  {
+    id: "textmarker-2", name: "Textmarker 2",
+    layers: [
+      { type: "photo", x: 0, y: 0, w: 1080, h: 1350 },
+      { type: "graphic", asset: "footprints", x: 106, y: 76, w: 296, h: 410 },
+      { type: "stamp", x: 868, y: 60, size: 152 },
+      { type: "marker", x: 60, y: 820, gap: 12, size: 100, barColor: "orange", textColor: "purple", pad: [10, 24, 12, 24], radius: 14, tracking: -1 },
+    ],
+  },
+  {
+    id: "vollbild-grafik-schrift-3", name: "Vollbild Grafik & Schrift 3",
+    layers: [
+      { type: "photo", x: 0, y: 0, w: 1080, h: 1350 },
+      { type: "graphic", asset: "blob3", x: 107, y: 838, w: 324 },
+      { type: "stamp", x: 868, y: 60, size: 152 },
+      { type: "text", field: "slogan", x: 60, y: 940, w: 960, size: 156, color: "paper", font: "mango", lh: 0.92, tracking: -1.56 },
+    ],
+  },
+  {
+    id: "vollbild-grafik-schrift-4", name: "Vollbild Grafik & Schrift 4",
+    layers: [
+      { type: "photo", x: 0, y: 0, w: 1080, h: 1350 },
+      { type: "graphic", asset: "logo-bade", x: 314, y: 359, w: 451 },
+      { type: "stamp", x: 868, y: 60, size: 152 },
+      { type: "text", field: "slogan", x: 60, y: 940, w: 960, size: 156, color: "paper", font: "mango", lh: 0.92, tracking: -1.56, align: "center" },
+    ],
+  },
+);
+
 export const figmaTemplate = (id: string) => FIGMA_TEMPLATES.find((t) => t.id === id);
