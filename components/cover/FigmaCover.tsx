@@ -32,8 +32,11 @@ function Layer({ layer, content }: { layer: FTLayer; content: FigmaContent }) {
   if (layer.type === "photo") {
     const r = layer.radius;
     const borderRadius = r ? `${r[0]}px ${r[1]}px ${r[2]}px ${r[3]}px` : undefined;
+    const mask = layer.mask
+      ? { WebkitMaskImage: `url(/cover/graphics/${layer.mask}.svg)`, maskImage: `url(/cover/graphics/${layer.mask}.svg)`, WebkitMaskSize: "100% 100%", maskSize: "100% 100%", WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat" } as const
+      : {};
     return (
-      <div style={{ position: "absolute", left: layer.x, top: layer.y, width: layer.w, height: layer.h, borderRadius, overflow: "hidden" }}>
+      <div style={{ position: "absolute", left: layer.x, top: layer.y, width: layer.w, height: layer.h, borderRadius, overflow: "hidden", ...mask }}>
         {content.photo
           // eslint-disable-next-line @next/next/no-img-element
           ? <img src={content.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
@@ -60,7 +63,7 @@ function Layer({ layer, content }: { layer: FTLayer; content: FigmaContent }) {
   if (layer.type === "graphic") {
     const src = layer.asset === "logo" ? "/logo-allgaeu.svg" : `/cover/graphics/${layer.asset}.svg`;
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt="" style={{ position: "absolute", left: layer.x, top: layer.y, width: layer.w, transform: layer.rot ? `rotate(${layer.rot}deg)` : undefined }} />;
+    return <img src={src} alt="" style={{ position: "absolute", left: layer.x, top: layer.y, width: layer.w, height: layer.h, objectFit: layer.h ? "contain" : undefined, objectPosition: "left top", transform: layer.rot ? `rotate(${layer.rot}deg)` : undefined }} />;
   }
   // text
   const t = layer;
