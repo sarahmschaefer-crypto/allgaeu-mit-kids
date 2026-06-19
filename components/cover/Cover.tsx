@@ -7,7 +7,7 @@ import { COVER_COLORS, type CoverColor, type CoverGraphic, type CoverSpec, type 
 const col = (c?: CoverColor) => (c ? COVER_COLORS[c] : undefined);
 const onColor = (c?: CoverColor): string =>
   c === "purple" || c === "orange" || c === "ink" ? COVER_COLORS.white : COVER_COLORS.ink;
-const graphicSrc = (a: CoverGraphic) => (a === "logo" ? "/logo-allgaeu.svg" : `/cover/graphics/${a}.png`);
+const graphicSrc = (a: CoverGraphic) => (a === "logo" ? "/logo-allgaeu.svg" : `/cover/graphics/${a}.svg`);
 
 function focalPos(spec: CoverSpec) {
   return spec.focal ? `${spec.focal.x * 100}% ${spec.focal.y * 100}%` : undefined;

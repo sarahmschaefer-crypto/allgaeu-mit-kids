@@ -22,8 +22,8 @@ export const COVER_COLORS: Record<CoverColor, string> = {
 };
 
 // Brand-Grafiken, die als Sticker aufs Cover gesetzt werden können (Editor-Palette).
-export type CoverGraphic = "logo" | "logo-bade" | "spots" | "footprints" | "blob1";
-export const COVER_GRAPHICS: CoverGraphic[] = ["logo", "logo-bade", "spots", "footprints", "blob1"];
+export type CoverGraphic = "logo" | "logo-bade" | "spots" | "footprints" | "path" | "blob1" | "blob2" | "blob3" | "blob4";
+export const COVER_GRAPHICS: CoverGraphic[] = ["logo", "logo-bade", "spots", "footprints", "path", "blob1", "blob2", "blob3", "blob4"];
 
 // Ein platziertes grafisches Element (Position 0..1 relativ zur Cover-Fläche).
 export type CoverSticker = {
