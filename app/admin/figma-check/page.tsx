@@ -7,12 +7,10 @@ const W = 340;
 const R = (n: string) => `/cover/demo/figma/${n}`;
 
 const rows: { id: string; ref: string; content: FigmaContent }[] = [
-  { id: "vollbild-einfach", ref: R("ref_vollbild.png"), content: { photo: FP, slogan: "Wanderweg\nWiesenfeld", place: "Overline zb Ort", stampCategory: "ausflug" } },
-  { id: "bandarole-1", ref: R("ref_bandarole1.png"), content: { photo: FP, slogan: "Bergspaß\nfür alle", stampCategory: "ausflug" } },
-  { id: "rahmen-viereck-1", ref: R("ref_viereck1.png"), content: { photo: FP, slogan: "Lieblings-\nAusflüge im Allgäu", number: "9", stampCategory: "ausflug" } },
-  { id: "teaser-1", ref: R("ref_teaser1.png"), content: { photo: FP, slogan: "Das beste\nAusflugsziel\nbei Regen?", stampCategory: "schwimmen" } },
-  { id: "vollbild-grafik-schrift", ref: R("ref_grafik1.png"), content: { photo: FP, slogan: "Raus &\nentdecken", stampCategory: "ausflug" } },
-  { id: "rahmen-blob-1", ref: R("ref_blob1.png"), content: { photo: FP, slogan: "Lamaland\nJolerhof", stampCategory: "tierpark" } },
+  { id: "rahmen-viereck-2", ref: R("ref_viereck2.png"), content: { photo: FP, slogan: "Lieblings-\nAusflüge im Allgäu", number: "9", stampCategory: "ausflug" } },
+  { id: "rahmen-blob-2", ref: R("ref_blob2.png"), content: { photo: FP, slogan: "", place: "Overline zb Ort", stampCategory: "schwimmen" } },
+  { id: "rahmen-blob-3", ref: R("ref_blob3.png"), content: { photo: FP, slogan: "Lamaland\nJolerhof", stampCategory: "tierpark" } },
+  { id: "textmarker-1", ref: R("ref_textmarker1.png"), content: { photo: FP, slogan: "Sommer-\nrodelbahn\nHündle", stampCategory: "attraktion" } },
 ];
 
 export default function FigmaCheck() {

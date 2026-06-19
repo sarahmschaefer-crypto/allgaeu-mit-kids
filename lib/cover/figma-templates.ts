@@ -17,12 +17,19 @@ export type FTPhoto = {
   type: "photo"; x: number; y: number; w: number; h: number;
   radius?: [number, number, number, number]; // tl, tr, br, bl
   mask?: string;   // Blob-SVG als Foto-Maske (z.B. "blob1")
+  rot?: number;    // Rotation in Grad
   scrim?: { y: number; h: number; to: number };
+};
+// Textmarker: jede Slogan-Zeile auf eigenem Highlight-Balken (auto-Breite).
+export type FTMarker = {
+  type: "marker"; x: number; y: number; gap: number; size: number;
+  barColor: CoverColor; textColor: CoverColor;
+  pad: [number, number, number, number]; radius: number; tracking: number;
 };
 export type FTBand = { type: "band"; color: CoverColor; x: number; y: number; w: number; h: number };
 export type FTStamp = { type: "stamp"; x: number; y: number; size: number };
 export type FTGraphic = { type: "graphic"; asset: string; x: number; y: number; w: number; h?: number; rot?: number };
-export type FTLayer = FTText | FTPhoto | FTBand | FTStamp | FTGraphic;
+export type FTLayer = FTText | FTPhoto | FTBand | FTStamp | FTGraphic | FTMarker;
 
 export type FigmaTemplate = {
   id: string; name: string; bg?: CoverColor;
@@ -92,6 +99,44 @@ FIGMA_TEMPLATES.push(
       { type: "stamp", x: 868, y: 60, size: 152 },
       { type: "text", field: "slogan", x: 60, y: 940, w: 960, size: 156, color: "purple", font: "mango", lh: 0.92, tracking: -1.56 },
       { type: "graphic", asset: "spots", x: 747, y: 972, w: 242 },
+    ],
+  },
+);
+
+FIGMA_TEMPLATES.push(
+  {
+    id: "rahmen-viereck-2", name: "Rahmen Viereck 2", bg: "yellow", needs: { number: true },
+    layers: [
+      { type: "photo", x: 60, y: 60, w: 960, h: 792, radius: [40, 80, 40, 40] },
+      { type: "stamp", x: 868, y: 60, size: 152 },
+      { type: "text", field: "number", x: 83, y: 675, w: 861, size: 360, color: "pink", font: "mango", lh: 0.92, tracking: -3.6 },
+      { type: "text", field: "slogan", x: 60, y: 970, w: 960, size: 120, color: "white", font: "mango", lh: 0.92, tracking: -1.2 },
+      { type: "graphic", asset: "spots", x: 748, y: 926, w: 225 },
+    ],
+  },
+  {
+    id: "rahmen-blob-2", name: "Rahmen Blob 2", bg: "purple",
+    layers: [
+      { type: "photo", x: 0, y: 10, w: 1080, h: 1240, mask: "blob2", rot: -25 },
+      { type: "text", field: "overline", x: 74, y: 781, size: 41.5, color: "white", font: "nunito", lh: 1, tracking: 6.64, upper: true, weight: 700 },
+      { type: "stamp", x: 868, y: 60, size: 152 },
+    ],
+  },
+  {
+    id: "rahmen-blob-3", name: "Rahmen Blob 3", bg: "pink",
+    layers: [
+      { type: "photo", x: 60, y: 60, w: 960, h: 943, radius: [460, 460, 460, 460] },
+      { type: "text", field: "slogan", x: 60, y: 1003, w: 960, size: 156, color: "ink", font: "mango", lh: 0.92, tracking: -1.56 },
+      { type: "stamp", x: 868, y: 60, size: 152 },
+    ],
+  },
+  {
+    id: "textmarker-1", name: "Textmarker 1",
+    layers: [
+      { type: "photo", x: 0, y: 0, w: 1080, h: 1350 },
+      { type: "graphic", asset: "path", x: -160, y: -50, w: 420, rot: 47 },
+      { type: "stamp", x: 868, y: 60, size: 152 },
+      { type: "marker", x: 60, y: 820, gap: 12, size: 100, barColor: "yellow", textColor: "pink", pad: [10, 24, 12, 24], radius: 14, tracking: -1 },
     ],
   },
 );

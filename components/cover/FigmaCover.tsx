@@ -36,7 +36,7 @@ function Layer({ layer, content }: { layer: FTLayer; content: FigmaContent }) {
       ? { WebkitMaskImage: `url(/cover/graphics/${layer.mask}.svg)`, maskImage: `url(/cover/graphics/${layer.mask}.svg)`, WebkitMaskSize: "100% 100%", maskSize: "100% 100%", WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat" } as const
       : {};
     return (
-      <div style={{ position: "absolute", left: layer.x, top: layer.y, width: layer.w, height: layer.h, borderRadius, overflow: "hidden", ...mask }}>
+      <div style={{ position: "absolute", left: layer.x, top: layer.y, width: layer.w, height: layer.h, borderRadius, overflow: "hidden", transform: layer.rot ? `rotate(${layer.rot}deg)` : undefined, ...mask }}>
         {content.photo
           // eslint-disable-next-line @next/next/no-img-element
           ? <img src={content.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
@@ -64,6 +64,21 @@ function Layer({ layer, content }: { layer: FTLayer; content: FigmaContent }) {
     const src = layer.asset === "logo" ? "/logo-allgaeu.svg" : `/cover/graphics/${layer.asset}.svg`;
     // eslint-disable-next-line @next/next/no-img-element
     return <img src={src} alt="" style={{ position: "absolute", left: layer.x, top: layer.y, width: layer.w, height: layer.h, objectFit: layer.h ? "contain" : undefined, objectPosition: "left top", transform: layer.rot ? `rotate(${layer.rot}deg)` : undefined }} />;
+  }
+  if (layer.type === "marker") {
+    const lines = content.slogan.split("\n");
+    return (
+      <div style={{ position: "absolute", left: layer.x, top: layer.y, display: "flex", flexDirection: "column", gap: layer.gap, alignItems: "flex-start" }}>
+        {lines.map((ln, i) => (
+          <div key={i} style={{
+            background: col(layer.barColor), color: col(layer.textColor),
+            padding: `${layer.pad[0]}px ${layer.pad[1]}px ${layer.pad[2]}px ${layer.pad[3]}px`,
+            borderRadius: layer.radius, fontFamily: "'Baby Mango', system-ui", fontSize: layer.size,
+            lineHeight: 0.92, letterSpacing: layer.tracking, whiteSpace: "nowrap",
+          }}>{ln}</div>
+        ))}
+      </div>
+    );
   }
   // text
   const t = layer;
