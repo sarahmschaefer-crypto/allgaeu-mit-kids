@@ -1,0 +1,65 @@
+/* Cover-Renderer — Allgäu mit Kids
+   EIN Renderer für Social (text-on) + Plattform-Card (text-light).
+   Maße fix in px (Feed 1080×1350, Reel 1080×1920); Skalierung via transform. */
+
+@font-face {
+  font-family: "Baby Mango";
+  src: local("Baby Mango"), url("/fonts/BabyMango.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+
+.amk-cover-wrap { position: relative; overflow: hidden; border-radius: inherit; }
+
+.amk-cover {
+  position: absolute; top: 0; left: 0; transform-origin: top left; overflow: hidden;
+  font-family: "Baby Mango", system-ui, sans-serif;
+  --ink:#070e70; --paper:#f7f2e5;
+}
+.amk-cover.feed { width: 1080px; height: 1350px; }
+.amk-cover.reel { width: 1080px; height: 1920px; }
+
+.amk-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.amk-scrim-b  { position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,14,112,.82) 0%, rgba(7,14,112,.36) 30%, rgba(7,14,112,0) 58%); }
+.amk-scrim-tb { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(7,14,112,.5) 0%, rgba(7,14,112,0) 24%, rgba(7,14,112,0) 55%, rgba(7,14,112,.78) 100%); }
+
+.amk-eyebrow { font-family: "Nunito", system-ui, sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; font-size: 27px; }
+
+/* Stempel: weißen Export-Kasten auf Kreis clippen */
+.amk-stamp { position: absolute; width: 170px; height: 170px; border-radius: 50%; overflow: hidden;
+  filter: drop-shadow(0 10px 24px rgba(7,14,112,.26)); z-index: 5; }
+.amk-stamp img { width: 122%; height: 122%; margin: -11%; display: block; }
+
+.amk-headline { font-family: "Baby Mango"; font-weight: 400; line-height: .94; letter-spacing: -1px; }
+.amk-headline .bar { box-decoration-break: clone; -webkit-box-decoration-break: clone; padding: .05em .17em; border-radius: 16px; }
+
+/* FEED templates */
+.t-vollbild .amk-block { position: absolute; left: 56px; right: 150px; bottom: 110px; }
+.t-vollbild .amk-stamp { top: 48px; right: 48px; }
+.t-vollbild .amk-eyebrow { margin-bottom: 22px; }
+
+.t-blob .amk-stamp { top: 48px; right: 48px; }
+.t-blob .amk-blobwrap { position: absolute; top: 150px; left: 90px; right: 90px; height: 770px;
+  border-radius: 42% 58% 63% 37% / 45% 42% 58% 55%; overflow: hidden; box-shadow: 0 20px 50px rgba(7,14,112,.18); }
+.t-blob .amk-blobwrap img { width: 100%; height: 100%; object-fit: cover; }
+.t-blob .amk-block { position: absolute; left: 70px; right: 70px; bottom: 120px; text-align: center; }
+.amk-cover.reel.t-blob .amk-blobwrap { height: 1040px; top: 360px; }
+
+.t-editorial { background: var(--paper); }
+.t-editorial .amk-stamp { top: 48px; right: 48px; }
+.t-editorial .amk-block { position: absolute; left: 60px; right: 60px; top: 150px; }
+.t-editorial .amk-eyebrow { margin-bottom: 20px; color: var(--ink); }
+.t-editorial .amk-photoframe { position: absolute; left: 60px; right: 60px; bottom: 60px; height: 560px; border-radius: 34px; overflow: hidden; }
+.amk-cover.reel.t-editorial .amk-photoframe { height: 980px; }
+.t-editorial .amk-photoframe img { width: 100%; height: 100%; object-fit: cover; }
+
+/* REEL — gleiche Optik wie Feed + Safe-Zone */
+.amk-cover.reel.t-vollbild .amk-block { bottom: 430px; }
+.amk-cover.reel .amk-stamp { top: 320px; right: 60px; }
+.amk-cover.reel.t-editorial .amk-block { top: 360px; }
+
+.amk-safezone { position: absolute; top: 285px; left: 0; width: 1080px; height: 1350px;
+  border: 3px dashed rgba(255,255,255,.9); z-index: 7; pointer-events: none; }
+.amk-safezone .tag { position: absolute; top: -44px; left: 50%; transform: translateX(-50%); color: #fff;
+  font-family: "Nunito", system-ui, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: 1px;
+  white-space: nowrap; text-transform: uppercase; opacity: .85; }
