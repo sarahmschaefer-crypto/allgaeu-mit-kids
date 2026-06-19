@@ -118,7 +118,7 @@ FIGMA_TEMPLATES.push(
   {
     id: "rahmen-blob-2", name: "Rahmen Blob 2", bg: "purple",
     layers: [
-      { type: "photo", x: 0, y: 10, w: 1080, h: 1240, mask: "blob2", rot: -25 },
+      { type: "photo", x: 150, y: 10, w: 930, h: 1240, mask: "blob2", rot: -25 },
       { type: "text", field: "overline", x: 74, y: 781, size: 41.5, color: "white", font: "nunito", lh: 1, tracking: 6.64, upper: true, weight: 700 },
       { type: "stamp", x: 868, y: 60, size: 152 },
     ],
@@ -135,9 +135,9 @@ FIGMA_TEMPLATES.push(
     id: "textmarker-1", name: "Textmarker 1",
     layers: [
       { type: "photo", x: 0, y: 0, w: 1080, h: 1350 },
-      { type: "graphic", asset: "path", x: -160, y: -50, w: 420, rot: 47 },
+      { type: "graphic", asset: "path", x: 61, y: -46, w: 421, h: 895, rot: 47.32 },
       { type: "stamp", x: 868, y: 60, size: 152 },
-      { type: "marker", x: 60, y: 820, gap: 12, size: 100, barColor: "yellow", textColor: "pink", pad: [10, 24, 12, 24], radius: 14, tracking: -1 },
+      { type: "marker", x: 60, y: 820, gap: 12, size: 100, barColor: "purple", textColor: "pink", pad: [10, 24, 12, 24], radius: 14, tracking: -1 },
     ],
   },
 );
@@ -147,7 +147,7 @@ FIGMA_TEMPLATES.push(
     id: "vollbild-grafik-schrift-2", name: "Vollbild Grafik & Schrift 2",
     layers: [
       { type: "photo", x: 0, y: 0, w: 1080, h: 1350, scrim: { y: 710, h: 640, to: 0.88 } },
-      { type: "graphic", asset: "path", x: -160, y: -50, w: 420, rot: 47 },
+      { type: "graphic", asset: "path", x: 61, y: -46, w: 421, h: 895, rot: 47.32 },
       { type: "stamp", x: 868, y: 60, size: 152 },
       { type: "text", field: "slogan", x: 60, y: 900, w: 960, size: 156, color: "white", font: "mango", lh: 0.92, tracking: -1.56 },
     ],
