@@ -80,7 +80,11 @@ function parseText(text: string): Parsed {
     const after = lines[reelIdx].replace(/^text im reel:?/i, '').trim()
     slogan = after || lines.slice(reelIdx + 1).find((l) => !/^reel$/i.test(l)) || ''
   }
-  if (!slogan) slogan = lines[0] || ''
+  if (!slogan) {
+    // Nur kurze, titelartige erste Zeile als Slogan (keine langen Sätze/Fragen).
+    const first = (lines[0] || '').replace(/^reel\s+/i, '')
+    slogan = first.length <= 46 && !/[.?]$/.test(first) ? first : ''
+  }
 
   // Blurb = erster echter Caption-Satz (editoriale Beschreibung).
   const capIdx = lines.findIndex((l) => /^caption:?$/i.test(l))
@@ -93,25 +97,27 @@ function parseText(text: string): Parsed {
     blurb = body.find((l) => l.length > 40) || body[0] || ''
   }
 
-  // PLZ-Zeile → Adresse + Ort.
-  const plzIdx = lines.findIndex((l) => /\b\d{5}\b/.test(l))
+  // PLZ-Zeile → Adresse + Ort (DE: 5-stellig; AT/CH: „A-6600").
+  const PLZ = /\b(?:\d{5}|[A-Z]-\d{4})\b/
+  const plzIdx = lines.findIndex((l) => PLZ.test(l))
   let adresse = '', place = ''
   if (plzIdx >= 0) {
     const plzLine = lines[plzIdx]
     const prev = lines[plzIdx - 1] || ''
     // Straße steht oft in der Zeile davor (kurz, ohne Satzpunkt, keine eigene PLZ).
-    const street = prev && prev.length < 42 && !/[.!?]$/.test(prev) && !/\b\d{5}\b/.test(prev) ? prev : ''
+    const street = prev && prev.length < 42 && !/[.!?]$/.test(prev) && !PLZ.test(prev) ? prev : ''
     adresse = (street ? street + ', ' : '') + plzLine
-    place = (plzLine.match(/\b\d{5}\s+(.+)$/)?.[1] || '').replace(/[,.].*$/, '').trim()
+    place = (plzLine.match(/(?:\d{5}|[A-Z]-\d{4})\s+(.+)$/)?.[1] || '').replace(/[,.(].*$/, '').trim()
   }
 
   // Öffnungszeiten.
   const oeffnungszeiten =
     lines.find((l) => /\bUhr\b/.test(l) || /geöffnet/i.test(l) || /täglich.*\d/i.test(l)) || ''
 
-  // Preis + Budget-Einstufung.
-  const freeLine = lines.find((l) => /kostenlos|kostenfrei|gratis|eintritt frei/i.test(l))
-  const euroLine = lines.find((l) => /€/.test(l))
+  // Preis + Budget-Einstufung. Parkzeilen ausschließen (Parkgebühr ≠ Eintritt).
+  const priceLines = lines.filter((l) => !/parkplatz|parken|parkbucht|parkhaus/i.test(l))
+  const freeLine = priceLines.find((l) => /kostenlos|kostenfrei|gratis|eintritt frei/i.test(l))
+  const euroLine = priceLines.find((l) => /€/.test(l))
   const preis = freeLine || euroLine || ''
   let budget = ''
   if (freeLine) budget = 'frei'
@@ -121,16 +127,18 @@ function parseText(text: string): Parsed {
     budget = max === 0 ? '' : max <= 10 ? '€' : max <= 25 ? '€€' : '€€€'
   }
 
-  // Wegbeschaffenheit / Kinderwagen.
+  // Wegbeschaffenheit / Kinderwagen. Negationen („abraten", „zuhause lassen",
+  // „nicht tauglich") korrekt als NICHT-tauglich werten.
   const accessLine = lines.find((l) => /kinderwagen|laufrad|fahrrad|buggy|barrierefrei|tauglich/i.test(l))
+  const negated = !!accessLine && /\bnicht\b|\bkein\b|abraten|zuhause lassen|ungeeignet/i.test(accessLine)
   const weg: string[] = []
-  if (accessLine) {
+  if (accessLine && !negated) {
     if (/kinderwagen/i.test(accessLine)) weg.push('Kinderwagen')
     if (/laufrad/i.test(accessLine)) weg.push('Laufrad')
     if (/fahrrad|fahrzeug/i.test(accessLine)) weg.push('Fahrrad')
     if (/barrierefrei/i.test(accessLine)) weg.push('Barrierefrei')
   }
-  const stroller = !!accessLine && /kinderwagen/i.test(accessLine) && !/nicht.*kinderwagen|kinderwagen.*nicht|kein.*kinderwagen/i.test(accessLine)
+  const stroller = !!accessLine && !negated && /kinderwagen/i.test(accessLine)
 
   const facilities: string[] = []
   if (lines.some((l) => /parkplatz|parken|parkbucht/i.test(l))) facilities.push('Parkplatz')
