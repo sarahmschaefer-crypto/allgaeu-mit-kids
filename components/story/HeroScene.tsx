@@ -12,6 +12,7 @@ export function HeroScene() {
   const sec = useRef<HTMLElement>(null)
   const mapWrap = useRef<HTMLDivElement>(null)
   const photo = useRef<HTMLImageElement>(null)
+  const photoFull = useRef<HTMLImageElement>(null)
   const scrimRef = useRef<HTMLDivElement>(null)
   const copy = useRef<HTMLDivElement>(null)
   const sub = useRef<HTMLParagraphElement>(null)
@@ -28,6 +29,13 @@ export function HeroScene() {
     const s = 1 + grow * 5.4
     if (mapWrap.current) mapWrap.current.style.transform = `scale(${s})`
     if (photo.current) photo.current.style.transform = `translate(-50%, -50%) scale(${1 / s})`
+    // Letztes Scroll-Drittel: deckungsgleiche Vollbild-Ebene blendet ein →
+    // die Silhouette löst sich randlos auf; dezente Drift nach oben (flyward-Stil).
+    if (photoFull.current) {
+      const rise = clamp((p - 0.5) / 0.32)
+      photoFull.current.style.opacity = String(rise)
+      photoFull.current.style.transform = `translate(-50%, -50%) translateY(${-rise * 3}vh) scale(${1.04 - rise * 0.04})`
+    }
     if (scrimRef.current) scrimRef.current.style.opacity = String(1 - clamp((p - 0.2) / 0.55) * 0.85)
     if (copy.current) {
       const out = clamp((p - 0.05) / 0.4)
@@ -64,6 +72,11 @@ export function HeroScene() {
             <div className="hero-photo-scrim" ref={scrimRef} />
           </div>
         </div>
+
+        {/* Vollbild-Ebene: deckungsgleich zur Silhouette (120vw/120vh, zentriert →
+            immer randlos). Blendet im letzten Drittel ein, der Hero endet full-bleed. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img ref={photoFull} className="hero-photo-full" src="/hero-lake.jpg" alt="" />
 
         <div className="hero-copy" ref={copy}>
           <p className="eyebrow">Für Familien mit kleinen Entdeckern</p>

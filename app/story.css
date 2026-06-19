@@ -116,6 +116,7 @@
 #story-root .hero-map-wrap { position: absolute; inset: 0; display: grid; place-items: center; will-change: transform, opacity; z-index: 2; }
 #story-root .hero-photo-box { position: relative; grid-area: 1 / 1; width: min(72vh, 86vw); -webkit-clip-path: url(#allgaeuClipN); clip-path: url(#allgaeuClipN); filter: drop-shadow(0 24px 48px oklch(0.3 0.04 160 / .28)); }
 #story-root .hero-photo { position: absolute; top: 50%; left: 50%; width: 120vw; height: 120vh; object-fit: cover; opacity: 0; transform: translate(-50%, -50%); transform-origin: center center; will-change: transform; }
+#story-root .hero-photo-full { position: absolute; top: 50%; left: 50%; width: 120vw; height: 120vh; object-fit: cover; opacity: 0; z-index: 3; transform: translate(-50%, -50%); transform-origin: center center; will-change: opacity, transform; pointer-events: none; }
 #story-root .hero-photo-scrim { position: absolute; inset: 0; background: oklch(0.22 0.03 158 / .28); }
 #story-root .hero-map { grid-area: 1 / 1; width: min(72vh, 86vw); aspect-ratio: var(--shape-ar, 1000 / 995); overflow: visible; pointer-events: none; }
 #story-root .hero-seg { fill: none; stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
