@@ -20,8 +20,8 @@
 .amk-cover.reel { width: 1080px; height: 1920px; }
 
 .amk-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.amk-scrim-b  { position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,14,112,.82) 0%, rgba(7,14,112,.36) 30%, rgba(7,14,112,0) 58%); }
-.amk-scrim-tb { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(7,14,112,.5) 0%, rgba(7,14,112,0) 24%, rgba(7,14,112,0) 55%, rgba(7,14,112,.78) 100%); }
+.amk-scrim-b  { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.78) 0%, rgba(0,0,0,.34) 30%, rgba(0,0,0,0) 58%); }
+.amk-scrim-tb { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,.48) 0%, rgba(0,0,0,0) 24%, rgba(0,0,0,0) 55%, rgba(0,0,0,.74) 100%); }
 
 .amk-eyebrow { font-family: "Nunito", system-ui, sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; font-size: 27px; }
 
@@ -31,7 +31,12 @@
 .amk-stamp img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%; }
 
 .amk-headline { font-family: "Baby Mango"; font-weight: 400; line-height: .94; letter-spacing: -1px; }
-.amk-headline .bar { box-decoration-break: clone; -webkit-box-decoration-break: clone; padding: .05em .17em; border-radius: 16px; }
+/* Unterlegter Text braucht mehr Zeilenhöhe + Innenabstand, sonst werden
+   Ober-/Unterlängen vom Balken abgeschnitten. */
+.amk-headline.has-bar { line-height: 1.2; }
+.amk-headline .bar { box-decoration-break: clone; -webkit-box-decoration-break: clone; padding: .12em .2em .18em; border-radius: 16px; }
+/* Overline (Eyebrow) braucht mehr Abstand, wenn darunter ein Farbbalken sitzt. */
+.amk-block.has-bar .amk-eyebrow { margin-bottom: 40px; }
 
 /* FEED templates */
 .t-vollbild .amk-block { position: absolute; left: 56px; right: 150px; bottom: 110px; }

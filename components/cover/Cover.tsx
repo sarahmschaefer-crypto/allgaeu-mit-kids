@@ -8,12 +8,12 @@ const col = (c?: CoverColor) => (c ? COVER_COLORS[c] : undefined);
 
 function Headline({ spec }: { spec: CoverSpec }) {
   const color = col(spec.textColor) ?? "#fff";
-  const shadow = spec.scrim && !spec.bar ? "0 4px 30px rgba(7,14,112,.5)" : undefined;
+  const shadow = spec.scrim && !spec.bar ? "0 4px 30px rgba(0,0,0,.55)" : undefined;
   const inner = spec.bar
     ? <span className="bar" style={{ background: col(spec.bar), color: col(spec.barText) ?? COVER_COLORS.ink }}>{spec.slogan}</span>
     : spec.slogan;
   return (
-    <div className="amk-headline" style={{ fontSize: spec.fontSize ?? 112, color, textShadow: shadow }}>
+    <div className={`amk-headline${spec.bar ? " has-bar" : ""}`} style={{ fontSize: spec.fontSize ?? 112, color, textShadow: shadow }}>
       {inner}
     </div>
   );
@@ -69,7 +69,7 @@ export function Cover({
         {spec.scrim ? <div className={spec.format === "reel" ? "amk-scrim-tb" : "amk-scrim-b"} /> : null}
         <Stamp spec={spec} />
         {textOn && (
-          <div className="amk-block">
+          <div className={`amk-block${spec.bar ? " has-bar" : ""}`}>
             <div className="amk-eyebrow" style={{ color: eyebrowColor }}>{spec.category} · {spec.place}</div>
             <Headline spec={spec} />
           </div>
@@ -82,7 +82,7 @@ export function Cover({
         <Stamp spec={spec} />
         {spec.photo ? <div className="amk-blobwrap"><img src={spec.photo} alt="" style={{ objectPosition: focalPos(spec) }} /></div> : null}
         {textOn && (
-          <div className="amk-block">
+          <div className={`amk-block${spec.bar ? " has-bar" : ""}`}>
             <Headline spec={spec} />
             <div className="amk-eyebrow" style={{ color: col(spec.textColor), marginTop: 26, opacity: 0.92 }}>{spec.place}</div>
           </div>
@@ -94,7 +94,7 @@ export function Cover({
       <>
         <Stamp spec={spec} />
         {textOn && (
-          <div className="amk-block">
+          <div className={`amk-block${spec.bar ? " has-bar" : ""}`}>
             <div className="amk-eyebrow">{spec.category} · {spec.place}</div>
             <Headline spec={spec} />
           </div>
