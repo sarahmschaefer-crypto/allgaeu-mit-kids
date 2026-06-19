@@ -57,6 +57,48 @@
 .amk-cover.reel.t-editorial .amk-photoframe { height: 1100px; }
 .t-editorial .amk-photoframe img { width: 100%; height: 100%; object-fit: cover; }
 
+/* ---- NEUE TEMPLATES ---- */
+
+/* Logo (frage / marker-bogen) — weißer Kreis mit Brand-Logo */
+.amk-logo { position: absolute; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; z-index: 4; }
+.amk-logo img { width: 74%; height: 74%; object-fit: contain; }
+
+/* Sticker-Ebene: frei platzierte Brand-Grafiken aufs Foto (Ebene 4) */
+.amk-sticker { position: absolute; height: auto; z-index: 4; pointer-events: none; }
+/* Text + Stempel liegen ÜBER den Stickern */
+.amk-block, .amk-subbars { z-index: 6; }
+
+/* Split-Band: Foto oben + Farbband unten, Text über der Kante */
+.t-split-band .amk-photo { height: 62%; }
+.t-split-band .amk-band { position: absolute; left: 0; right: 0; bottom: 0; height: 38%; }
+.t-split-band .amk-stamp { top: 48px; right: 48px; }
+.t-split-band .amk-block { position: absolute; left: 56px; right: 120px; bottom: 9%; }
+.t-split-band .amk-eyebrow { margin-bottom: 18px; }
+
+/* Farbrahmen: Foto mit dickem Farb-Rahmen, Titel oben */
+.t-farbrahmen .amk-stamp { top: 48px; right: 48px; }
+.t-farbrahmen .amk-block { position: absolute; left: 64px; right: 150px; top: 56px; }
+.t-farbrahmen .amk-eyebrow { margin-bottom: 16px; }
+.t-farbrahmen .amk-photoframe { position: absolute; left: 64px; right: 64px; top: 30%; bottom: 64px; border-radius: 30px; overflow: hidden; }
+.t-farbrahmen .amk-photoframe img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Foto-Untertitel: Foto + gestapelte Farb-Balken unten */
+.t-foto-untertitel .amk-stamp { top: 48px; right: 48px; }
+.t-foto-untertitel .amk-subbars { position: absolute; left: 56px; right: 56px; bottom: 7%; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.amk-subbar { font-family: "Baby Mango"; line-height: 1.04; letter-spacing: -1px; padding: .1em .22em .14em; border-radius: 14px; }
+
+/* Frage: Farbfläche + große Frage + Logo, kein Foto */
+.t-frage .amk-stamp { top: 48px; right: 48px; }
+.t-frage .amk-block { position: absolute; left: 70px; right: 70px; top: 13%; text-align: center; }
+.t-frage .amk-logo { width: 300px; height: 300px; left: 50%; top: 58%; transform: translateX(-50%); }
+
+/* Marker-Bogen: Foto + organische Form + Logo, Text unten */
+.t-marker-bogen .amk-stamp { top: 48px; right: 48px; }
+.t-marker-bogen .amk-shape { position: absolute; top: -120px; left: -120px; width: 620px; height: 560px;
+  border-radius: 48% 52% 60% 40% / 55% 48% 52% 45%; z-index: 1; }
+.t-marker-bogen .amk-logo { width: 300px; height: 300px; left: 70px; top: 90px; }
+.t-marker-bogen .amk-block { position: absolute; left: 56px; right: 120px; bottom: 8%; z-index: 3; }
+
 /* REEL — gleiche Optik wie Feed + Safe-Zone */
 .amk-cover.reel.t-vollbild .amk-block { bottom: 430px; }
 .amk-cover.reel .amk-stamp { top: 320px; right: 60px; }

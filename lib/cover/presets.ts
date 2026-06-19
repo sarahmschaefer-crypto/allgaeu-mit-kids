@@ -1,82 +1,92 @@
-// lib/cover/presets.ts — Auto-Generierung: aus einem Ausflugsziel einen
-// Cover-Entwurf bauen. Slogan = teaser (sonst KI später), Stempel = primaryTag,
-// Template-Mix ~3:1 (Vollbild : Blob/Editorial). Alles danach im Editor änderbar.
+// lib/cover/presets.ts — Auto-Generierung mit GUTER MISCHUNG aller Template-Typen
+// und BUNTER Schrift (Brand-Farben). Slogan = teaser (sonst KI später),
+// Stempel = primaryTag. Alles danach im Editor änderbar.
 
 import type { ShapesDest } from "@/lib/shapes/data";
 import { primaryTagOf } from "@/lib/shapes/data";
 import type { CoverColor, CoverFormat, CoverMode, CoverSpec, CoverTemplate } from "./types";
 
-// stabiler kleiner Hash aus der ID → deterministische, aber gestreute Auswahl
 function hash(s: string): number {
   let h = 0;
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
   return h;
 }
 
-const BLOB_BG: CoverColor[] = ["orange", "purple", "pink"];
-const BLOB_TEXT: CoverColor[] = ["purple", "yellow", "ink"];
-const BAR_COLORS: CoverColor[] = ["yellow", "pink", "purple"];
-
-// Template-Verteilung ~3:1 (Vollbild : Rahmen). h%4: 0–2 Vollbild, 3 Blob/Editorial
-function pickTemplate(h: number): CoverTemplate {
-  const m = h % 8;
-  if (m === 3) return "blob";
-  if (m === 7) return "editorial";
-  return "vollbild";
-}
+// Reihenfolge so, dass über die Ziele alle Typen durchrotieren → gute Mischung.
+const CYCLE: CoverTemplate[] = [
+  "vollbild", "split-band", "blob", "farbrahmen",
+  "editorial", "foto-untertitel", "marker-bogen", "frage",
+];
 
 export type CoverOverrides = Partial<CoverSpec> & {
   format?: CoverFormat;
   mode?: CoverMode;
   photo?: string;
+  variantIndex?: number; // erzwingt die Mischung (z.B. Listen-Index)
 };
+
+// Bunte Farbwege je Template — i streut die Farben.
+function styleFor(t: CoverTemplate, i: number, hasPhoto: boolean): Partial<CoverSpec> {
+  const r3 = i % 3, r4 = i % 4;
+  switch (t) {
+    case "vollbild":
+      // bunte Schrift auf schwarzem Scrim, ab und zu Farbbalken
+      if (r3 === 0) return { scrim: false, bar: (["yellow", "pink", "purple"] as CoverColor[])[i % 3], barText: "ink", textColor: "ink" };
+      return { scrim: true, textColor: (["yellow", "pink", "white"] as CoverColor[])[r3 % 3] };
+    case "split-band": {
+      const band = (["purple", "orange", "pink", "ink"] as CoverColor[])[r4];
+      const text = ({ purple: "yellow", orange: "white", pink: "ink", ink: "yellow" } as Record<string, CoverColor>)[band];
+      return { band, textColor: text };
+    }
+    case "blob": {
+      const bg = (["orange", "purple", "pink"] as CoverColor[])[r3];
+      const text = ({ orange: "purple", purple: "yellow", pink: "ink" } as Record<string, CoverColor>)[bg];
+      return { bg, textColor: text };
+    }
+    case "farbrahmen": {
+      const band = (["purple", "orange", "pink"] as CoverColor[])[r3];
+      return { band, bg: band, textColor: "white" };
+    }
+    case "editorial":
+      return { bg: "paper", textColor: (["orange", "purple", "pink"] as CoverColor[])[r3] };
+    case "foto-untertitel":
+      return { subtitleBars: r3 === 0 ? ["yellow", "purple"] : r3 === 1 ? ["pink", "yellow"] : ["purple", "orange"], textColor: "ink" };
+    case "marker-bogen":
+      return { bg: (["purple", "orange", "pink"] as CoverColor[])[r3], textColor: "paper", showLogo: true };
+    case "frage": {
+      const bg = (["pink", "purple", "yellow"] as CoverColor[])[r3];
+      const text = ({ pink: "yellow", purple: "yellow", yellow: "ink" } as Record<string, CoverColor>)[bg];
+      return { bg, textColor: text, showLogo: true };
+    }
+    default:
+      return {};
+  }
+}
 
 export function coverFromDest(dest: ShapesDest, o: CoverOverrides = {}): CoverSpec {
   const h = hash(dest.id);
-  const template = o.template ?? pickTemplate(h);
-  const category = o.category ?? primaryTagOf(dest);
+  const i = o.variantIndex ?? h;
+  const template = o.template ?? CYCLE[i % CYCLE.length];
+  const photo = o.photo;
+  const style = styleFor(template, i, !!photo);
+
   const base: CoverSpec = {
     format: o.format ?? "feed",
     template,
     mode: o.mode ?? "text-on",
-    category,
+    category: o.category ?? primaryTagOf(dest),
     slogan: o.slogan ?? dest.teaser ?? dest.highlights?.[0] ?? "Familienausflug",
     place: o.place ?? dest.place,
-    photo: o.photo,
+    photo,
     showStamp: o.showStamp ?? true,
+    ...style,
   };
 
-  if (template === "blob") {
-    base.bg = o.bg ?? BLOB_BG[h % BLOB_BG.length];
-    base.textColor = o.textColor ?? BLOB_TEXT[h % BLOB_TEXT.length];
-  } else if (template === "editorial") {
-    base.bg = "paper";
-    base.textColor = o.textColor ?? "ink";
-  } else {
-    // vollbild: jedes 3. bekommt einen Farbbalken statt Scrim
-    const withBar = h % 3 === 0;
-    if (withBar && base.photo) {
-      base.bar = o.bar ?? BAR_COLORS[h % BAR_COLORS.length];
-      base.barText = base.bar === "yellow" ? "ink" : "ink";
-      base.textColor = o.textColor ?? "ink";
-    } else {
-      base.scrim = true;
-      base.textColor = o.textColor ?? "white";
-    }
-    // ohne Foto: Farbfläche als Hintergrund
-    if (!base.photo) {
-      base.bg = o.bg ?? (["purple", "orange", "ink"] as CoverColor[])[h % 3];
-      base.textColor = o.textColor ?? "white";
-      base.scrim = false;
-      base.bar = null;
-    }
-  }
   return { ...base, ...stripUndefined(o) };
 }
 
-// flache Overrides anwenden, ohne mit undefined zu überschreiben
 function stripUndefined<T extends object>(o: T): Partial<T> {
   const out: Partial<T> = {};
-  for (const k in o) if (o[k] !== undefined) out[k] = o[k];
+  for (const k in o) if (o[k] !== undefined && k !== "variantIndex") out[k] = o[k];
   return out;
 }
