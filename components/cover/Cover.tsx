@@ -54,7 +54,15 @@ export function Cover({
 
   let inner: React.ReactNode = null;
 
-  if (spec.template === "vollbild") {
+  if (!textOn) {
+    // Plattform-Card: immer FÜLLENDES Foto (full-bleed) + Stempel, kein Rahmen.
+    inner = (
+      <>
+        {spec.photo ? <Img src={spec.photo} /> : null}
+        <Stamp spec={spec} />
+      </>
+    );
+  } else if (spec.template === "vollbild") {
     inner = (
       <>
         {spec.photo ? <Img src={spec.photo} /> : null}
