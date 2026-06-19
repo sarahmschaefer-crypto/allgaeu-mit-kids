@@ -24,17 +24,19 @@ export function HeroScene() {
 
   useScrollScene(sec, (p) => {
     const grow = easeOut(clamp(p / 0.82))
-    // Silhouette zoomt nach vorne (Sog); das Foto wird gegen-skaliert (1/s),
-    // damit es optisch verankert stehen bleibt — das Fenster gibt es nur frei.
-    const s = 1 + grow * 5.4
+    // Silhouette öffnet sich nur SANFT (kein dramatischer Sog) — so entstehen
+    // keine großen Paper-Ränder, die vor der Vollbild-Deckung sichtbar würden.
+    const s = 1 + grow * 0.6
     if (mapWrap.current) mapWrap.current.style.transform = `scale(${s})`
     if (photo.current) photo.current.style.transform = `translate(-50%, -50%) scale(${1 / s})`
-    // Letztes Scroll-Drittel: deckungsgleiche Vollbild-Ebene blendet ein →
-    // die Silhouette löst sich randlos auf; dezente Drift nach oben (flyward-Stil).
+    // Vollbild-Ebene deckt FRÜH (p 0.10→0.38), solange die Silhouette noch klein
+    // ist → sauberes Auflösen Fenster→Vollbild, nie ein gerahmter Zwischenzustand.
     if (photoFull.current) {
-      const rise = clamp((p - 0.5) / 0.32)
+      const rise = clamp((p - 0.1) / 0.28)
       photoFull.current.style.opacity = String(rise)
-      photoFull.current.style.transform = `translate(-50%, -50%) translateY(${-rise * 3}vh) scale(${1.04 - rise * 0.04})`
+      // Drift erst NACH voller Deckung (p>0.4) → kein Doppelbild beim Überblenden.
+      const drift = clamp((p - 0.4) / 0.5)
+      photoFull.current.style.transform = `translate(-50%, -50%) translateY(${-drift * 4}vh) scale(${1 + drift * 0.05})`
     }
     if (scrimRef.current) scrimRef.current.style.opacity = String(1 - clamp((p - 0.2) / 0.55) * 0.85)
     if (copy.current) {
