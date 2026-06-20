@@ -18,7 +18,7 @@ import path from 'node:path'
 import mammoth from 'mammoth'
 import convert from 'heic-convert'
 import sharp from 'sharp'
-import { TYPES } from '../lib/shapes/data'
+import { TYPES, DESTINATIONS, primaryTagOf } from '../lib/shapes/data'
 import type { ContentDest, CoverSpec, DestPhoto } from '../lib/content/types'
 
 const ROOT = process.cwd()
@@ -34,6 +34,9 @@ const CAT_MAP: Record<string, string> = {
   Gastronomie: 'gastro',
 }
 
+// Ordner, die KEINE Ausflugsziele enthalten → überspringen.
+const SKIP_DIRS = new Set(['Über mich', '__MACOSX'])
+
 function slug(s: string): string {
   return s.toLowerCase()
     .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
@@ -48,7 +51,7 @@ function clean(t: string): string {
 function cleanName(raw: string): string {
   return clean(raw)
     .replace(/\.(docx|txt)$/i, '')
-    .replace(/^allgaeumitkids[_ ]texte[_ ]/i, '')
+    .replace(/^allgaeumitkids[_ ](?:texte[_ ])?/i, '')
     .replace(/[_]+/g, ' ')
     .replace(/\s*[–-]\s*Kooperation.*$/i, '')
     .replace(/\bReel\b/gi, '')
@@ -198,23 +201,26 @@ async function readText(file: string): Promise<string> {
 
 async function buildDest(name: string, catTag: string, textFile: string, photoFiles: string[]): Promise<ContentDest> {
   const id = slug(name)
+  const niceName = cleanName(name)
   const text = await readText(textFile)
   const p = parseText(text)
+  // Leerer Slogan → Name als Fallback, damit das Cover nie ohne Text bleibt.
+  const slogan = p.slogan || niceName
   const photos: DestPhoto[] = []
   for (let i = 0; i < photoFiles.length; i++) {
     const ph = await importPhoto(photoFiles[i], id, i + 1)
     if (ph) photos.push(ph)
   }
-  console.log(`• ${name} (${id}) — Slogan: „${p.slogan}" · Ort: ${p.place || '—'} · ${photos.length} Foto(s)` +
+  console.log(`• ${niceName} (${id}) — Slogan: „${slogan}" · Ort: ${p.place || '—'} · ${photos.length} Foto(s)` +
     (p.missing.length ? ` · nachpflegen: ${p.missing.join(', ')}` : ''))
   return {
-    id, name: cleanName(name), place: p.place, cat: catTag,
+    id, name: niceName, place: p.place, cat: catTag,
     ages: [], time: '', budget: p.budget, weather: 'egal', stroller: p.stroller,
     map: { x: 50, y: 50 }, rating: 0, reviews: 0,
     blurb: p.blurb, highlights: [], facilities: p.facilities, season: '', duration: '',
-    tags: [catTag], teaser: p.slogan,
+    tags: [catTag], teaser: slogan,
     photos,
-    cover: buildCover(p, catTag, photos),
+    cover: buildCover({ ...p, slogan }, catTag, photos),
     overrides: {
       adresse: p.adresse || undefined,
       oeffnungszeiten: p.oeffnungszeiten || undefined,
@@ -230,7 +236,7 @@ async function main() {
   const out: ContentDest[] = []
   const catDirs = await fs.readdir(STAGING, { withFileTypes: true }).catch(() => [])
   for (const cat of catDirs) {
-    if (!cat.isDirectory()) continue
+    if (!cat.isDirectory() || SKIP_DIRS.has(cat.name)) continue
     const catTag = CAT_MAP[cat.name] || 'ausflug'
     const catPath = path.join(STAGING, cat.name)
     const entries = await fs.readdir(catPath, { withFileTypes: true })
@@ -248,8 +254,22 @@ async function main() {
     }
   }
 
-  // Upsert in den Store (nach id).
-  const store = JSON.parse(await fs.readFile(DATA_FILE, 'utf8')) as { version: number; dests: ContentDest[] }
+  // Store lesen — fehlt er, aus data.ts seeden (wie lib/content/store.ts).
+  let store: { version: number; dests: ContentDest[] }
+  try {
+    store = JSON.parse(await fs.readFile(DATA_FILE, 'utf8'))
+  } catch {
+    store = {
+      version: 1,
+      dests: DESTINATIONS.map((d) => ({
+        ...d, photos: [], overrides: {},
+        cover: buildCover(
+          { slogan: d.teaser || d.name, blurb: '', adresse: '', place: d.place, oeffnungszeiten: '', preis: '', budget: d.budget, stroller: d.stroller, wegbeschaffenheit: [], facilities: d.facilities, missing: [] },
+          primaryTagOf(d), [],
+        ),
+      })),
+    }
+  }
   for (const d of out) {
     const i = store.dests.findIndex((x) => x.id === d.id)
     if (i >= 0) store.dests[i] = { ...store.dests[i], ...d }

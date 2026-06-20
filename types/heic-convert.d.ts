@@ -1,0 +1,10 @@
+// Ambient-Typen für heic-convert (liefert keine eigenen).
+declare module 'heic-convert' {
+  interface ConvertOptions {
+    buffer: ArrayBuffer | Buffer | Uint8Array
+    format: 'JPEG' | 'PNG'
+    quality?: number
+  }
+  function convert(options: ConvertOptions): Promise<ArrayBuffer>
+  export default convert
+}
