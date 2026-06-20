@@ -1,7 +1,7 @@
 // lib/content/store.ts — Daten-Store hinter einem schmalen Interface.
-// PHASE 1: JSON-Datei auf der Platte (läuft lokal sofort, keine Infra).
-// PHASE 2: NUR diese Datei wird auf Vercel Postgres umgestellt — die Verbraucher
-// (Admin, Provider) bleiben unverändert, weil sie nur dieses Interface kennen.
+// Backend-Wahl per Env: POSTGRES_URL gesetzt → Vercel Postgres (Phase 2),
+// sonst lokale JSON-Datei (Phase 1). Die Verbraucher (Admin, Provider) kennen nur
+// dieses Interface und bleiben unverändert.
 //
 // Server-only: importiert node:fs — niemals in eine Client-Komponente importieren.
 import { promises as fs } from 'node:fs'
@@ -9,6 +9,8 @@ import path from 'node:path'
 import { DESTINATIONS } from '@/lib/shapes/data'
 import { coverFromDest } from '@/lib/content/cover'
 import type { ContentDest, ContentStore } from '@/lib/content/types'
+
+const USE_PG = !!process.env.POSTGRES_URL
 
 const DATA_DIR = path.join(process.cwd(), 'data')
 const DATA_FILE = path.join(DATA_DIR, 'content.json')
@@ -48,10 +50,12 @@ async function write(store: ContentStore): Promise<void> {
 }
 
 export async function getAllDests(): Promise<ContentDest[]> {
+  if (USE_PG) return (await import('@/lib/content/store-pg')).pgGetAll()
   return (await read()).dests
 }
 
 export async function getContentDest(id: string): Promise<ContentDest | undefined> {
+  if (USE_PG) return (await import('@/lib/content/store-pg')).pgGet(id)
   return (await read()).dests.find((d) => d.id === id)
 }
 
@@ -60,6 +64,7 @@ export async function updateDest(
   id: string,
   patch: Partial<ContentDest>,
 ): Promise<ContentDest | undefined> {
+  if (USE_PG) return (await import('@/lib/content/store-pg')).pgUpdate(id, patch)
   const store = await read()
   const idx = store.dests.findIndex((d) => d.id === id)
   if (idx === -1) return undefined

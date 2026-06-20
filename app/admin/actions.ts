@@ -33,13 +33,23 @@ export async function uploadPhoto(formData: FormData): Promise<void> {
 
   const buf = Buffer.from(await file.arrayBuffer())
   const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '')
-  const dir = path.join(process.cwd(), 'public', 'uploads')
-  await fs.mkdir(dir, { recursive: true })
   const fname = `${id}-${Date.now()}.${ext}`
-  await fs.writeFile(path.join(dir, fname), buf)
+
+  // Env-gesteuert: Vercel Blob (Cloud) wenn Token gesetzt, sonst lokal nach public/uploads.
+  let url: string
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    const { put } = await import('@vercel/blob')
+    const blob = await put(`uploads/${fname}`, buf, { access: 'public', contentType: file.type || undefined })
+    url = blob.url
+  } else {
+    const dir = path.join(process.cwd(), 'public', 'uploads')
+    await fs.mkdir(dir, { recursive: true })
+    await fs.writeFile(path.join(dir, fname), buf)
+    url = `/uploads/${fname}`
+  }
 
   const dest = await getContentDest(id)
-  const photos = [...(dest?.photos ?? []), { url: `/uploads/${fname}` }]
+  const photos = [...(dest?.photos ?? []), { url }]
   await updateDest(id, { photos })
   revalidatePath(`/admin/ausflug/${id}`)
 }

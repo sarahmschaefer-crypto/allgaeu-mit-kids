@@ -1,6 +1,7 @@
 // app/admin/layout.tsx — Admin-Shell (Redaktionsbereich).
 // Eigenes, gescoptes Styling (.adm). PHASE 2: hier kommt der Login-Gate davor.
 import Link from 'next/link'
+import { logout } from './login/actions'
 import './admin.css'
 
 export const metadata = {
@@ -16,9 +17,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           Allgäu mit Kids
           <small>Redaktion · Ausflugsziele</small>
         </Link>
-        <Link href="/" className="adm-btn ghost" style={{ padding: '8px 14px', fontSize: 13 }}>
-          Zur Website
-        </Link>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <Link href="/" className="adm-btn ghost" style={{ padding: '8px 14px', fontSize: 13 }}>
+            Zur Website
+          </Link>
+          <form action={logout}>
+            <button type="submit" className="adm-btn ghost" style={{ padding: '8px 14px', fontSize: 13 }}>
+              Abmelden
+            </button>
+          </form>
+        </div>
       </header>
       <main className="adm-wrap">{children}</main>
     </div>
