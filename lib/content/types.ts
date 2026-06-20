@@ -39,6 +39,10 @@ export type ContentDest = ShapesDest & {
   photos: DestPhoto[]
   cover: CoverSpec
   overrides: DestOverrides
+  // Redaktioneller Langtext der Schwester (voller „Reisebericht" aus dem Drive-docx)
+  // + praktische Hinweise (Tipps). `blurb` bleibt die Kurzfassung für Karten/Meta.
+  description?: string
+  tips?: string
   // Nur veröffentlichte Ziele erscheinen später auf der öffentlichen Seite (Phase 3).
   // Kuratierte Basis (data.ts-Seed) = true; Drive-Importe starten als Entwurf (false).
   published: boolean

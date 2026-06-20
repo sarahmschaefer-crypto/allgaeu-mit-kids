@@ -62,6 +62,8 @@ function cleanName(raw: string): string {
 type Parsed = {
   slogan: string
   blurb: string
+  description: string
+  tips: string
   adresse: string
   place: string
   oeffnungszeiten: string
@@ -89,26 +91,15 @@ function parseText(text: string): Parsed {
     slogan = first.length <= 46 && !/[.?]$/.test(first) ? first : ''
   }
 
-  // Blurb = erster echter Caption-Satz (editoriale Beschreibung).
-  const capIdx = lines.findIndex((l) => /^caption:?$/i.test(l))
-  let blurb = ''
-  if (capIdx >= 0) blurb = lines.slice(capIdx + 1).find((l) => l.length > 40) || ''
-  if (!blurb) {
-    // sonst: Reel-Body (zwischen Slogan und Caption), CTA-/@-Zeilen raus.
-    const body = lines.slice(reelIdx >= 0 ? reelIdx + 1 : 1, capIdx >= 0 ? capIdx : undefined)
-      .filter((l) => l !== slogan && !/^folge|^folgt|@/i.test(l))
-    blurb = body.find((l) => l.length > 40) || body[0] || ''
-  }
-
   // PLZ-Zeile → Adresse + Ort (DE: 5-stellig; AT/CH: „A-6600").
   const PLZ = /\b(?:\d{5}|[A-Z]-\d{4})\b/
   const plzIdx = lines.findIndex((l) => PLZ.test(l))
-  let adresse = '', place = ''
+  let adresse = '', place = '', plzLine = '', street = ''
   if (plzIdx >= 0) {
-    const plzLine = lines[plzIdx]
+    plzLine = lines[plzIdx]
     const prev = lines[plzIdx - 1] || ''
     // Straße steht oft in der Zeile davor (kurz, ohne Satzpunkt, keine eigene PLZ).
-    const street = prev && prev.length < 42 && !/[.!?]$/.test(prev) && !PLZ.test(prev) ? prev : ''
+    street = prev && prev.length < 42 && !/[.!?]$/.test(prev) && !PLZ.test(prev) ? prev : ''
     adresse = (street ? street + ', ' : '') + plzLine
     place = (plzLine.match(/(?:\d{5}|[A-Z]-\d{4})\s+(.+)$/)?.[1] || '').replace(/[,.(].*$/, '').trim()
   }
@@ -146,13 +137,38 @@ function parseText(text: string): Parsed {
   const facilities: string[] = []
   if (lines.some((l) => /parkplatz|parken|parkbucht/i.test(l))) facilities.push('Parkplatz')
 
+  // Beschreibung (Reisebericht) = Prosa-Körper bis zum Adressblock, ohne Titel/
+  // Marker/Slogan/CTA. Das ist der eigentliche redaktionelle Text der Schwester.
+  // Marker-Präfixe entfernen (auch wenn Inhalt in derselben Zeile klebt, z. B.
+  // „Text im Reel:14 Schaukeln…"), ganze Struktur-Zeilen droppen.
+  const STRIP = /^(text im reel|caption|voice-?over|on-?screen-?text|reel|titelbild|titel)\s*:?\s*/i
+  const DROP = /^(abschluss-?slide|stimmungsbild|slide \d|werbung)/i
+  const proseEnd = plzIdx >= 0 ? (street ? plzIdx - 1 : plzIdx) : lines.length
+  const description = lines.slice(0, proseEnd)
+    .filter((l, i) => i !== 0) // Titelzeile raus
+    .map((l) => l.replace(STRIP, '').trim())
+    .filter((l) => l && l !== slogan)
+    .filter((l) => !DROP.test(l))
+    .filter((l) => !/^(folge|folgt)\b/i.test(l) && !l.startsWith('@'))
+    .join('\n\n')
+
+  // Kurzbeschreibung = erster Satz der Beschreibung (für Karten/Meta).
+  const firstPara = description.split('\n\n')[0] || ''
+  const blurb = (firstPara.match(/^(.{40,180}?[.!?])(\s|$)/)?.[1] || firstPara.slice(0, 160)).trim()
+
+  // Praktische Hinweise = Rest-Zeilen nach der Adresse, die keine Struktur-Felder sind.
+  const used = new Set([plzLine, street, oeffnungszeiten, preis, accessLine || ''].filter(Boolean))
+  const tips = (plzIdx >= 0 ? lines.slice(street ? plzIdx - 1 : plzIdx) : [])
+    .filter((l) => !used.has(l) && !PLZ.test(l) && !l.startsWith('@'))
+    .join('\n')
+
   const missing: string[] = []
   if (!place) missing.push('Ort')
   if (!oeffnungszeiten) missing.push('Öffnungszeiten')
   if (!budget) missing.push('Budget/Preis')
   if (!weg.length) missing.push('Wegbeschaffenheit')
 
-  return { slogan, blurb, adresse, place, oeffnungszeiten, preis, budget, stroller, wegbeschaffenheit: weg, facilities, missing }
+  return { slogan, blurb, description, tips, adresse, place, oeffnungszeiten, preis, budget, stroller, wegbeschaffenheit: weg, facilities, missing }
 }
 
 function buildCover(p: Parsed, catTag: string, photos: DestPhoto[]): CoverSpec {
@@ -217,7 +233,8 @@ async function buildDest(name: string, catTag: string, textFile: string, photoFi
     id, name: niceName, place: p.place, cat: catTag,
     ages: [], time: '', budget: p.budget, weather: 'egal', stroller: p.stroller,
     map: { x: 50, y: 50 }, rating: 0, reviews: 0,
-    blurb: p.blurb, highlights: [], facilities: p.facilities, season: '', duration: '',
+    blurb: p.blurb, description: p.description, tips: p.tips,
+    highlights: [], facilities: p.facilities, season: '', duration: '',
     tags: [catTag], teaser: slogan,
     photos,
     published: false, // Drive-Import startet als Entwurf → erst im Admin prüfen/veröffentlichen
@@ -265,7 +282,7 @@ async function main() {
       dests: DESTINATIONS.map((d) => ({
         ...d, photos: [], overrides: {}, published: true,
         cover: buildCover(
-          { slogan: d.teaser || d.name, blurb: '', adresse: '', place: d.place, oeffnungszeiten: '', preis: '', budget: d.budget, stroller: d.stroller, wegbeschaffenheit: [], facilities: d.facilities, missing: [] },
+          { slogan: d.teaser || d.name, blurb: '', description: '', tips: '', adresse: '', place: d.place, oeffnungszeiten: '', preis: '', budget: d.budget, stroller: d.stroller, wegbeschaffenheit: [], facilities: d.facilities, missing: [] },
           primaryTagOf(d), [],
         ),
       })),

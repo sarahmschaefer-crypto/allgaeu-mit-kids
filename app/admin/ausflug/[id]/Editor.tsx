@@ -25,6 +25,8 @@ export function Editor({ dest }: { dest: ContentDest }) {
   const [name, setName] = useState(dest.name)
   const [place, setPlace] = useState(dest.place)
   const [blurb, setBlurb] = useState(dest.blurb)
+  const [description, setDescription] = useState(dest.description || '')
+  const [tips, setTips] = useState(dest.tips || '')
   const [season, setSeason] = useState(dest.season)
   const [duration, setDuration] = useState(dest.duration)
   const [teaser, setTeaser] = useState(dest.teaser || '')
@@ -73,7 +75,7 @@ export function Editor({ dest }: { dest: ContentDest }) {
   // Gesamter Patch, der beim Speichern als JSON mitgeht.
   const payload: Partial<ContentDest> = {
     published,
-    name, place, blurb, season, duration, teaser,
+    name, place, blurb, description, tips, season, duration, teaser,
     budget, time, ages, tags,
     highlights: highlights.split('\n').map((s) => s.trim()).filter(Boolean),
     overrides: {
@@ -122,8 +124,12 @@ export function Editor({ dest }: { dest: ContentDest }) {
             <input type="text" value={teaser} onChange={(e) => setTeaser(e.target.value)} placeholder="z. B. Tiere zum Anfassen" />
           </div>
           <div className="adm-field">
-            <label>Beschreibung</label>
+            <label>Kurzbeschreibung <span className="hint">(1–2 Sätze, für Karten/Vorschau)</span></label>
             <textarea value={blurb} onChange={(e) => setBlurb(e.target.value)} />
+          </div>
+          <div className="adm-field">
+            <label>Beschreibung / Reisebericht <span className="hint">(der ausführliche Text)</span></label>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} style={{ minHeight: 220 }} />
           </div>
           <div className="adm-field">
             <label>Highlights <span className="hint">(eins pro Zeile)</span></label>
@@ -195,6 +201,10 @@ export function Editor({ dest }: { dest: ContentDest }) {
           <div className="adm-field">
             <label>Preis</label>
             <input type="text" value={preis} onChange={(e) => setPreis(e.target.value)} placeholder={derived.preis} />
+          </div>
+          <div className="adm-field">
+            <label>Praktische Hinweise <span className="hint">(Tipps, eins pro Zeile)</span></label>
+            <textarea value={tips} onChange={(e) => setTips(e.target.value)} placeholder="z. B. Feste Schuhe nötig · Mit dem Schiff erreichbar" />
           </div>
         </section>
 
