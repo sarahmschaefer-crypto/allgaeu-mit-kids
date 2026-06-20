@@ -220,6 +220,7 @@ async function buildDest(name: string, catTag: string, textFile: string, photoFi
     blurb: p.blurb, highlights: [], facilities: p.facilities, season: '', duration: '',
     tags: [catTag], teaser: slogan,
     photos,
+    published: false, // Drive-Import startet als Entwurf → erst im Admin prüfen/veröffentlichen
     cover: buildCover({ ...p, slogan }, catTag, photos),
     overrides: {
       adresse: p.adresse || undefined,
@@ -262,7 +263,7 @@ async function main() {
     store = {
       version: 1,
       dests: DESTINATIONS.map((d) => ({
-        ...d, photos: [], overrides: {},
+        ...d, photos: [], overrides: {}, published: true,
         cover: buildCover(
           { slogan: d.teaser || d.name, blurb: '', adresse: '', place: d.place, oeffnungszeiten: '', preis: '', budget: d.budget, stroller: d.stroller, wegbeschaffenheit: [], facilities: d.facilities, missing: [] },
           primaryTagOf(d), [],

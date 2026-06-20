@@ -24,6 +24,7 @@ function seed(): ContentStore {
     photos: [],
     cover: coverFromDest(d, []),
     overrides: {},
+    published: true, // kuratierte Basis ist veröffentlicht
   }))
   return { version: STORE_VERSION, dests }
 }
@@ -72,4 +73,11 @@ export async function updateDest(
   store.dests[idx] = next
   await write(store)
   return next
+}
+
+export async function deleteDest(id: string): Promise<void> {
+  if (USE_PG) return (await import('@/lib/content/store-pg')).pgDelete(id)
+  const store = await read()
+  store.dests = store.dests.filter((d) => d.id !== id)
+  await write(store)
 }

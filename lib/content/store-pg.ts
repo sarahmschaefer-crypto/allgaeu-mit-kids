@@ -21,7 +21,7 @@ async function init() {
   if (rows[0].n === 0) {
     // Basis-Seed aus data.ts; echte Drive-Inhalte kommen via scripts/migrate-to-cloud.ts.
     for (const d of DESTINATIONS) {
-      const cd: ContentDest = { ...d, photos: [], cover: coverFromDest(d, []), overrides: {} }
+      const cd: ContentDest = { ...d, photos: [], cover: coverFromDest(d, []), overrides: {}, published: true }
       await sql`INSERT INTO destinations (id, data) VALUES (${cd.id}, ${JSON.stringify(cd)}::jsonb)
                 ON CONFLICT (id) DO NOTHING`
     }
@@ -52,4 +52,9 @@ export async function pgUpdate(id: string, patch: Partial<ContentDest>): Promise
   const next = { ...cur, ...patch, id }
   await pgUpsert(next)
   return next
+}
+
+export async function pgDelete(id: string): Promise<void> {
+  await ensure()
+  await sql`DELETE FROM destinations WHERE id = ${id}`
 }

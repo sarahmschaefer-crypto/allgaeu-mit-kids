@@ -90,3 +90,17 @@
 .adm-photos { display: flex; flex-wrap: wrap; gap: 10px; }
 .adm-photos img { width: 64px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--adm-line); }
 .adm-note { font-size: 12.5px; font-weight: 600; color: var(--adm-ink-soft); background: #fff7e6; border: 1px solid #f0e0b8; border-radius: 10px; padding: 9px 12px; }
+
+/* Veröffentlicht-Schalter */
+.adm-publish { display: flex; align-items: center; gap: 12px; margin: 0 0 20px; padding: 12px 16px; border-radius: 14px; border: 1px solid var(--adm-line); background: var(--adm-card); cursor: pointer; }
+.adm-publish input { position: absolute; opacity: 0; pointer-events: none; }
+.adm-publish .dot { width: 40px; height: 24px; border-radius: 999px; background: #cfc8b6; position: relative; flex: 0 0 auto; transition: background 0.15s; }
+.adm-publish .dot::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.15s; }
+.adm-publish[data-on="true"] { border-color: #1a7f4b; background: #eefaf2; }
+.adm-publish[data-on="true"] .dot { background: #1a7f4b; }
+.adm-publish[data-on="true"] .dot::after { transform: translateX(16px); }
+
+/* Status-Badge in der Liste */
+.adm-badge { align-self: flex-start; font-weight: 800; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; }
+.adm-badge[data-live="true"] { background: #eefaf2; color: #1a7f4b; }
+.adm-badge[data-live="false"] { background: #f0ece0; color: var(--adm-ink-soft); }

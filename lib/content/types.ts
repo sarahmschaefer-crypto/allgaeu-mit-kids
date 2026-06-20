@@ -39,6 +39,9 @@ export type ContentDest = ShapesDest & {
   photos: DestPhoto[]
   cover: CoverSpec
   overrides: DestOverrides
+  // Nur veröffentlichte Ziele erscheinen später auf der öffentlichen Seite (Phase 3).
+  // Kuratierte Basis (data.ts-Seed) = true; Drive-Importe starten als Entwurf (false).
+  published: boolean
 }
 
 export type ContentStore = {

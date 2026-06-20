@@ -5,7 +5,8 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { revalidatePath } from 'next/cache'
-import { getContentDest, updateDest } from '@/lib/content/store'
+import { redirect } from 'next/navigation'
+import { getContentDest, updateDest, deleteDest as storeDeleteDest } from '@/lib/content/store'
 import type { ContentDest } from '@/lib/content/types'
 
 // Speichert die im Editor geänderten Felder (als JSON-Payload übergeben).
@@ -23,6 +24,16 @@ export async function saveDest(formData: FormData): Promise<void> {
   await updateDest(id, patch)
   revalidatePath(`/admin/ausflug/${id}`)
   revalidatePath('/admin')
+}
+
+// Löscht ein Ziel und kehrt zur Liste zurück.
+export async function deleteDest(formData: FormData): Promise<void> {
+  const id = String(formData.get('id') || '')
+  if (id) {
+    await storeDeleteDest(id)
+    revalidatePath('/admin')
+  }
+  redirect('/admin')
 }
 
 // Lädt ein Foto hoch (lokal nach public/uploads) und hängt es ans Ziel.

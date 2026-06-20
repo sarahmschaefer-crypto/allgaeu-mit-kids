@@ -6,7 +6,7 @@ import { useFormStatus } from 'react-dom'
 import { AGES, BUDGETS, TIMES, TYPES, detailInfo, primaryTagOf } from '@/lib/shapes/data'
 import type { CoverColor, ContentDest, CoverSpec } from '@/lib/content/types'
 import { DestPreview } from '@/components/content/DestPreview'
-import { saveDest, uploadPhoto } from '../../actions'
+import { saveDest, uploadPhoto, deleteDest } from '../../actions'
 
 const TAG_LIST = Object.values(TYPES) as { id: string; label: string; color: string }[]
 
@@ -21,6 +21,7 @@ function SaveButton() {
 
 export function Editor({ dest }: { dest: ContentDest }) {
   // ── Inhalts-Felder ──
+  const [published, setPublished] = useState(dest.published ?? false)
   const [name, setName] = useState(dest.name)
   const [place, setPlace] = useState(dest.place)
   const [blurb, setBlurb] = useState(dest.blurb)
@@ -71,6 +72,7 @@ export function Editor({ dest }: { dest: ContentDest }) {
 
   // Gesamter Patch, der beim Speichern als JSON mitgeht.
   const payload: Partial<ContentDest> = {
+    published,
     name, place, blurb, season, duration, teaser,
     budget, time, ages, tags,
     highlights: highlights.split('\n').map((s) => s.trim()).filter(Boolean),
@@ -93,6 +95,17 @@ export function Editor({ dest }: { dest: ContentDest }) {
 
         <h1 className="adm-h1">{name || 'Ausflugsziel'}</h1>
         <p className="adm-lead">Nur Inhalte – Layout & Design bleiben fest.</p>
+
+        <label className="adm-publish" data-on={published}>
+          <input type="checkbox" checked={published} onChange={() => setPublished(!published)} />
+          <span className="dot" aria-hidden />
+          <span>
+            <strong>{published ? 'Veröffentlicht' : 'Entwurf'}</strong>
+            <span className="hint" style={{ display: 'block' }}>
+              {published ? 'Erscheint auf der öffentlichen Seite.' : 'Nur im Admin sichtbar – zum Veröffentlichen anhaken.'}
+            </span>
+          </span>
+        </label>
 
         <section className="adm-section">
           <h2>Texte</h2>
@@ -255,6 +268,15 @@ export function Editor({ dest }: { dest: ContentDest }) {
         <div className="adm-actions">
           <SaveButton />
           <a className="adm-btn ghost" href="/admin">Zurück zur Liste</a>
+          <button
+            type="submit"
+            formAction={deleteDest}
+            onClick={(e) => { if (!confirm(`„${name}" wirklich löschen?`)) e.preventDefault() }}
+            className="adm-btn"
+            style={{ marginLeft: 'auto', background: 'transparent', borderColor: '#b00020', color: '#b00020' }}
+          >
+            Löschen
+          </button>
         </div>
       </form>
 
