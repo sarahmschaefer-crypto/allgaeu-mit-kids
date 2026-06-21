@@ -13,7 +13,7 @@ import type { ContentDest } from '@/lib/content/types'
 export async function createDest(formData: FormData): Promise<void> {
   const name = String(formData.get('name') || '').trim()
   const dest = await storeCreateDest(name || 'Neues Ausflugsziel')
-  revalidatePath('/admin')
+  revalidatePath('/', 'layout') // Admin + öffentliche Seiten neu validieren
   redirect(`/admin/ausflug/${dest.id}`)
 }
 
@@ -30,8 +30,8 @@ export async function saveDest(formData: FormData): Promise<void> {
   // id niemals aus dem Payload überschreiben.
   delete (patch as { id?: string }).id
   await updateDest(id, patch)
-  revalidatePath(`/admin/ausflug/${id}`)
-  revalidatePath('/admin')
+  // Admin + öffentliche Seiten (Landing/Entdecken/Detail) nach dem Speichern aktualisieren.
+  revalidatePath('/', 'layout')
 }
 
 // Löscht ein Ziel und kehrt zur Liste zurück.
@@ -39,7 +39,7 @@ export async function deleteDest(formData: FormData): Promise<void> {
   const id = String(formData.get('id') || '')
   if (id) {
     await storeDeleteDest(id)
-    revalidatePath('/admin')
+    revalidatePath('/', 'layout')
   }
   redirect('/admin')
 }
@@ -70,5 +70,5 @@ export async function uploadPhoto(formData: FormData): Promise<void> {
   const dest = await getContentDest(id)
   const photos = [...(dest?.photos ?? []), { url }]
   await updateDest(id, { photos })
-  revalidatePath(`/admin/ausflug/${id}`)
+  revalidatePath('/', 'layout')
 }
