@@ -14,45 +14,59 @@ damit die **parallel aktive cover-tool-Session** im Haupt-Repo `~/Developer/allg
 
 ## Befehle (dieser Branch)
 - **Dev-Server:** `node node_modules/next/dist/bin/next dev -p 3100` — **Port 3100** (cover-tool nutzt 3000).
-  ⚠️ Der Store cached im Speicher: nach externem Schreiben (Import-Skript) Dev-Server **neu starten**.
+  ⚠️ Der Datei-Store cached im Speicher: nach externem Schreiben (Import-Skript) Dev-Server **neu starten**.
+- **Login lokal:** `ADMIN_PASSWORD` in `.env.local` (Dev: `allgaeu2026`). Login-Token = SHA-256 davon.
+  Ohne Variable: in `development` offen, in `production` gesperrt.
 - **Typecheck:** `npx tsc --noEmit` (Hauptverifikation; Preview-Server meiden).
-- **Drive-Import:** `npx tsx scripts/import-drive.ts [<lokaler-ordner>]` (Default `scripts/.drive-staging`).
+- **Drive-Import:** `npx tsx scripts/import-drive.ts <lokaler-ordner>` (z. B. `~/Downloads/"Relevant für App"`).
+- **Cloud-Env (Vercel):** `POSTGRES_URL` → Store nutzt Postgres statt Datei · `BLOB_READ_WRITE_TOKEN` →
+  Uploads gehen zu Vercel Blob statt `public/uploads` · `ADMIN_PASSWORD` → Login.
 
 ## Architektur (was mehrere Dateien überspannt)
-- **Daten-Store hinter schmalem Interface** `lib/content/store.ts` — Phase 1: JSON-Datei
-  `data/content.json` (gitignored, **seedet sich aus `lib/shapes/data.ts`**). Phase 2: NUR diese Datei
-  wechselt auf Vercel Postgres; die Verbraucher (Admin, künftiger Public-Provider) bleiben gleich.
+- **Daten-Store hinter schmalem Interface** `lib/content/store.ts` (Funktionen `getAllDests/
+  getContentDest/updateDest/deleteDest`). **Backend per Env:** `POSTGRES_URL` gesetzt →
+  `lib/content/store-pg.ts` (Vercel Postgres, EINE Tabelle `destinations(id, sort, data jsonb)`), sonst
+  JSON-Datei `data/content.json` (gitignored, **seedet aus `lib/shapes/data.ts`**). Verbraucher kennen
+  nur das Interface.
 - **`ContentDest`** (`lib/content/types.ts`) = **Superset von `ShapesDest`** + `photos`, `cover`
-  (CoverSpec), `overrides` (Adresse/Öffnung/Preis). Designsystem-Konstanten (`TYPES/AGES/BUDGETS/…`)
-  bleiben in `lib/shapes/data.ts`.
+  (CoverSpec), `overrides` (Adresse/Öffnung/Preis), `description` (voller Reisebericht), `tips`,
+  `published` (Drive-Importe = Entwurf `false`, data.ts-Seed = `true`). `blurb` = Kurzfassung.
+  Designsystem-Konstanten (`TYPES/AGES/BUDGETS/…`) bleiben in `lib/shapes/data.ts`.
+- **Login-Gate:** `middleware.ts` schützt `/admin/*` (außer `/admin/login`); `lib/auth.ts` leitet ein
+  SHA-256-Cookie aus `ADMIN_PASSWORD` ab (läuft in Edge + Node). `app/admin/login/` = Seite + `login`/
+  `logout`-Actions.
 - **Cover = Vorschaubild.** Interim-Renderer `components/content/DestPreview.tsx` rendert die CoverSpec
   (Schichten hinten→vorn: Foto/Farbe · Scrim · Slogan + optional Farbbalken · Kategorie-Stempel oben
   rechts; Playfair statt Baby Mango). Wird in **Phase 5 durch den echten `<Cover>`-Renderer** (Branch
   cover-tool) als Drop-in ersetzt.
-- **Admin** unter `app/admin/`: Shell (`layout.tsx` + gescoptes `admin.css`) · Liste (`page.tsx`) ·
-  Editor (`ausflug/[id]/page.tsx` lädt das Ziel, `Editor.tsx` = Client-Form mit Live-Cover-Vorschau).
-  Speichern/Upload via **Server-Actions** `app/admin/actions.ts` (`saveDest` nimmt JSON-Payload aus einem
-  Hidden-Feld, `uploadPhoto` schreibt lokal nach `public/uploads`). **Nur neue Dateien** angelegt → keine
-  öffentliche Komponente angefasst, Live-Design unverändert.
+- **Admin** unter `app/admin/`: Shell (`layout.tsx` + gescoptes `admin.css`, Logout-Button) · Liste
+  (`page.tsx`, Live/Entwurf-Badge) · Editor (`ausflug/[id]/page.tsx` lädt, `Editor.tsx` = Client-Form mit
+  Live-Cover-Vorschau, Veröffentlicht-Schalter, Foto-Upload). **Server-Actions** `app/admin/actions.ts`:
+  `saveDest` (JSON-Payload aus Hidden-Feld), `uploadPhoto` (**env-gesteuert** Blob/lokal), `deleteDest`.
+  **Nur neue Dateien** angelegt → keine öffentliche Komponente angefasst, Live-Design unverändert.
 - **Drive-Import** `scripts/import-drive.ts`: liest eine **lokal gesyncte Drive-Kopie**
-  (Kategorie-Ordner → Ziel-Unterordner mit Fotos+`.docx` ODER lose `.docx` im Kategorie-Ordner).
-  docx→Text via **mammoth**, HEIC→WebP via **heic-convert + sharp**. Heuristischer Parser:
-  „Text im Reel"=Slogan · Caption=Blurb · PLZ→Adresse/Ort · Öffnungszeiten · Preis→Budget
-  (**Parkgebühr ≠ Eintritt**) · Kinderwagen (**Negationen** wie „abraten"/„zuhause lassen" beachten).
-  **Unsichere Felder LEER lassen — nicht raten** (+ „nachpflegen"-Report). Inhalte liegen NICHT im Repo,
-  nur im Google Drive (Owner `allgaeumitkids@gmail.com`); fürs Bulk muss eine lokale Kopie bereitstehen.
+  (Kategorie-Ordner → Ziel-Unterordner mit Fotos+`.docx` ODER lose `.docx`). docx→Text via **mammoth**,
+  HEIC→WebP via **heic-convert + sharp**. Heuristischer Parser: „Text im Reel"=Slogan · voller
+  Prosa-Körper=`description` (Marker-Präfixe entfernt) · 1. Satz=`blurb` · Rest-Hinweise=`tips` ·
+  PLZ→Adresse/Ort · Öffnungszeiten · Preis→Budget (**Parkgebühr ≠ Eintritt**) · Kinderwagen
+  (**Negationen** „abraten"/„zuhause lassen" beachten). **Unsichere Felder LEER — nicht raten**
+  (+ „nachpflegen"-Report). Importe sind Entwürfe. Inhalte liegen NICHT im Repo, nur im Google Drive
+  (Owner `allgaeumitkids@gmail.com`) → lokale Kopie nötig.
 
 ## Stehende Regeln (Admin-CMS — IMMER beachten)
 - **NIE anfassen:** `components/cover/*`, `lib/cover/*`, `app/admin/cover-preview` — gehören dem
   parallelen **cover-tool**-Job (existieren nur auf Branch `cover-tool`, nicht hier).
 - **Cover-Editor (Instagram-artig, mobile-first) = Phase 5**, auf dem cover-tool-Fundament, **erst nach
   dessen Merge nach `main`**: EINE `CoverSpec`, EIN Renderer, EINE Asset-Bibliothek — kein zweiter Renderer.
-- **Read-Pfad-Migration = Phase 3** (Hauptrisiko): die ~7 `data.ts`-Direktimporteure auf den Store
-  umstellen; byte-identischer Seed → Sarah prüft `/`, `/entdecken`, `/quiz`, `/ausflug/[id]` pixelgleich.
-- **Nicht nach origin pushen, solange kein Login** (Phase 2) — kein ungeschützter Admin als
-  öffentliches Vercel-Preview.
+- **Read-Pfad-Migration = Phase 3** (Hauptrisiko): öffentliche Seite + Detail-View an den Store
+  anschließen (nur Veröffentlichtes), Detail-View für Drive-Inhalte umbauen (Reisebericht + Hinweise +
+  echte Foto-Galerie + bearbeitete Fakten). Design-eingefroren → Sarah prüft `/`, `/entdecken`, `/quiz`,
+  `/ausflug/[id]` **pixelgleich**.
+- **Postgres/Blob-Pfad noch NICHT an echter Cloud getestet** (Code env-gegated, lokal Datei-Fallback) —
+  vor Live testen. Erst nach Login + getestetem Cloud-Pfad nach origin pushen/deployen.
 - Plan: `~/.claude/plans/expressive-frolicking-feigenbaum.md`. Phasen-Status in Memory
-  `project_allgaeu_admin_cms` (1✅ Beispiel · 4✅ Import-Prototyp · 2/3/5 offen).
+  `project_allgaeu_admin_cms` (1✅ Beispiel · 4✅ Drive-Bulk: 76 Ziele/74 Fotos · 2≈ Code fertig,
+  Vercel-Provisioning offen · 3/5 offen).
 
 ---
 
