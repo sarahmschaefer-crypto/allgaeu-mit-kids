@@ -6,8 +6,16 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { getContentDest, updateDest, deleteDest as storeDeleteDest } from '@/lib/content/store'
+import { getContentDest, updateDest, deleteDest as storeDeleteDest, createDest as storeCreateDest } from '@/lib/content/store'
 import type { ContentDest } from '@/lib/content/types'
+
+// Legt ein neues (leeres) Ziel an und springt direkt in dessen Editor.
+export async function createDest(formData: FormData): Promise<void> {
+  const name = String(formData.get('name') || '').trim()
+  const dest = await storeCreateDest(name || 'Neues Ausflugsziel')
+  revalidatePath('/admin')
+  redirect(`/admin/ausflug/${dest.id}`)
+}
 
 // Speichert die im Editor geänderten Felder (als JSON-Payload übergeben).
 export async function saveDest(formData: FormData): Promise<void> {

@@ -81,3 +81,40 @@ export async function deleteDest(id: string): Promise<void> {
   store.dests = store.dests.filter((d) => d.id !== id)
   await write(store)
 }
+
+function slugify(s: string): string {
+  return (
+    s.toLowerCase()
+      .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'ziel'
+  )
+}
+
+// Leeres neues Ziel (Entwurf). Felder füllt die Redaktion danach im Editor.
+function blankDest(name: string, id: string): ContentDest {
+  const base = {
+    id, name, place: '', cat: 'ausflug',
+    ages: [] as string[], time: '', budget: '', weather: 'egal', stroller: false,
+    map: { x: 50, y: 50 }, rating: 0, reviews: 0,
+    blurb: '', highlights: [] as string[], facilities: [] as string[], season: '', duration: '',
+    tags: ['ausflug'], teaser: name,
+  }
+  return { ...base, photos: [], cover: coverFromDest(base, []), overrides: {}, description: '', tips: '', published: false }
+}
+
+// Neues Ziel anlegen; id = eindeutiger Slug aus dem Namen. Gibt das Ziel zurück.
+export async function createDest(name: string): Promise<ContentDest> {
+  const clean = name.trim() || 'Neues Ausflugsziel'
+  const existing = new Set((await getAllDests()).map((d) => d.id))
+  let id = slugify(clean)
+  for (let n = 2; existing.has(id); n++) id = `${slugify(clean)}-${n}`
+  const dest = blankDest(clean, id)
+  if (USE_PG) {
+    await (await import('@/lib/content/store-pg')).pgUpsert(dest)
+    return dest
+  }
+  const store = await read()
+  store.dests.push(dest)
+  await write(store)
+  return dest
+}
