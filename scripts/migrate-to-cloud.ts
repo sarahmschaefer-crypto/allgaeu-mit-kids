@@ -6,13 +6,21 @@
  * Aufruf (Env inline setzen — Werte aus dem Vercel-Dashboard):
  *   POSTGRES_URL="..." BLOB_READ_WRITE_TOKEN="..." npx tsx scripts/migrate-to-cloud.ts
  */
-import { promises as fs } from 'node:fs'
+import { promises as fs, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { sql } from '@vercel/postgres'
 import { put } from '@vercel/blob'
 
 const ROOT = process.cwd()
 const DATA_FILE = path.join(ROOT, 'data', 'content.json')
+
+// .env.local laden (tsx lädt es nicht automatisch) — erlaubt `vercel env pull`.
+try {
+  for (const line of readFileSync(path.join(ROOT, '.env.local'), 'utf8').split('\n')) {
+    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/)
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, '')
+  }
+} catch { /* .env.local optional */ }
 
 async function main() {
   if (!process.env.POSTGRES_URL) throw new Error('POSTGRES_URL fehlt — Wert aus dem Vercel-Postgres-Dashboard setzen.')
@@ -32,7 +40,7 @@ async function main() {
         if (typeof p.url === 'string' && p.url.startsWith('/uploads/')) {
           try {
             const buf = await fs.readFile(path.join(ROOT, 'public', p.url.replace(/^\//, '')))
-            const blob = await put(`uploads/${path.basename(p.url)}`, buf, { access: 'public', contentType: 'image/webp' })
+            const blob = await put(`uploads/${path.basename(p.url)}`, buf, { access: 'public', contentType: 'image/webp', allowOverwrite: true })
             p.url = blob.url
             photosUp++
           } catch (e) {
