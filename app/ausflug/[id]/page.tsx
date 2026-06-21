@@ -1,19 +1,22 @@
 // app/ausflug/[id]/page.tsx — Shapes-styled destination detail · Variante B "Magazin-Feature"
+// Liest aus dem Content-Store (Store = Quelle, ContentDest ⊃ ShapesDest). Bestehendes
+// Layout bleibt; Reisebericht/Hinweise/echte Foto-Galerie kommen additiv dazu (nur wenn Inhalt da).
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ShapesBar } from '@/components/shapes/ShapesBar'
 import { DetailGallery } from '@/components/shapes/DetailGallery'
 import { Tag } from '@/components/shapes/primitives'
-import { DESTINATIONS, getDest, detailInfo, destTags, TYPES, primaryTagOf } from '@/lib/shapes/data'
+import { detailInfo, destTags, TYPES, primaryTagOf } from '@/lib/shapes/data'
+import { getAllDests, getContentDest } from '@/lib/content/store'
 
-export function generateStaticParams() {
-  return DESTINATIONS.map((d) => ({ id: d.id }))
+export async function generateStaticParams() {
+  return (await getAllDests()).map((d) => ({ id: d.id }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
-  const dest = getDest(id)
+  const dest = await getContentDest(id)
   if (!dest) return { title: 'Ausflugsziel' }
   return { title: dest.name, description: dest.blurb }
 }
@@ -37,15 +40,18 @@ const WEATHER_LABEL: Record<string, string> = {
 
 export default async function DetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const dest = getDest(id)
+  const dest = await getContentDest(id)
   if (!dest) notFound()
 
   const info = detailInfo(dest)
+  // Redaktionelle Overrides bevorzugen (was die Schwester im Admin gepflegt hat).
+  if (dest.overrides?.adresse) info.ort = dest.overrides.adresse
+  if (dest.overrides?.oeffnungszeiten) info.oeffnungszeiten = dest.overrides.oeffnungszeiten
+  if (dest.overrides?.preis) info.preis = dest.overrides.preis
+
   const tags = destTags(dest)
   const ptag = (TYPES as Record<string, { label: string }>)[primaryTagOf(dest)]
 
-  // Single, consolidated "Auf einen Blick" — the 6 client categories merged with
-  // the extra facts (Für Kinder / Wetter) that weren't covered by them.
   const facts: { label: string; value: string }[] = [
     { label: 'Ort', value: info.ort },
     { label: 'Für Kinder', value: agesLabel(dest.ages) },
@@ -55,7 +61,10 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
     { label: 'Parkplatz', value: info.parkplatz },
     { label: 'Wetter', value: WEATHER_LABEL[dest.weather] ?? '—' },
     { label: 'Wegbeschaffenheit', value: info.wegbeschaffenheit.join(' · ') },
-  ]
+  ].filter((f) => f.value && f.value !== '—')
+
+  const story = (dest.description ?? '').split(/\n+/).map((p) => p.trim()).filter(Boolean)
+  const tips = (dest.tips ?? '').split(/\n+/).map((t) => t.trim()).filter(Boolean)
 
   return (
     <div className="shapes-root">
@@ -79,9 +88,9 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
           </div>
         </header>
 
-        {/* MIDDLE — 4:5 gallery + consolidated facts + highlights */}
+        {/* MIDDLE — 4:5 gallery (echte Fotos, sonst Platzhalter) + facts + highlights */}
         <section className="mag-mid">
-          <DetailGallery cat={dest.cat} tag={primaryTagOf(dest)} name={dest.name} />
+          <DetailGallery cat={dest.cat} tag={primaryTagOf(dest)} name={dest.name} photos={dest.photos} />
 
           <div className="mag-col">
             <div>
@@ -96,17 +105,31 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
               </dl>
             </div>
 
-            <div>
-              <h2 className="mag-h2">Highlights</h2>
-              <div className="mag-hls">
-                {dest.highlights.map((h, i) => (
-                  <div className="mag-hl" key={h}>
-                    <span className="mag-hlnum">{String(i + 1).padStart(2, '0')}</span>
-                    <span className="mag-hltext">{h}</span>
-                  </div>
-                ))}
+            {dest.highlights.length > 0 && (
+              <div>
+                <h2 className="mag-h2">Highlights</h2>
+                <div className="mag-hls">
+                  {dest.highlights.map((h, i) => (
+                    <div className="mag-hl" key={h}>
+                      <span className="mag-hlnum">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="mag-hltext">{h}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* Praktische Hinweise — nur wenn vorhanden */}
+            {tips.length > 0 && (
+              <div>
+                <h2 className="mag-h2">Gut zu wissen</h2>
+                <ul className="mag-tips">
+                  {tips.map((t) => (
+                    <li key={t}>{t}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {tags.length > 0 && (
               <div>
@@ -121,11 +144,22 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
           </div>
         </section>
 
+        {/* REISEBERICHT — der ausführliche Text, nur wenn vorhanden */}
+        {story.length > 0 && (
+          <section className="mag-story">
+            <h2 className="mag-h2">Reisebericht</h2>
+            {story.map((p, i) => (
+              <p className="mag-intro mag-story-p" key={i}>
+                {p}
+              </p>
+            ))}
+          </section>
+        )}
+
         <div className="mag-actions">
           <Link href="/entdecken" className="btn btn--primary">
             Mehr passende Ziele finden
           </Link>
-          {/* "Ins Album sammeln" → /sammeln vorerst deaktiviert (Sammeln versteckt) */}
         </div>
 
         <footer className="mag-foot">

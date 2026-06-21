@@ -227,6 +227,12 @@
 .shapes-root .mag-hlnum { font-family: var(--font-display); font-weight: 800; font-size: 14px; color: var(--accent); flex: 0 0 auto; }
 .shapes-root .mag-hltext { font-size: 14.5px; font-weight: 600; line-height: 1.4; }
 
+/* Praktische Hinweise (Tipps) + Reisebericht — nur auf Zielen mit diesen Inhalten. */
+.shapes-root .mag-tips { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 7px; }
+.shapes-root .mag-tips li { font-size: 14.5px; font-weight: 600; line-height: 1.45; color: var(--ink); }
+.shapes-root .mag-story { margin-top: clamp(28px, 5vw, 48px); max-width: 720px; }
+.shapes-root .mag-story-p { margin: 0 0 14px; font-size: 16px; line-height: 1.65; color: var(--ink); }
+
 .shapes-root .mag-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .shapes-root .mag-foot { margin-top: 8px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line-soft); padding-top: 16px; }
 .shapes-root .mag-pg { font-family: var(--font-display); font-weight: 800; font-size: 18px; color: var(--ink); }
