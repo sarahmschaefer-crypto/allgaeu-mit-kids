@@ -278,6 +278,7 @@ export function Editor({ dest }: { dest: ContentDest }) {
         <div className="adm-actions">
           <SaveButton />
           <a className="adm-btn ghost" href="/admin">Zurück zur Liste</a>
+          <a className="adm-btn ghost" href={`/ausflug/${dest.id}`} target="_blank" rel="noreferrer">Auf der Website ansehen ↗</a>
           <button
             type="submit"
             formAction={deleteDest}

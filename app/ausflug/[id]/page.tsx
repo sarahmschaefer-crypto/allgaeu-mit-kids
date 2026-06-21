@@ -3,16 +3,17 @@
 // Layout bleibt; Reisebericht/Hinweise/echte Foto-Galerie kommen additiv dazu (nur wenn Inhalt da).
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { cookies } from 'next/headers'
 import Link from 'next/link'
 import { ShapesBar } from '@/components/shapes/ShapesBar'
 import { DetailGallery } from '@/components/shapes/DetailGallery'
 import { Tag } from '@/components/shapes/primitives'
 import { detailInfo, destTags, TYPES, primaryTagOf } from '@/lib/shapes/data'
-import { getAllDests, getContentDest } from '@/lib/content/store'
+import { getContentDest } from '@/lib/content/store'
+import { ADMIN_COOKIE, expectedToken } from '@/lib/auth'
 
-export async function generateStaticParams() {
-  return (await getAllDests()).map((d) => ({ id: d.id }))
-}
+// Dynamisch: liest Store + Cookie (Entwurf-Vorschau nur für die Redaktion).
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
@@ -43,6 +44,16 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
   const dest = await getContentDest(id)
   if (!dest) notFound()
 
+  // Entwürfe sind öffentlich NICHT sichtbar → 404. Eingeloggte Redaktion sieht sie
+  // als Vorschau (mit Hinweis-Banner), um vor dem Veröffentlichen zu prüfen.
+  let isDraftPreview = false
+  if (!dest.published) {
+    const exp = await expectedToken()
+    const isAdmin = !!exp && (await cookies()).get(ADMIN_COOKIE)?.value === exp
+    if (!isAdmin) notFound()
+    isDraftPreview = true
+  }
+
   const info = detailInfo(dest)
   // Redaktionelle Overrides bevorzugen (was die Schwester im Admin gepflegt hat).
   if (dest.overrides?.adresse) info.ort = dest.overrides.adresse
@@ -70,6 +81,11 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
     <div className="shapes-root">
       <ShapesBar />
       <main className="mag fade-in">
+        {isDraftPreview && (
+          <div style={{ background: '#fff7e6', border: '1px solid #f0e0b8', color: '#7a5b00', borderRadius: 12, padding: '10px 14px', marginBottom: 20, fontWeight: 600, fontSize: 14 }}>
+            Entwurf-Vorschau – nur für die Redaktion sichtbar. Stelle das Ziel im Admin auf „Veröffentlicht", damit alle es sehen.
+          </div>
+        )}
         <Link href="/entdecken" className="kicker mag-back">
           ← Zurück zur Entdeckung
         </Link>
