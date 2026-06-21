@@ -3,6 +3,7 @@
 // (section 2) writes the selection; the gallery (section 3) reads `matches`.
 import { createContext, useContext, useMemo, useState } from 'react'
 import { filterDests, type ShapesDest, type Sel } from '@/lib/shapes/data'
+import { useDests } from '@/components/content/ContentProvider'
 
 export type ArrField = 'ages' | 'types' | 'times' | 'budgets'
 export type MatchSel = { ages: string[]; types: string[]; times: string[]; budgets: string[]; weather: string | null }
@@ -31,7 +32,8 @@ export function MatchProvider({ children }: { children: React.ReactNode }) {
   const setWeather = (id: string | null) => setSel((s) => ({ ...s, weather: s.weather === id ? null : id }))
   const reset = () => setSel(DEFAULT)
 
-  const matches = useMemo(() => filterDests(sel as Sel), [sel])
+  const dests = useDests()
+  const matches = useMemo(() => filterDests(sel as Sel, dests), [sel, dests])
 
   return <MatchCtx.Provider value={{ sel, toggle, setWeather, reset, matches }}>{children}</MatchCtx.Provider>
 }

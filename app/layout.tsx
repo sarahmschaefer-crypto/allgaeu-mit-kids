@@ -7,6 +7,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 import './story.css'
 import './shapes.css'
+import { ContentProvider } from '@/components/content/ContentProvider'
+import { getPublicDests } from '@/lib/content/public'
 
 export const metadata: Metadata = {
   title: {
@@ -23,7 +25,8 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const dests = await getPublicDests()
   return (
     <html lang="de">
       <head>
@@ -35,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen">
-        {children}
+        <ContentProvider dests={dests}>{children}</ContentProvider>
       </body>
     </html>
   )

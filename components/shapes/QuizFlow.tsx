@@ -4,6 +4,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { filterDests, TYPES } from '@/lib/shapes/data'
+import { useDests } from '@/components/content/ContentProvider'
 import { QUESTIONS } from '@/lib/shapes/questions'
 import { Container } from '@/components/shapes/primitives'
 import { Squiggle } from '@/components/shapes/decor'
@@ -37,6 +38,7 @@ export function QuizFlow() {
     if (done) setDone(false)
     else if (step > 0) setStep(step - 1)
   }
+  const dests = useDests()
 
   // quiz answers → shared filter shape (arrays), the language Entdecken speaks
   const handoffSel = {
@@ -48,7 +50,7 @@ export function QuizFlow() {
   }
 
   if (done) {
-    const count = filterDests(handoffSel).length
+    const count = filterDests(handoffSel, dests).length
     const href = buildExploreHref(handoffSel, { from: 'quiz' })
     return (
       <Container style={{ paddingTop: 64, paddingBottom: 90, maxWidth: 640 }} className="fade-in">

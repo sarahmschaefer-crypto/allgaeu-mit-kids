@@ -250,7 +250,7 @@ export const COLLECTIONS = [
   { id: "adrenalin", title: "Für kleine Abenteurer", sub: "Action ab Grundschulalter", ids: ["alpsee-coaster","kletterwald-bärenfalle","breitachklamm","soellereck"] },
 ];
 
-export function getDest(id: string): ShapesDest | undefined { return DESTINATIONS.find(d => d.id === id); }
+export function getDest(id: string, dests: ShapesDest[] = DESTINATIONS): ShapesDest | undefined { return dests.find(d => d.id === id); }
 
 // Short editorial cover hooks — the punchy line printed on the feed-post cover.
 export const DEST_TEASERS = {
@@ -364,12 +364,12 @@ export function distanceKm(center: LatLng, d: ShapesDest): number | null {
   return g ? haversineKm(center, g) : null;
 }
 
-export function filterDests(sel: Sel) {
+export function filterDests(sel: Sel, dests: ShapesDest[] = DESTINATIONS) {
   const ort = sel.ort?.trim();
   const center = ort ? resolveCenter(ort) : null;
   const radius = sel.radius ?? 25;
   // Hard filter (must match every chosen facet group that is set)
-  return DESTINATIONS.filter(d => {
+  return dests.filter(d => {
     if (sel.ages?.length && !sel.ages?.some(a => d.ages.includes(a))) return false;
     if (sel.types?.length && !sel.types?.some(t => tagsOf(d).includes(t))) return false;
     if (sel.times?.length && !sel.times?.includes(d.time)) return false;

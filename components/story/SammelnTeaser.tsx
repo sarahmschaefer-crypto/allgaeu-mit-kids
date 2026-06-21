@@ -2,12 +2,12 @@
 // components/story/SammelnTeaser.tsx — quiet "soft off-ramp" in the story for
 // the collecting game. Not a pinned scene (keeps the page from getting longer).
 import Link from 'next/link'
-import { DESTINATIONS } from '@/lib/shapes/data'
+import { useDests } from '@/components/content/ContentProvider'
 import { Reveal } from '@/components/story/Reveal'
 import { Placeholder } from '@/components/story/Placeholder'
 
 export function SammelnTeaser() {
-  const peek = DESTINATIONS.slice(0, 3)
+  const peek = useDests().slice(0, 3)
   return (
     <section className="sammeln-teaser">
       <div className="wrap st-grid">

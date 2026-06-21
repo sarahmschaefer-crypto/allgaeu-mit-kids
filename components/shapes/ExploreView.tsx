@@ -22,6 +22,7 @@ import {
   type ShapesDest,
 } from '@/lib/shapes/data'
 import { EMPTY_SEL, type SelState } from '@/lib/shapes/explore'
+import { useDests } from '@/components/content/ContentProvider'
 import { DestCard, Container, Photo, TagLabel, Stars, Tag } from '@/components/shapes/primitives'
 import { Segmented, SortSelect } from '@/components/shapes/controls'
 import { Squiggle } from '@/components/shapes/decor'
@@ -103,11 +104,11 @@ function MapPin({ dest, active, hovered, onClick, onHover }: { dest: ShapesDest;
   )
 }
 
-function MapPanel({ results }: { results: ShapesDest[] }) {
+function MapPanel({ results, dests }: { results: ShapesDest[]; dests: ShapesDest[] }) {
   const router = useRouter()
   const [hovered, setHovered] = useState<string | null>(null)
   const [active, setActive] = useState<string | null>(null)
-  const activeDest = active ? getDest(active) : null
+  const activeDest = active ? getDest(active, dests) : null
   const open = (id: string) => router.push(`/ausflug/${id}`)
 
   return (
@@ -181,6 +182,7 @@ export function ExploreView({
   initialView: 'liste' | 'karte'
   fromQuiz: boolean
 }) {
+  const dests = useDests()
   const [sel, setSel] = useState<SelState>(initialSel)
   const [sort, setSort] = useState<'match' | 'rating' | 'name'>('match')
   const [view, setView] = useState<'liste' | 'karte'>(initialView)
@@ -196,7 +198,7 @@ export function ExploreView({
 
   const ortCenter = sel.ort.trim() ? resolveCenter(sel.ort) : null
 
-  const ranked = filterDests(sel as Sel).map((d) => ({ d, m: matchScore(d, sel as Sel) }))
+  const ranked = filterDests(sel as Sel, dests).map((d) => ({ d, m: matchScore(d, sel as Sel) }))
   if (sort === 'match') ranked.sort((a, b) => b.m - a.m || b.d.rating - a.d.rating)
   else if (sort === 'rating') ranked.sort((a, b) => b.d.rating - a.d.rating)
   else ranked.sort((a, b) => a.d.name.localeCompare(b.d.name, 'de'))
@@ -315,7 +317,7 @@ export function ExploreView({
           {results.length === 0 ? (
             <EmptyState onReset={() => setSel(EMPTY_SEL)} />
           ) : view === 'karte' ? (
-            <MapPanel results={results} />
+            <MapPanel results={results} dests={dests} />
           ) : (
             <div className="results-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 24 }}>
               {results.map((d) => (

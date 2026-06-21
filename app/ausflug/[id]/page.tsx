@@ -123,11 +123,14 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
             {tips.length > 0 && (
               <div>
                 <h2 className="mag-h2">Gut zu wissen</h2>
-                <ul className="mag-tips">
-                  {tips.map((t) => (
-                    <li key={t}>{t}</li>
+                <div className="mag-hls">
+                  {tips.map((t, i) => (
+                    <div className="mag-hl" key={t}>
+                      <span className="mag-hlnum">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="mag-hltext">{t}</span>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             )}
 

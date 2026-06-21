@@ -5,11 +5,11 @@
 // No swiping. Persists in localStorage.
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { DESTINATIONS, primaryTagOf } from '@/lib/shapes/data'
+import { primaryTagOf } from '@/lib/shapes/data'
+import { useDests } from '@/components/content/ContentProvider'
 import { Photo, TagLabel, Container } from '@/components/shapes/primitives'
 
 const STORAGE_KEY = 'amk-album'
-const TOTAL = DESTINATIONS.length
 
 const LEVELS = [
   { at: 16, name: 'Allgäu-Profi' },
@@ -26,6 +26,8 @@ export function Sammelalbum() {
   const [hydrated, setHydrated] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const toastTimer = useRef<number | null>(null)
+  const dests = useDests()
+  const TOTAL = dests.length
 
   useEffect(() => {
     try {
@@ -79,7 +81,7 @@ export function Sammelalbum() {
   const count = collected.length
   const level = levelName(count)
   const next = nextMilestone(count)
-  const vorrat = DESTINATIONS.filter((d) => !collected.includes(d.id))
+  const vorrat = dests.filter((d) => !collected.includes(d.id))
 
   return (
     <Container style={{ paddingTop: 30, paddingBottom: 80 }} className="fade-in">
@@ -117,7 +119,7 @@ export function Sammelalbum() {
       {/* the album — fixed numbered slots */}
       <h3 className="album-zone-head">Mein Album</h3>
       <div className="album-grid">
-        {DESTINATIONS.map((d, i) => {
+        {dests.map((d, i) => {
           const on = collected.includes(d.id)
           if (!on) {
             return (
