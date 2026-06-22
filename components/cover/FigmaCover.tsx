@@ -19,6 +19,41 @@ export type FigmaContent = {
 
 const fontFamily = (f: FTText["font"]) => (f === "mango" ? "'Baby Mango', system-ui" : "'Nunito', system-ui, sans-serif");
 
+// Schriftgröße so verkleinern, dass der Text in BREITE und HÖHE in den Rahmen passt
+// → kein seitlicher und kein vertikaler Überlauf. SSR-sicher (keine DOM-Messung),
+// Heuristik: Baby-Mango-Großbuchstaben ~0.54em breit.
+const FACTOR = 0.54;
+
+// Fließtext (umbricht an Leerzeichen): längstes Wort muss in die Breite, geschätzte
+// Zeilenzahl × Zeilenhöhe in die Höhe.
+function fitText(text: string, base: number, availW: number, availH: number, lh: number): number {
+  const words = text.split(/\s+/).filter(Boolean);
+  const longest = words.reduce((m, w) => Math.max(m, w.length), 0);
+  const totalC = words.reduce((s, w) => s + w.length, 0) + Math.max(0, words.length - 1);
+  const fits = (S: number) => {
+    if (longest * S * FACTOR > availW) return false;
+    const lines = Math.max(1, Math.ceil((totalC * S * FACTOR) / availW));
+    return lines * S * lh <= availH;
+  };
+  let S = Math.round(base);
+  while (S > base * 0.4 && !fits(S)) S--;
+  return Math.max(Math.round(base * 0.4), S);
+}
+
+// Marker (jede Zeile auf eigenem Balken, gestapelt): längste Zeile in die Breite,
+// Summe der Balkenhöhen in die Höhe.
+function fitMarker(lines: string[], base: number, availW: number, availH: number, padV: number, gap: number): number {
+  const longest = lines.reduce((m, l) => Math.max(m, l.length), 0);
+  const fits = (S: number) => {
+    if (longest * S * FACTOR > availW) return false;
+    const total = lines.length * (S * 0.92 + padV) + Math.max(0, lines.length - 1) * gap;
+    return total <= availH;
+  };
+  let S = Math.round(base);
+  while (S > base * 0.4 && !fits(S)) S--;
+  return Math.max(Math.round(base * 0.4), S);
+}
+
 function textValue(t: FTText, c: FigmaContent): string {
   let v = t.value ?? "";
   if (t.field === "slogan") v = c.slogan;
@@ -67,13 +102,16 @@ function Layer({ layer, content }: { layer: FTLayer; content: FigmaContent }) {
   }
   if (layer.type === "marker") {
     const lines = content.slogan.split("\n");
+    const availW = (layer.w ?? 1080 - 2 * layer.x) - layer.pad[1] - layer.pad[3];
+    const availH = 1350 - layer.y - 72;
+    const mSize = fitMarker(lines, layer.size, availW, availH, layer.pad[0] + layer.pad[2], layer.gap);
     return (
       <div style={{ position: "absolute", left: layer.x, top: layer.y, width: layer.w, display: "flex", flexDirection: "column", gap: layer.gap, alignItems: layer.align === "center" ? "center" : "flex-start" }}>
         {lines.map((ln, i) => (
           <div key={i} style={{
             background: col(layer.barColor), color: col(layer.textColor),
             padding: `${layer.pad[0]}px ${layer.pad[1]}px ${layer.pad[2]}px ${layer.pad[3]}px`,
-            borderRadius: layer.radius, fontFamily: "'Baby Mango', system-ui", fontSize: layer.size,
+            borderRadius: layer.radius, fontFamily: "'Baby Mango', system-ui", fontSize: mSize,
             lineHeight: 0.92, letterSpacing: layer.tracking, whiteSpace: "nowrap",
           }}>{ln}</div>
         ))}
@@ -82,14 +120,18 @@ function Layer({ layer, content }: { layer: FTLayer; content: FigmaContent }) {
   }
   // text
   const t = layer;
+  const txt = textValue(t, content);
+  const availW = t.w ?? 1080 - 2 * t.x;
+  const availH = 1350 - t.y - 80;
+  const tSize = fitText(txt, t.size, availW, availH, t.lh);
   return (
     <div style={{
       position: "absolute", left: t.x, top: t.y, width: t.w,
-      fontFamily: fontFamily(t.font), fontWeight: t.weight ?? 400, fontSize: t.size,
+      fontFamily: fontFamily(t.font), fontWeight: t.weight ?? 400, fontSize: tSize,
       lineHeight: t.lh, letterSpacing: t.tracking, color: col(t.color),
-      textAlign: t.align ?? "left", whiteSpace: "pre-wrap", margin: 0,
+      textAlign: t.align ?? "left", whiteSpace: "pre-wrap", overflowWrap: "break-word", margin: 0,
     }}>
-      {textValue(t, content)}
+      {txt}
     </div>
   );
 }

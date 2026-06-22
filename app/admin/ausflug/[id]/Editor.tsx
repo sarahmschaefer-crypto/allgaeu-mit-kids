@@ -207,7 +207,7 @@ export function Editor({ dest }: { dest: ContentDest }) {
         <div>
           <span className="adm-card-mock lbl" style={{ display: 'block', marginBottom: 8 }}>So sieht die Karte aus</span>
           <div className="adm-card-mock">
-            <DestCover dest={{ ...dest, name, place, teaser }} style={{ borderRadius: 11 }} />
+            <DestCover dest={{ ...dest, name, place, teaser, tags }} style={{ borderRadius: 11 }} />
             {tagLabel && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 11 }}>
                 <span style={{ width: 9, height: 9, borderRadius: '50%', background: tagLabel.color }} />
