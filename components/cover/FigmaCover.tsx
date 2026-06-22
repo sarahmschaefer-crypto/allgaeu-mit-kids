@@ -77,7 +77,9 @@ function Layer({ layer, content }: { layer: FTLayer; content: FigmaContent }) {
       : {};
     return (
       <div style={{ position: "absolute", left: layer.x, top: layer.y, width: layer.w, height: layer.h, borderRadius, overflow: "hidden", transform: layer.rot ? `rotate(${layer.rot}deg)` : undefined, ...mask }}>
-        {content.photo
+        {layer.fillColor
+          ? <div style={{ width: "100%", height: "100%", background: col(layer.fillColor) }} />
+          : content.photo
           // eslint-disable-next-line @next/next/no-img-element
           ? <img src={content.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block",
               objectPosition: content.focal ? `${content.focal.x * 100}% ${content.focal.y * 100}%` : undefined,
@@ -133,14 +135,17 @@ function Layer({ layer, content }: { layer: FTLayer; content: FigmaContent }) {
   const availH = 1350 - t.y - 80;
   const tSize = fitText(txt, t.size * (isSlogan ? content.fontScale ?? 1 : 1), availW, availH, t.lh);
   const tColor = isSlogan && content.sloganColor ? col(content.sloganColor) : col(t.color);
+  const inner = t.bar
+    ? <span style={{ background: col(t.bar), WebkitBoxDecorationBreak: "clone", boxDecorationBreak: "clone", padding: "0.04em 0.18em", borderRadius: 14 }}>{txt}</span>
+    : txt;
   return (
     <div style={{
       position: "absolute", left: t.x, top: t.y, width: t.w,
       fontFamily: fontFamily(t.font), fontWeight: t.weight ?? 400, fontSize: tSize,
-      lineHeight: t.lh, letterSpacing: t.tracking, color: tColor,
+      lineHeight: t.bar ? Math.max(t.lh, 1.3) : t.lh, letterSpacing: t.tracking, color: tColor,
       textAlign: t.align ?? "left", whiteSpace: "pre-wrap", overflowWrap: "break-word", margin: 0,
     }}>
-      {txt}
+      {inner}
     </div>
   );
 }

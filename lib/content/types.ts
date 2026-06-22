@@ -28,20 +28,41 @@ export type CoverSpec = {
 
 export type DestPhoto = { url: string; alt?: string }
 
-// Im Cover-Builder (Phase 10) gespeicherte Auswahl. Alles optional → fehlt ein
-// Wert, greift das deterministische Auto-Cover (resolveFigmaCover in
-// lib/content/figma-cover.ts). Wird als JSON in der DB abgelegt.
+// Frei platzierte Brand-Grafik (Sticker). Position 0..1 relativ zur Cover-Fläche
+// (Mittelpunkt), scale = Breite relativ zur Cover-Breite.
+export type CoverSticker = { asset: string; x: number; y: number; scale: number; rot?: number }
+export type CoverFrameShape = 'template' | 'rect' | 'circle' | 'blob1' | 'blob2' | 'blob3' | 'blob4' | 'none'
+
+// Im Cover-Builder gespeicherte Auswahl — JEDER Layer überschreibbar (Phase 10 /
+// Increment 2). Alles optional → fehlt ein Wert, greift der Template-Default bzw.
+// das deterministische Auto-Cover (resolveFigmaCover). Wird als JSON in der DB abgelegt.
 export type FigmaCoverChoice = {
-  templateId?: string                 // eine der FIGMA_TEMPLATES-IDs
-  photoUrl?: string                   // gewähltes Foto (echtes Upload oder Demo-Platzhalter)
+  templateId?: string                 // eine der FIGMA_TEMPLATES-IDs (Voreinstellung)
+  // ── Ebene 1: Foto / Farbfläche ──
+  fillMode?: 'photo' | 'color'        // Foto ODER Farbfläche
+  fillColor?: string                  // CoverColor, wenn fillMode='color'
+  photoUrl?: string                   // gewähltes Foto (Upload oder Platzhalter)
   focal?: { x: number; y: number }    // 0..1 Foto-Fokus (verschieben)
   photoZoom?: number                  // 1 = normal, >1 reinzoomen
-  slogan?: string                     // Slogan überschreiben (sonst teaser)
-  overline?: string                   // Eyebrow überschreiben (sonst place)
-  number?: string                     // große Zahl (nur Listen-Vorlagen)
+  // ── Ebene 2: Rahmen-Form ──
+  frameShape?: CoverFrameShape        // organische Blobs / Viereck / Kreis / keiner
+  // ── Ebene 3: Scrim ──
+  scrim?: number | null               // 0..1 Stärke; null/0 = aus; fehlt = Template-Default
+  // ── Ebene 4: Brand-Grafiken (zusätzlich) ──
+  stickers?: CoverSticker[]
+  // ── Ebene 5: Kategorie-Stempel ──
+  showStamp?: boolean
+  stampCategory?: string              // welcher Stempel (sonst echte Kategorie)
+  // ── Ebene 6: Schrift ──
+  slogan?: string
+  overline?: string
+  number?: string
   fontScale?: number                  // Slogan-Größe × (0.6..1.5)
   sloganColor?: string                // CoverColor | 'white'
-  showStamp?: boolean                 // Kategorie-Stempel ein/aus
+  textPos?: { x: number; y: number }  // Slogan per Drag verschoben (1080-Raum, Ebenen-Ursprung)
+  textMarker?: boolean                // Slogan als Marker-Balken darstellen
+  barColor?: string                   // Marker-/Bandarolen-Balkenfarbe (CoverColor)
+  textBar?: string | null             // Farbbalken hinter dem Slogan (CoverColor); fehlt/null = keiner
 }
 
 // Redaktionelle Detail-Overrides: leer = aus den Basisdaten abgeleitet (detailInfo()).

@@ -12,6 +12,7 @@ export type FTText = {
   size: number; color: CoverColor | "white"; font: FTFont;
   lh: number; tracking: number;     // tracking in px @ Originalgröße
   align?: "left" | "center"; upper?: boolean; weight?: number;
+  bar?: CoverColor | "white";       // optionaler Farbbalken hinter dem Text (Editor)
 };
 export type FTPhoto = {
   type: "photo"; x: number; y: number; w: number; h: number;
@@ -19,6 +20,7 @@ export type FTPhoto = {
   mask?: string;   // Blob-SVG als Foto-Maske (z.B. "blob1")
   rot?: number;    // Rotation in Grad
   scrim?: { y: number; h: number; to: number };
+  fillColor?: CoverColor | "white"; // Farbfläche statt Foto (Editor)
 };
 // Textmarker: jede Slogan-Zeile auf eigenem Highlight-Balken (auto-Breite).
 export type FTMarker = {
