@@ -22,7 +22,7 @@ export default function KontaktPage() {
               <p className="label">Kontakt</p>
               <h1 className="text-5xl font-bold leading-tight">
                 Sag<br />
-                <span style={{ color: 'var(--terra)' }}>Hallo.</span>
+                <span style={{ color: 'var(--accent)' }}>Hallo.</span>
               </h1>
             </div>
 

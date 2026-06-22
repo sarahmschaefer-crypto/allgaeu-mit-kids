@@ -35,7 +35,7 @@ export default function AboutPage() {
           <p className="label">Über uns</p>
           <h1 className="text-5xl md:text-6xl font-bold leading-tight">
             Wir kennen<br />das Allgäu<br />
-            <span style={{ color: 'var(--terra)' }}>wie unsere Kinder.</span>
+            <span style={{ color: 'var(--accent)' }}>wie unsere Kinder.</span>
           </h1>
           <hr className="lofi-divider" />
           <p className="text-lg leading-relaxed" style={{ color: 'var(--ink-soft)' }}>
