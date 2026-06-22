@@ -2,7 +2,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
   title: 'Über uns',
@@ -94,7 +93,6 @@ export default function AboutPage() {
         </div>
 
       </main>
-      <Footer />
     </>
   )
 }

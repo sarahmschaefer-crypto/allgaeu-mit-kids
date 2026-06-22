@@ -26,11 +26,6 @@ function StoryInner() {
       {/* <SammelnTeaser /> — vorerst deaktiviert (Sammeln versteckt) */}
       <ResolutionScene />
 
-      <footer className="story-foot">
-        <span className="foot-mark">Allgäu&nbsp;·&nbsp;für kleine Entdecker</span>
-        <span className="foot-mute">Konzept-Story · Bilder als Platzhalter</span>
-      </footer>
-
       <TweaksPanel />
     </>
   )

@@ -128,10 +128,10 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
           {/* "Ins Album sammeln" → /sammeln vorerst deaktiviert (Sammeln versteckt) */}
         </div>
 
-        <footer className="mag-foot">
+        <div className="mag-foot">
           <span className="mag-pg">01</span>
           <span className="kicker">Ausgabe · {ptag?.label ?? 'Familie & Allgäu'}</span>
-        </footer>
+        </div>
       </main>
     </div>
   )

@@ -3,9 +3,12 @@ import Link from 'next/link'
 
 const LINKS = [
   { label: 'Ausflüge entdecken', href: '/entdecken' },
-  { label: 'Über uns',           href: '/about' },
+  { label: 'Über',               href: '/about' },
   { label: 'Kontakt',            href: '/kontakt' },
+  { label: 'Impressum',          href: '/impressum' },
 ]
+
+const INSTAGRAM = 'https://www.instagram.com/allgaeumitkids/'
 
 export default function Footer() {
   return (
@@ -30,6 +33,9 @@ export default function Footer() {
                 {label}
               </Link>
             ))}
+            <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" className="label transition-colors hover:text-[var(--accent)]">
+              Instagram
+            </a>
           </nav>
 
         </div>
