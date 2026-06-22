@@ -168,6 +168,8 @@
 #story-root .ctrl-label { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.05rem; color: var(--ink); margin-bottom: 14px; }
 #story-root .ctrl-num { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--brand-pink); letter-spacing: .06em; }
 #story-root .chiprow { display: flex; flex-wrap: wrap; gap: 10px; }
+/* Quiz „Worauf habt ihr Lust?": Filter-Tags brauchen .shapes-root-Scope; Hintergrund neutralisieren. */
+#story-root .shapes-root.lquiz-tagscope { background: transparent; color: inherit; font-size: inherit; line-height: inherit; }
 /* .chip → vereinheitlicht (global in globals.css) */
 #story-root .matcher-results { background: color-mix(in oklab, var(--paper-2) 70%, var(--paper)); border: 1px solid var(--line); border-radius: 24px; padding: clamp(22px,3vw,34px); position: sticky; top: 24px; }
 #story-root .results-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--line); }

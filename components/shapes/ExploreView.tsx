@@ -7,7 +7,6 @@ import { useState } from 'react'
 import type { CSSProperties } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  AGES,
   TIMES,
   BUDGETS,
   LUST_TAGS,
@@ -264,7 +263,6 @@ export function ExploreView({
                   <p className="caption" style={{ fontSize: 12.5, marginTop: 8 }}>Ort nicht in der Liste – es werden Namenstreffer angezeigt.</p>
                 ))}
               </div>
-              <FacetGroup title="Alter der Kinder" items={AGES} sel={sel.ages} onToggle={(id) => toggleIn('ages', id)} />
               <LustFacet sel={sel.types} onToggle={(id) => toggleIn('types', id)} />
               <FacetGroup title="Verfügbare Zeit" items={TIMES} sel={sel.times} onToggle={(id) => toggleIn('times', id)} />
               <FacetGroup title="Budget" items={BUDGETS} sel={sel.budgets} onToggle={(id) => toggleIn('budgets', id)} />

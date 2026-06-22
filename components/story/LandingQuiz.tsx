@@ -6,6 +6,8 @@ import { useState } from 'react'
 import { QUESTIONS } from '@/lib/shapes/questions'
 import { Reveal } from '@/components/story/Reveal'
 import { useMatch, type ArrField } from '@/components/story/MatchContext'
+import { Tag } from '@/components/shapes/primitives'
+import { TYPES } from '@/lib/shapes/data'
 
 function scrollToGallery() {
   const el = document.querySelector('#story-root .horizontal')
@@ -50,13 +52,24 @@ export function LandingQuiz() {
           <div key={step} className="lquiz-body">
             <h3 className="display lquiz-q">{cur.q}</h3>
             {cur.hint && <p className="lquiz-hint">{cur.hint}</p>}
-            <div className="chiprow lquiz-chips">
-              {cur.options.map((o) => (
-                <button key={o.id} type="button" className={`chip${isOn(o.id) ? ' on' : ''}`} onClick={() => choose(o.id)}>
-                  {o.label}
-                </button>
-              ))}
-            </div>
+            {cur.key === 'types' ? (
+              <div className="chiprow lquiz-chips shapes-root lquiz-tagscope">
+                {cur.options.map((o) => {
+                  const t = TYPES[o.id as keyof typeof TYPES]
+                  return (
+                    <Tag key={o.id} label={t.label} icon={t.icon} color={t.color} on={isOn(o.id)} onClick={() => choose(o.id)} />
+                  )
+                })}
+              </div>
+            ) : (
+              <div className="chiprow lquiz-chips">
+                {cur.options.map((o) => (
+                  <button key={o.id} type="button" className={`chip${isOn(o.id) ? ' on' : ''}`} onClick={() => choose(o.id)}>
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <button className="btn btn--primary lquiz-next" onClick={next}>

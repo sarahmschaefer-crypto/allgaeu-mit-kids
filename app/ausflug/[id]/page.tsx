@@ -18,17 +18,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return { title: dest.name, description: dest.blurb }
 }
 
-// "Für Kinder" range label from the age buckets present on a destination.
-function agesLabel(ages: string[]): string {
-  const order = ['0-2', '3-5', '6-9', '10+']
-  const present = order.filter((o) => ages.includes(o))
-  if (!present.length) return 'Jedes Alter'
-  const lo = present[0].split('-')[0]
-  const hi = present[present.length - 1]
-  if (hi === '10+') return `ab ${lo} Jahre`
-  return `${lo}–${hi.split('-')[1]} Jahre`
-}
-
 const WEATHER_LABEL: Record<string, string> = {
   gut: 'Bei schönem Wetter',
   regen: 'Auch bei Regen',
@@ -48,7 +37,6 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
   // the extra facts (Für Kinder / Wetter) that weren't covered by them.
   const facts: { label: string; value: string }[] = [
     { label: 'Ort', value: info.ort },
-    { label: 'Für Kinder', value: agesLabel(dest.ages) },
     { label: 'Dauer des Ausflugs', value: info.dauer },
     { label: 'Öffnungszeiten', value: info.oeffnungszeiten },
     { label: 'Preis', value: info.preis },

@@ -99,8 +99,6 @@ export function TagLabel({ tag, light }: { tag: string; light?: boolean }) {
 }
 
 export function MetaRow({ dest }: { dest: ShapesDest }) {
-  const minAge = ({ '0-2': 0, '3-5': 3, '6-9': 6, '10+': 10 } as Record<string, number>)[dest.ages[0]] ?? 0
-  const ageLabel = minAge === 0 ? 'Jedes Alter' : `ab ${minAge} J.`
   const budget = BUDGETS.find((b) => b.id === dest.budget)
   const time = TIMES.find((t) => t.id === dest.time)
   const Item = ({ children }: { children: ReactNode }) => (
@@ -109,8 +107,6 @@ export function MetaRow({ dest }: { dest: ShapesDest }) {
   const Sep = () => <span aria-hidden="true" style={{ color: 'var(--line)', fontWeight: 400 }}>/</span>
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 10px', alignItems: 'center' }}>
-      <Item>{ageLabel}</Item>
-      <Sep />
       <Item>{time?.label}</Item>
       <Sep />
       <Item>{budget?.glyph}</Item>
