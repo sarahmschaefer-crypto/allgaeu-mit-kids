@@ -72,3 +72,9 @@ Dauerhaft gültig. Neue dauerhafte Anweisungen hier ergänzen.
 - **Detail (`/ausflug/[id]`):** konsolidiertes „Auf einen Blick" (Ort, Für Kinder, Dauer, Öffnungszeiten, Preis, Parkplatz, Wetter, Wegbeschaffenheit) + Highlights + Themen-Tags + Bilder-Galerie.
 - **Bilder:** Platzhalter (Unsplash, in `next.config.ts` freigeschaltet), bis echte Fotos kommen.
 - **Versteckte Experiences reversibel halten:** Quiz/Sammeln nur per Redirect deaktiviert, Original-Code bleibt erhalten.
+- **Visuell verifizieren (Screenshot-Schleife):** Bei allen visuellen Änderungen Screenshots ziehen und gegen die
+  Referenz (Figma/Vorgabe) abgleichen, in Schleife bis keine Abweichung mehr sichtbar ist.
+  - *Statische Styles* (Farben, Buttons, Tags, Typo, Layout): per Preview-Screenshot prüfen.
+  - *Scroll-/Parallax-Effekte* (Hero, Journey, Navbar-Transparenz): Scrollpositionen skriptgesteuert anfahren
+    (`window.scrollTo` + Screenshot an mehreren Punkten) und auch die Scroll-Zustände in der Schleife prüfen.
+    Nur Effekte, die die Preview nachweislich NICHT rendert, gezielt an Sarah zur Sichtprüfung zurückgeben.
