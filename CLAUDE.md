@@ -19,12 +19,15 @@ damit die **parallel aktive cover-tool-Session** im Haupt-Repo `~/Developer/allg
   Ohne Variable: in `development` offen, in `production` gesperrt.
 - **Typecheck:** `npx tsc --noEmit` (Hauptverifikation; Preview-Server meiden).
 - **Drive-Import:** `npx tsx scripts/import-drive.ts <lokaler-ordner>` (z. B. `~/Downloads/"Relevant für App"`).
-- **Cloud-Env (Vercel):** `POSTGRES_URL` → Store nutzt Postgres statt Datei · `BLOB_READ_WRITE_TOKEN` →
-  Uploads gehen zu Vercel Blob statt `public/uploads` · `ADMIN_PASSWORD` → Login.
+- **Cloud-Migration (einmalig, erledigt):** `npx tsx scripts/migrate-to-cloud.ts` lädt `data/content.json`
+  → Postgres und lokale `public/uploads`-Fotos → Blob (URLs umgeschrieben); Creds aus `.env.local`.
+- **Cloud-Env:** `POSTGRES_URL` → Store nutzt Postgres statt Datei · `BLOB_READ_WRITE_TOKEN` → Uploads →
+  Vercel Blob statt `public/uploads` · `ADMIN_PASSWORD` → Login. ⚠️ Stehen diese in `.env.local`, geht
+  auch der **lokale `dev` auf die Cloud-DB/Blob** (nicht auf die lokale Datei).
 
 ## Architektur (was mehrere Dateien überspannt)
 - **Daten-Store hinter schmalem Interface** `lib/content/store.ts` (Funktionen `getAllDests/
-  getContentDest/updateDest/deleteDest`). **Backend per Env:** `POSTGRES_URL` gesetzt →
+  getContentDest/updateDest/deleteDest/createDest`). **Backend per Env:** `POSTGRES_URL` gesetzt →
   `lib/content/store-pg.ts` (Vercel Postgres, EINE Tabelle `destinations(id, sort, data jsonb)`), sonst
   JSON-Datei `data/content.json` (gitignored, **seedet aus `lib/shapes/data.ts`**). Verbraucher kennen
   nur das Interface.
@@ -39,11 +42,20 @@ damit die **parallel aktive cover-tool-Session** im Haupt-Repo `~/Developer/allg
   (Schichten hinten→vorn: Foto/Farbe · Scrim · Slogan + optional Farbbalken · Kategorie-Stempel oben
   rechts; Playfair statt Baby Mango). Wird in **Phase 5 durch den echten `<Cover>`-Renderer** (Branch
   cover-tool) als Drop-in ersetzt.
-- **Admin** unter `app/admin/`: Shell (`layout.tsx` + gescoptes `admin.css`, Logout-Button) · Liste
-  (`page.tsx`, Live/Entwurf-Badge) · Editor (`ausflug/[id]/page.tsx` lädt, `Editor.tsx` = Client-Form mit
-  Live-Cover-Vorschau, Veröffentlicht-Schalter, Foto-Upload). **Server-Actions** `app/admin/actions.ts`:
-  `saveDest` (JSON-Payload aus Hidden-Feld), `uploadPhoto` (**env-gesteuert** Blob/lokal), `deleteDest`.
-  **Nur neue Dateien** angelegt → keine öffentliche Komponente angefasst, Live-Design unverändert.
+- **Admin** unter `app/admin/`: Shell (`layout.tsx` + gescoptes `admin.css`, Logout) · Liste
+  (`page.tsx` Server + `AdminList.tsx` Client = Suche + Live/Entwurf-Filter, „+ Neues Ziel"-Formular) ·
+  Editor (`ausflug/[id]/page.tsx` lädt, `Editor.tsx` Client-Form mit Live-Cover-Vorschau,
+  Veröffentlicht-Schalter, Foto-Upload, „Auf der Website ansehen"-Link, Löschen). **Server-Actions**
+  `app/admin/actions.ts`: `saveDest` (JSON-Payload aus Hidden-Feld), `createDest`, `uploadPhoto`
+  (**env-gesteuert** Blob/lokal), `deleteDest` — alle rufen `revalidatePath('/', 'layout')` → öffentliche
+  Seiten ohne Redeploy aktuell.
+- **Öffentlicher Lese-Pfad (Phase 3):** `lib/content/public.ts` `getPublicDests()` = nur `published`.
+  Root-`ContentProvider`/`useDests()` (`app/layout.tsx` async → Seiten dynamisch); `filterDests`/`getDest`
+  in `lib/shapes/data.ts` nehmen optionalen Datensatz (Default = Seed). Verbraucher umgestellt:
+  ExploreView, MatchContext, SammelnTeaser, QuizFlow, Sammelalbum. **Detail-View** `app/ausflug/[id]`
+  (`force-dynamic`): liest Store, additiv Reisebericht (`description`) + „Gut zu wissen" (`tips`) + echte
+  Foto-Galerie (`DetailGallery photos`-Prop) + `overrides`-Fakten — neue Abschnitte nur bei Inhalt →
+  16 Seeds pixelgleich. **Entwürfe öffentlich → 404**, eingeloggte Redaktion sieht sie als Vorschau (Cookie-Check).
 - **Drive-Import** `scripts/import-drive.ts`: liest eine **lokal gesyncte Drive-Kopie**
   (Kategorie-Ordner → Ziel-Unterordner mit Fotos+`.docx` ODER lose `.docx`). docx→Text via **mammoth**,
   HEIC→WebP via **heic-convert + sharp**. Heuristischer Parser: „Text im Reel"=Slogan · voller
@@ -58,15 +70,16 @@ damit die **parallel aktive cover-tool-Session** im Haupt-Repo `~/Developer/allg
   parallelen **cover-tool**-Job (existieren nur auf Branch `cover-tool`, nicht hier).
 - **Cover-Editor (Instagram-artig, mobile-first) = Phase 5**, auf dem cover-tool-Fundament, **erst nach
   dessen Merge nach `main`**: EINE `CoverSpec`, EIN Renderer, EINE Asset-Bibliothek — kein zweiter Renderer.
-- **Read-Pfad-Migration = Phase 3** (Hauptrisiko): öffentliche Seite + Detail-View an den Store
-  anschließen (nur Veröffentlichtes), Detail-View für Drive-Inhalte umbauen (Reisebericht + Hinweise +
-  echte Foto-Galerie + bearbeitete Fakten). Design-eingefroren → Sarah prüft `/`, `/entdecken`, `/quiz`,
-  `/ausflug/[id]` **pixelgleich**.
-- **Postgres/Blob-Pfad noch NICHT an echter Cloud getestet** (Code env-gegated, lokal Datei-Fallback) —
-  vor Live testen. Erst nach Login + getestetem Cloud-Pfad nach origin pushen/deployen.
+- **Design ist eingefroren:** öffentliche Seiten (`/`, `/entdecken`, `/quiz`, `/ausflug/[id]`) müssen für
+  die bestehenden 16 Ziele **pixelgleich** bleiben — neue Abschnitte/Daten nur additiv & konditional.
+  Sarahs visueller Gegencheck steht noch aus.
+- **Cloud ist live (Branch gepusht):** `admin-cms` ist auf origin → Vercel baut ein **Vorschau-Deployment**
+  (eigene URL, Live-Domain `main` unberührt). Neon-Postgres + Blob `allgaeu-fotos` (Public) angelegt &
+  migriert (76 Ziele/74 Fotos). **Merge `admin-cms` → `main` (= echte Live-Domain) nur bewusst** und mit
+  dem cover-tool-Job abgestimmt.
 - Plan: `~/.claude/plans/expressive-frolicking-feigenbaum.md`. Phasen-Status in Memory
-  `project_allgaeu_admin_cms` (1✅ Beispiel · 4✅ Drive-Bulk: 76 Ziele/74 Fotos · 2≈ Code fertig,
-  Vercel-Provisioning offen · 3/5 offen).
+  `project_allgaeu_admin_cms` (1✅ · 3✅ · 4✅ Drive-Bulk 76/74 · 2✅ Cloud live/Vorschau · 5 offen:
+  Cover-Editor nach cover-tool→main-Merge). Offen: `ADMIN_PASSWORD` in Vercel + Vorschau-Login testen.
 
 ---
 
