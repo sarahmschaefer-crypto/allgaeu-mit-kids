@@ -53,7 +53,7 @@ export const FIGMA_TEMPLATES: FigmaTemplate[] = [
     layers: [
       { type: "photo", x: 0, y: 391, w: 1080, h: 959 },
       { type: "stamp", x: 868, y: 60, size: 152 },
-      { type: "text", field: "slogan", x: 60, y: 190, w: 960, size: 156, color: "purple", font: "mango", lh: 0.92, tracking: -1.56, align: "center" },
+      { type: "text", field: "slogan", x: 60, y: 190, w: 960, size: 156, color: "ink", font: "mango", lh: 0.92, tracking: -1.56, align: "center" },
     ],
   },
   {
@@ -98,7 +98,7 @@ FIGMA_TEMPLATES.push(
     layers: [
       { type: "photo", x: 60, y: 103, w: 960, h: 954, mask: "blob1" },
       { type: "stamp", x: 868, y: 60, size: 152 },
-      { type: "text", field: "slogan", x: 60, y: 940, w: 960, size: 156, color: "purple", font: "mango", lh: 0.92, tracking: -1.56 },
+      { type: "text", field: "slogan", x: 60, y: 940, w: 960, size: 156, color: "white", font: "mango", lh: 0.92, tracking: -1.56 },
       { type: "graphic", asset: "spots", x: 747, y: 972, w: 242 },
     ],
   },
@@ -150,23 +150,23 @@ FIGMA_TEMPLATES.push(
       { type: "photo", x: 0, y: 0, w: 1080, h: 1350 },
       { type: "text", field: "overline", x: 79, y: 729, size: 41.5, color: "white", font: "nunito", lh: 1, tracking: 6.64, upper: true, weight: 700 },
       { type: "stamp", x: 868, y: 60, size: 152 },
-      { type: "marker", x: 60, y: 820, gap: 12, size: 100, barColor: "yellow", textColor: "purple", pad: [10, 24, 12, 24], radius: 14, tracking: -1 },
+      { type: "marker", x: 60, y: 820, gap: 12, size: 100, barColor: "yellow", textColor: "ink", pad: [10, 24, 12, 24], radius: 14, tracking: -1 },
     ],
   },
   {
-    id: "stil17", name: "Stil17", bg: "orange",
+    id: "stil17", name: "Teaser 2", bg: "orange",
     layers: [
-      { type: "text", field: "slogan", x: 60, y: 230, w: 960, size: 132, color: "pink", font: "mango", lh: 0.92, tracking: -1.32, align: "center" },
+      { type: "text", field: "slogan", x: 60, y: 230, w: 960, size: 132, color: "ink", font: "mango", lh: 0.92, tracking: -1.32, align: "center" },
       { type: "graphic", asset: "logo-bade", x: 314, y: 660, w: 451 },
       { type: "stamp", x: 868, y: 60, size: 152 },
     ],
   },
   {
-    id: "teaser-2", name: "Teaser 2", bg: "pink", needs: { number: true },
+    id: "teaser-2", name: "Zahl 1", bg: "pink", needs: { number: true },
     layers: [
       { type: "graphic", asset: "footprints", x: 116, y: 128, w: 296, h: 410 },
       { type: "text", value: "9", x: 331, y: 245, w: 418, size: 300, color: "orange", font: "mango", lh: 0.92, tracking: -3, align: "center" },
-      { type: "marker", x: 0, y: 540, w: 1080, align: "center", gap: 12, size: 100, barColor: "yellow", textColor: "pink", pad: [10, 24, 12, 24], radius: 14, tracking: -1 },
+      { type: "marker", x: 0, y: 540, w: 1080, align: "center", gap: 12, size: 100, barColor: "yellow", textColor: "ink", pad: [10, 24, 12, 24], radius: 14, tracking: -1 },
       { type: "text", field: "overline", x: 0, y: 1048, w: 1080, size: 41.5, color: "white", font: "nunito", lh: 1, tracking: 6.64, upper: true, weight: 700, align: "center" },
       { type: "stamp", x: 868, y: 60, size: 152 },
     ],
@@ -175,7 +175,7 @@ FIGMA_TEMPLATES.push(
 
 FIGMA_TEMPLATES.push(
   {
-    id: "stil19", name: "Stil19", bg: "purple", needs: { number: true },
+    id: "stil19", name: "Rahmen Viereck 3", bg: "purple", needs: { number: true },
     layers: [
       { type: "photo", x: 60, y: 60, w: 960, h: 792, radius: [40, 80, 40, 40] },
       { type: "stamp", x: 868, y: 60, size: 152 },
@@ -184,7 +184,7 @@ FIGMA_TEMPLATES.push(
     ],
   },
   {
-    id: "stil20", name: "Stil20", bg: "purple",
+    id: "stil20", name: "Teaser 3", bg: "purple",
     layers: [
       { type: "text", field: "slogan", x: 60, y: 230, w: 960, size: 132, color: "yellow", font: "mango", lh: 0.92, tracking: -1.32, align: "center" },
       { type: "graphic", asset: "logo-bade", x: 314, y: 660, w: 451 },
@@ -197,7 +197,7 @@ FIGMA_TEMPLATES.push(
       { type: "photo", x: 0, y: 0, w: 1080, h: 1350 },
       { type: "graphic", asset: "footprints", x: 106, y: 76, w: 296, h: 410 },
       { type: "stamp", x: 868, y: 60, size: 152 },
-      { type: "marker", x: 60, y: 820, gap: 12, size: 100, barColor: "orange", textColor: "purple", pad: [10, 24, 12, 24], radius: 14, tracking: -1 },
+      { type: "marker", x: 60, y: 820, gap: 12, size: 100, barColor: "orange", textColor: "white", pad: [10, 24, 12, 24], radius: 14, tracking: -1 },
     ],
   },
   {
