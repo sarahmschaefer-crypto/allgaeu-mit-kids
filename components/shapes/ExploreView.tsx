@@ -11,7 +11,6 @@ import {
   TIMES,
   BUDGETS,
   LUST_TAGS,
-  ACCESS_OPTIONS,
   TOWNS,
   resolveCenter,
   filterDests,
@@ -189,11 +188,11 @@ export function ExploreView({
   const [banner, setBanner] = useState(fromQuiz)
   const [filtersOpen, setFiltersOpen] = useState(false) // nur Mobile: Filter standardmäßig eingeklappt
 
-  const toggleIn = (key: 'ages' | 'times' | 'budgets' | 'types' | 'access', id: string) =>
+  const toggleIn = (key: 'ages' | 'times' | 'budgets' | 'types', id: string) =>
     setSel((s) => ({ ...s, [key]: s[key].includes(id) ? s[key].filter((x) => x !== id) : [...s[key], id] }))
 
   const active =
-    sel.ages.length + sel.times.length + sel.budgets.length + sel.types.length + sel.access.length +
+    sel.ages.length + sel.times.length + sel.budgets.length + sel.types.length +
     (sel.weather ? 1 : 0) + (sel.stroller ? 1 : 0) + (sel.parking ? 1 : 0) + (sel.ort.trim() ? 1 : 0)
 
   const ortCenter = sel.ort.trim() ? resolveCenter(sel.ort) : null
@@ -272,9 +271,9 @@ export function ExploreView({
               <LustFacet sel={sel.types} onToggle={(id) => toggleIn('types', id)} />
               <FacetGroup title="Verfügbare Zeit" items={TIMES} sel={sel.times} onToggle={(id) => toggleIn('times', id)} />
               <FacetGroup title="Budget" items={BUDGETS} sel={sel.budgets} onToggle={(id) => toggleIn('budgets', id)} />
-              <FacetGroup title="Wegbeschaffenheit" items={[...ACCESS_OPTIONS]} sel={sel.access} onToggle={(id) => toggleIn('access', id)} />
             </div>
             <div style={{ borderTop: '1px solid var(--line-soft)', paddingTop: 12, marginTop: 20 }}>
+              <Toggle label="Kinderwagen-/laufradtauglich" sub="Befestigte, gut befahrbare Wege" on={sel.stroller} onClick={() => setSel((s) => ({ ...s, stroller: !s.stroller }))} />
               <Toggle label="Auch bei Regen" sub="Nur wetterfeste Ziele" on={sel.weather === 'regen'} onClick={() => setSel((s) => ({ ...s, weather: s.weather === 'regen' ? null : 'regen' }))} />
               <Toggle label="Nur mit Parkplatz" sub="Parkplatz vor Ort" on={sel.parking} onClick={() => setSel((s) => ({ ...s, parking: !s.parking }))} />
             </div>

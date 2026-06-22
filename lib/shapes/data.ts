@@ -377,7 +377,6 @@ export function filterDests(sel: Sel, dests: ShapesDest[] = DESTINATIONS) {
     if (sel.weather === "regen" && d.weather !== "regen") return false;
     if (sel.stroller && !d.stroller) return false;
     if (sel.parking && !d.facilities.includes("Parkplatz")) return false;
-    if (sel.access?.length && !sel.access.some(a => accessIds(d).includes(a))) return false;
     if (ort) {
       if (center) {
         // Radius filter: keep destinations within `radius` km of the centre.
@@ -393,8 +392,8 @@ export function filterDests(sel: Sel, dests: ShapesDest[] = DESTINATIONS) {
 }
 
 // ── Wegbeschaffenheit (path access) — derived from `stroller` for now, until
-// per-destination data exists. Used by both the filter and the detail page so
-// they stay in sync. ──
+// per-destination data exists. Used by the detail page for the path-quality
+// labels. (Der Filter nutzt direkt den `stroller`-Toggle.) ──
 export const ACCESS_OPTIONS = [
   { id: "kinderwagen", label: "Kinderwagen" },
   { id: "laufrad",     label: "Laufrad" },

@@ -9,7 +9,6 @@ export type SelState = {
   weather: string | null
   stroller: boolean
   parking: boolean
-  access: string[]
   ort: string
   radius: number
 }
@@ -24,7 +23,6 @@ export const EMPTY_SEL: SelState = {
   weather: null,
   stroller: false,
   parking: false,
-  access: [],
   ort: '',
   radius: DEFAULT_RADIUS,
 }
@@ -40,7 +38,6 @@ export function buildExploreHref(sel: Partial<SelState>, opts?: { view?: 'liste'
   if (sel.weather) p.set('weather', sel.weather)
   if (sel.stroller) p.set('stroller', '1')
   if (sel.parking) p.set('parking', '1')
-  if (sel.access?.length) p.set('access', sel.access.join(','))
   if (sel.ort?.trim()) p.set('ort', sel.ort.trim())
   if (sel.ort?.trim() && sel.radius && sel.radius !== DEFAULT_RADIUS) p.set('radius', String(sel.radius))
   if (opts?.view === 'karte') p.set('view', 'karte')

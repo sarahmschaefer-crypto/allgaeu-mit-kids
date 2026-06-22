@@ -220,6 +220,24 @@ export function Editor({ dest }: { dest: ContentDest }) {
         </div>
 
         <div className="adm-card-mock">
+          <span className="lbl" style={{ display: 'block', marginBottom: 10 }}>So liest es sich auf der Seite</span>
+          <div className="ttl" style={{ fontSize: 15, marginBottom: 4 }}>Reisebericht</div>
+          {description.trim()
+            ? <p className="hint" style={{ whiteSpace: 'pre-wrap', marginBottom: tips.trim() ? 14 : 0 }}>{description}</p>
+            : <p className="hint" style={{ marginBottom: tips.trim() ? 14 : 0, fontStyle: 'italic' }}>Noch kein Reisebericht – im Feld „Beschreibung / Reisebericht" ergänzen.</p>}
+          {tips.trim() && (
+            <>
+              <div className="ttl" style={{ fontSize: 15, marginBottom: 6 }}>Gut zu wissen</div>
+              <ol style={{ margin: 0, paddingLeft: 18 }}>
+                {tips.split('\n').map((s) => s.trim()).filter(Boolean).map((t, i) => (
+                  <li key={i} className="hint" style={{ marginBottom: 4 }}>{t}</li>
+                ))}
+              </ol>
+            </>
+          )}
+        </div>
+
+        <div className="adm-card-mock">
           <span className="lbl" style={{ display: 'block', marginBottom: 10 }}>Fotos</span>
           {dest.photos.length > 0 ? (
             <div className="adm-photos" style={{ marginBottom: 12 }}>
