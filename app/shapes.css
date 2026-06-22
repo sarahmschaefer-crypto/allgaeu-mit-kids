@@ -55,8 +55,8 @@
 /* chip → vereinheitlicht (global in globals.css, Story-Look mit .on/data-on) */
 
 /* category tags: coloured pill + masked design icon + name */
-.shapes-root .tag { display: inline-flex; align-items: center; gap: 7px; border: 1.5px solid var(--tag); border-radius: 999px; padding: 7px 14px 7px 11px; font-family: var(--font-body); font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: all .15s ease; background: transparent; color: color-mix(in oklch, var(--tag) 78%, var(--ink)); }
-.shapes-root .tag .tag-ico { width: 16px; height: 16px; flex: 0 0 16px; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: contain; mask-size: contain; background: currentColor; }
+.shapes-root .tag { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--tag); border-radius: 999px; padding: 7px 14px 7px 11px; font-family: var(--font-body); font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.8px; white-space: nowrap; cursor: pointer; transition: all .15s ease; background: transparent; color: var(--tag); }
+.shapes-root .tag .tag-ico { width: 15px; height: 15px; flex: 0 0 15px; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: contain; mask-size: contain; background: currentColor; }
 .shapes-root .tag:hover { background: color-mix(in oklch, var(--tag) 12%, var(--card)); }
 .shapes-root .tag[data-on="true"] { background: var(--tag); border-color: var(--tag); color: #fff; }
 .shapes-root .tag[data-on="true"]:hover { background: var(--tag); }
