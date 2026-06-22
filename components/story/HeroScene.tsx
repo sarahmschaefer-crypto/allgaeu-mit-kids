@@ -1,7 +1,8 @@
 'use client'
 // components/story/HeroScene.tsx — Allgäu silhouette as a window into the
-// landscape: the photo fills the shape, then the whole window is pulled in
-// (the "Sog") as you scroll. (Stroke outline removed per client feedback.)
+// landscape. Beim Scrollen WÄCHST das Silhouetten-Fenster, bis seine Ränder den
+// Viewport verlassen → randloses Vollbild-Foto (full-bleed). KEIN Opacity-
+// Auflösen, kein gerahmter Zwischenzustand (Vorbild: flyward.com).
 import { useRef } from 'react'
 import { clamp, easeOut, useScrollScene } from '@/lib/story/scroll'
 import { ALLGAEU_SHAPE } from '@/lib/story/allgaeuShape'
@@ -12,10 +13,8 @@ export function HeroScene() {
   const sec = useRef<HTMLElement>(null)
   const mapWrap = useRef<HTMLDivElement>(null)
   const photo = useRef<HTMLImageElement>(null)
-  const photoFull = useRef<HTMLImageElement>(null)
   const scrimRef = useRef<HTMLDivElement>(null)
   const copy = useRef<HTMLDivElement>(null)
-  const sub = useRef<HTMLParagraphElement>(null)
   const cue = useRef<HTMLDivElement>(null)
   const blobA = useRef<HTMLDivElement>(null)
   const blobB = useRef<HTMLDivElement>(null)
@@ -24,21 +23,15 @@ export function HeroScene() {
 
   useScrollScene(sec, (p) => {
     const grow = easeOut(clamp(p / 0.82))
-    // Silhouette öffnet sich nur SANFT (kein dramatischer Sog) — so entstehen
-    // keine großen Paper-Ränder, die vor der Vollbild-Deckung sichtbar würden.
-    const s = 1 + grow * 0.6
+    // Silhouette wächst stark, bis ihre Ränder (auch die Konkaven) den Viewport
+    // verlassen → das Foto wird randlos full-bleed sichtbar.
+    const s = 1 + grow * 7
     if (mapWrap.current) mapWrap.current.style.transform = `scale(${s})`
+    // Gegen-Skalierung: das Foto bleibt bildschirmfüllend & scharf, während das
+    // wachsende Fenster es Stück für Stück freigibt.
     if (photo.current) photo.current.style.transform = `translate(-50%, -50%) scale(${1 / s})`
-    // Vollbild-Ebene deckt FRÜH (p 0.10→0.38), solange die Silhouette noch klein
-    // ist → sauberes Auflösen Fenster→Vollbild, nie ein gerahmter Zwischenzustand.
-    if (photoFull.current) {
-      const rise = clamp((p - 0.1) / 0.28)
-      photoFull.current.style.opacity = String(rise)
-      // Drift erst NACH voller Deckung (p>0.4) → kein Doppelbild beim Überblenden.
-      const drift = clamp((p - 0.4) / 0.5)
-      photoFull.current.style.transform = `translate(-50%, -50%) translateY(${-drift * 4}vh) scale(${1 + drift * 0.05})`
-    }
-    if (scrimRef.current) scrimRef.current.style.opacity = String(1 - clamp((p - 0.2) / 0.55) * 0.85)
+    // Scrim (Text-Kontrast) blendet aus, sobald die Headline geht — klares Foto.
+    if (scrimRef.current) scrimRef.current.style.opacity = String(1 - clamp((p - 0.05) / 0.4))
     if (copy.current) {
       const out = clamp((p - 0.05) / 0.4)
       copy.current.style.transform = `translateY(${-out * 9}vh) scale(${1 - out * 0.06})`
@@ -46,11 +39,6 @@ export function HeroScene() {
     }
     if (blobA.current) blobA.current.style.transform = `translate(${p * 8 * fx}vw, ${p * 24 * fx}vh)`
     if (blobB.current) blobB.current.style.transform = `translate(${-p * 10 * fx}vw, ${p * 16 * fx}vh)`
-    if (sub.current) {
-      const inP = clamp((p - 0.04) / 0.2)
-      sub.current.style.opacity = String(inP * (1 - clamp((p - 0.32) / 0.22)))
-      sub.current.style.transform = `translateX(-50%) translateY(${(1 - inP) * 22}px)`
-    }
     if (cue.current) cue.current.style.opacity = String(clamp(1 - p * 4))
   })
 
@@ -75,11 +63,6 @@ export function HeroScene() {
           </div>
         </div>
 
-        {/* Vollbild-Ebene: deckungsgleich zur Silhouette (120vw/120vh, zentriert →
-            immer randlos). Blendet im letzten Drittel ein, der Hero endet full-bleed. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img ref={photoFull} className="hero-photo-full" src="/hero-lake.jpg" alt="" />
-
         <div className="hero-copy" ref={copy}>
           <p className="eyebrow">Für Familien mit kleinen Entdeckern</p>
           <h1 className="display h-xl hero-q">
@@ -98,12 +81,6 @@ export function HeroScene() {
             )}
           </h1>
         </div>
-
-        <p className="lede hero-sub" ref={sub}>
-          {direkt
-            ? 'Ausflugsziele im Allgäu, die zu Alter, Zeit und Budget eurer Kinder passen.'
-            : 'Ein ganzes Land voller Möglichkeiten. Wir helfen euch, genau die eine zu finden.'}
-        </p>
 
         <div className="hero-cue" ref={cue}>
           <span>Scrollt mit</span>
