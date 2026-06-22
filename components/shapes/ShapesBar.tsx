@@ -16,7 +16,8 @@ export type ShapesNavKey = (typeof TABS)[number]['key']
 
 // Vorerst aus der Nav versteckt — REVERSIBEL: Key hier entfernen = Reiter wieder da.
 // entdecken: Reiter obsolet (CTA "Ziel finden" führt dorthin). quiz/sammeln: deaktiviert.
-const HIDDEN_NAV = new Set<ShapesNavKey>(['entdecken', 'quiz', 'sammeln'])
+// about/kontakt: leben nur noch im Footer (Sarah-Feedback) → Navbar = Logo + CTA.
+const HIDDEN_NAV = new Set<ShapesNavKey>(['entdecken', 'quiz', 'sammeln', 'about', 'kontakt'])
 const NAV_TABS = TABS.filter((t) => !HIDDEN_NAV.has(t.key))
 
 export function ShapesBar({ active, overlay = false }: { active?: ShapesNavKey; overlay?: boolean }) {
@@ -47,19 +48,21 @@ export function ShapesBar({ active, overlay = false }: { active?: ShapesNavKey; 
           <span className="cta-long">Ausflugsziel finden</span>
           <span className="cta-mini">Ziel finden</span>
         </Link>
-        <button
-          type="button"
-          className="shapes-burger"
-          aria-label={open ? 'Menü schließen' : 'Menü öffnen'}
-          aria-expanded={open}
-          onClick={() => setOpen((o) => !o)}
-        >
-          <span data-x={open} />
-          <span data-x={open} />
-          <span data-x={open} />
-        </button>
+        {NAV_TABS.length > 0 && (
+          <button
+            type="button"
+            className="shapes-burger"
+            aria-label={open ? 'Menü schließen' : 'Menü öffnen'}
+            aria-expanded={open}
+            onClick={() => setOpen((o) => !o)}
+          >
+            <span data-x={open} />
+            <span data-x={open} />
+            <span data-x={open} />
+          </button>
+        )}
       </div>
-      {open && (
+      {open && NAV_TABS.length > 0 && (
         <nav className="shapes-menu">
           {NAV_TABS.map((t) => (
             <Link key={t.href} href={t.href} className={active === t.key ? 'on' : ''} onClick={() => setOpen(false)}>
