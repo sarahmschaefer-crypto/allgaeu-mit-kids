@@ -15,6 +15,11 @@ export type FigmaContent = {
   subtitle?: string;
   stampCategory: string;
   showStamp?: boolean;
+  // ── editierbar im Cover-Builder (Phase 10) ──
+  focal?: { x: number; y: number }; // 0..1 Foto-Fokuspunkt (objectPosition)
+  photoZoom?: number;               // 1 = normal, >1 zoomt rein
+  fontScale?: number;               // Slogan-Größe ×; greift VOR dem Auto-Fit
+  sloganColor?: CoverColor | "white"; // Slogan-Schriftfarbe (nur Text-Ebenen)
 };
 
 const fontFamily = (f: FTText["font"]) => (f === "mango" ? "'Baby Mango', system-ui" : "'Nunito', system-ui, sans-serif");
@@ -74,7 +79,9 @@ function Layer({ layer, content }: { layer: FTLayer; content: FigmaContent }) {
       <div style={{ position: "absolute", left: layer.x, top: layer.y, width: layer.w, height: layer.h, borderRadius, overflow: "hidden", transform: layer.rot ? `rotate(${layer.rot}deg)` : undefined, ...mask }}>
         {content.photo
           // eslint-disable-next-line @next/next/no-img-element
-          ? <img src={content.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          ? <img src={content.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block",
+              objectPosition: content.focal ? `${content.focal.x * 100}% ${content.focal.y * 100}%` : undefined,
+              transform: content.photoZoom && content.photoZoom !== 1 ? `scale(${content.photoZoom})` : undefined }} />
           : null}
         {layer.scrim && (
           <div style={{ position: "absolute", left: 0, top: layer.scrim.y - layer.y, width: "100%", height: layer.scrim.h,
@@ -104,12 +111,12 @@ function Layer({ layer, content }: { layer: FTLayer; content: FigmaContent }) {
     const lines = content.slogan.split("\n");
     const availW = (layer.w ?? 1080 - 2 * layer.x) - layer.pad[1] - layer.pad[3];
     const availH = 1350 - layer.y - 72;
-    const mSize = fitMarker(lines, layer.size, availW, availH, layer.pad[0] + layer.pad[2], layer.gap);
+    const mSize = fitMarker(lines, layer.size * (content.fontScale ?? 1), availW, availH, layer.pad[0] + layer.pad[2], layer.gap);
     return (
       <div style={{ position: "absolute", left: layer.x, top: layer.y, width: layer.w, display: "flex", flexDirection: "column", gap: layer.gap, alignItems: layer.align === "center" ? "center" : "flex-start" }}>
         {lines.map((ln, i) => (
           <div key={i} style={{
-            background: col(layer.barColor), color: col(layer.textColor),
+            background: col(layer.barColor), color: col(content.sloganColor ?? layer.textColor),
             padding: `${layer.pad[0]}px ${layer.pad[1]}px ${layer.pad[2]}px ${layer.pad[3]}px`,
             borderRadius: layer.radius, fontFamily: "'Baby Mango', system-ui", fontSize: mSize,
             lineHeight: 0.92, letterSpacing: layer.tracking, whiteSpace: "nowrap",
@@ -121,14 +128,16 @@ function Layer({ layer, content }: { layer: FTLayer; content: FigmaContent }) {
   // text
   const t = layer;
   const txt = textValue(t, content);
+  const isSlogan = t.field === "slogan";
   const availW = t.w ?? 1080 - 2 * t.x;
   const availH = 1350 - t.y - 80;
-  const tSize = fitText(txt, t.size, availW, availH, t.lh);
+  const tSize = fitText(txt, t.size * (isSlogan ? content.fontScale ?? 1 : 1), availW, availH, t.lh);
+  const tColor = isSlogan && content.sloganColor ? col(content.sloganColor) : col(t.color);
   return (
     <div style={{
       position: "absolute", left: t.x, top: t.y, width: t.w,
       fontFamily: fontFamily(t.font), fontWeight: t.weight ?? 400, fontSize: tSize,
-      lineHeight: t.lh, letterSpacing: t.tracking, color: col(t.color),
+      lineHeight: t.lh, letterSpacing: t.tracking, color: tColor,
       textAlign: t.align ?? "left", whiteSpace: "pre-wrap", overflowWrap: "break-word", margin: 0,
     }}>
       {txt}

@@ -28,6 +28,22 @@ export type CoverSpec = {
 
 export type DestPhoto = { url: string; alt?: string }
 
+// Im Cover-Builder (Phase 10) gespeicherte Auswahl. Alles optional → fehlt ein
+// Wert, greift das deterministische Auto-Cover (resolveFigmaCover in
+// lib/content/figma-cover.ts). Wird als JSON in der DB abgelegt.
+export type FigmaCoverChoice = {
+  templateId?: string                 // eine der FIGMA_TEMPLATES-IDs
+  photoUrl?: string                   // gewähltes Foto (echtes Upload oder Demo-Platzhalter)
+  focal?: { x: number; y: number }    // 0..1 Foto-Fokus (verschieben)
+  photoZoom?: number                  // 1 = normal, >1 reinzoomen
+  slogan?: string                     // Slogan überschreiben (sonst teaser)
+  overline?: string                   // Eyebrow überschreiben (sonst place)
+  number?: string                     // große Zahl (nur Listen-Vorlagen)
+  fontScale?: number                  // Slogan-Größe × (0.6..1.5)
+  sloganColor?: string                // CoverColor | 'white'
+  showStamp?: boolean                 // Kategorie-Stempel ein/aus
+}
+
 // Redaktionelle Detail-Overrides: leer = aus den Basisdaten abgeleitet (detailInfo()).
 export type DestOverrides = {
   adresse?: string
@@ -38,6 +54,7 @@ export type DestOverrides = {
 export type ContentDest = ShapesDest & {
   photos: DestPhoto[]
   cover: CoverSpec
+  figmaCover?: FigmaCoverChoice // im Cover-Builder gestaltetes Karten-Cover (sonst Auto)
   overrides: DestOverrides
   // Redaktioneller Langtext der Schwester (voller „Reisebericht" aus dem Drive-docx)
   // + praktische Hinweise (Tipps). `blurb` bleibt die Kurzfassung für Karten/Meta.

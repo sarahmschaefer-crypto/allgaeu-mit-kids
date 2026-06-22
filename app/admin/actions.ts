@@ -7,7 +7,7 @@ import path from 'node:path'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { getContentDest, updateDest, deleteDest as storeDeleteDest, createDest as storeCreateDest } from '@/lib/content/store'
-import type { ContentDest } from '@/lib/content/types'
+import type { ContentDest, FigmaCoverChoice } from '@/lib/content/types'
 
 // Legt ein neues (leeres) Ziel an und springt direkt in dessen Editor.
 export async function createDest(formData: FormData): Promise<void> {
@@ -31,6 +31,19 @@ export async function saveDest(formData: FormData): Promise<void> {
   delete (patch as { id?: string }).id
   await updateDest(id, patch)
   // Admin + öffentliche Seiten (Landing/Entdecken/Detail) nach dem Speichern aktualisieren.
+  revalidatePath('/', 'layout')
+}
+
+// Speichert das im Cover-Builder gestaltete Karten-Cover (Auswahl als JSON).
+export async function saveFigmaCover(id: string, choiceJson: string): Promise<void> {
+  if (!id) return
+  let figmaCover: FigmaCoverChoice
+  try {
+    figmaCover = JSON.parse(choiceJson)
+  } catch {
+    return
+  }
+  await updateDest(id, { figmaCover })
   revalidatePath('/', 'layout')
 }
 

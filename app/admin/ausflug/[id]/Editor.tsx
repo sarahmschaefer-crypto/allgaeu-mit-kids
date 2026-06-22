@@ -182,8 +182,8 @@ export function Editor({ dest }: { dest: ContentDest }) {
 
         <p className="adm-note">
           Das <strong>Cover</strong> wird aus Foto + Slogan + Kategorie automatisch als echtes Vorlagen-Cover
-          erzeugt (Vorschau rechts). Der frei gestaltbare Cover-Builder (Template wählen, Rahmen, Grafiken,
-          Format, Export) kommt als nächster Schritt.
+          erzeugt (Vorschau rechts). Zum freien Gestalten – Vorlage wählen, Foto-Ausschnitt, Schrift, Stempel,
+          PNG-Export – auf <strong>„Cover gestalten"</strong> rechts tippen.
         </p>
 
         <div className="adm-actions">
@@ -217,6 +217,7 @@ export function Editor({ dest }: { dest: ContentDest }) {
             <div className="ttl">{name}</div>
             <div className="pl">{place}</div>
           </div>
+          <a href={`/admin/ausflug/${dest.id}/cover`} className="adm-btn" style={{ marginTop: 10, display: 'inline-block', textDecoration: 'none' }}>🎨 Cover gestalten →</a>
         </div>
 
         <div className="adm-card-mock">
