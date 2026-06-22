@@ -22,7 +22,7 @@ export function SammelnTeaser() {
             Tippt euch durchs Allgäu und klebt eure Lieblingsorte ins Album – Stück für Stück, bis
             ihr echte Allgäu-Profis seid.
           </p>
-          <Link className="btn btn-primary" href="/sammeln">
+          <Link className="btn btn--primary" href="/sammeln">
             Sammelalbum öffnen<span aria-hidden="true">→</span>
           </Link>
         </Reveal>

@@ -59,7 +59,7 @@ export function LandingQuiz() {
             </div>
           </div>
 
-          <button className="btn btn-primary lquiz-next" onClick={next}>
+          <button className="btn btn--primary lquiz-next" onClick={next}>
             {step < last ? 'Weiter' : `${matches.length} Treffer ansehen`}
             <span aria-hidden="true">→</span>
           </button>

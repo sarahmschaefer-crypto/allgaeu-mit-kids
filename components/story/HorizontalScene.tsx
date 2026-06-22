@@ -60,8 +60,8 @@ export function HorizontalScene() {
             <p className="display h-md">Noch nichts Perfektes dabei.</p>
             <p className="lede">Lockert oben eine Angabe – dann öffnet sich das Allgäu wieder.</p>
             <div className="horiz-empty-actions">
-              <button className="btn btn-primary" onClick={scrollToQuiz}>Angaben anpassen</button>
-              <Link className="btn btn-ghost" href="/entdecken">Alle Ziele ansehen</Link>
+              <button className="btn btn--primary" onClick={scrollToQuiz}>Angaben anpassen</button>
+              <Link className="btn btn--ghost" href="/entdecken">Alle Ziele ansehen</Link>
             </div>
           </div>
         ) : (
@@ -128,7 +128,7 @@ export function ResolutionScene() {
             findet euren nächsten Lieblingsort.
           </p>
           <div className="res-actions">
-            <Link className="btn btn-primary" href="/entdecken">
+            <Link className="btn btn--primary" href="/entdecken">
               Alle Ausflugsziele entdecken<span aria-hidden="true">→</span>
             </Link>
             {/* "Mit den Kindern sammeln" → /sammeln vorerst deaktiviert (Sammeln versteckt) */}
