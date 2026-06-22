@@ -233,6 +233,19 @@
 .shapes-root .mag-foot { margin-top: 8px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line-soft); padding-top: 16px; }
 .shapes-root .mag-pg { font-family: var(--font-display); font-weight: 800; font-size: 18px; color: var(--ink); }
 
+/* Fließtext-Block für Textseiten (Über, Kontakt, Impressum) — im Magazin-Stil */
+.shapes-root .mag-prose { display: flex; flex-direction: column; gap: 16px; max-width: 68ch; }
+.shapes-root .mag-prose p { margin: 0; font-size: 16px; line-height: 1.7; color: var(--ink-soft); }
+.shapes-root .mag-prose a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.shapes-root .mag-prose strong { color: var(--ink); font-weight: 700; }
+.shapes-root .mag-block { display: flex; flex-direction: column; gap: 18px; }
+.shapes-root .mag-legal { display: flex; flex-direction: column; gap: 22px; max-width: 68ch; }
+.shapes-root .mag-legal h2 { font-family: var(--font-display); font-weight: 700; font-size: 19px; margin: 0 0 6px; line-height: 1.2; color: var(--ink); }
+.shapes-root .mag-legal p { margin: 0; font-size: 15.5px; line-height: 1.6; color: var(--ink-soft); }
+.shapes-root .mag-lead { margin: 0; font-size: 18px; line-height: 1.6; color: var(--ink); font-weight: 600; }
+.shapes-root .mag-credit { margin-top: 10px; border-top: 1px solid var(--line-soft); padding-top: 18px; font-size: 13.5px; line-height: 1.6; color: var(--ink-mute); max-width: 68ch; }
+.shapes-root .mag-credit a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+
 @media (max-width: 760px) {
   .shapes-root .mag-top, .shapes-root .mag-mid { grid-template-columns: 1fr; }
 }

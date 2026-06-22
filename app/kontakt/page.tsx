@@ -1,70 +1,57 @@
-// app/kontakt/page.tsx
+// app/kontakt/page.tsx — Kontakt im Magazin-Stil (wie Detail-View), ohne Formular.
 import type { Metadata } from 'next'
-import Header from '@/components/Header'
-import KontaktForm from '@/components/KontaktForm'
+import Link from 'next/link'
+import { ShapesBar } from '@/components/shapes/ShapesBar'
 
 export const metadata: Metadata = {
   title: 'Kontakt',
-  description: 'Tipp einreichen, Frage stellen oder einfach hallo sagen.',
+  description: 'Tipp einreichen, Frage stellen oder einfach Hallo sagen.',
 }
 
 export default function KontaktPage() {
   return (
-    <>
-      <Header />
-      <main className="max-w-6xl mx-auto px-6 py-16">
-        <div className="grid md:grid-cols-2 gap-16 items-start">
+    <div className="shapes-root">
+      <ShapesBar />
+      <main className="mag fade-in">
+        <Link href="/" className="kicker mag-back">
+          ← Zurück zur Startseite
+        </Link>
 
-          {/* Left: text */}
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <p className="label">Kontakt</p>
-              <h1 className="text-5xl font-bold leading-tight">
-                Sag<br />
-                <span style={{ color: 'var(--accent)' }}>Hallo.</span>
-              </h1>
-            </div>
+        <header className="mag-top">
+          <div className="mag-headcol">
+            <div className="kicker mag-eyebrow">Kontakt</div>
+            <h1 className="mag-headline">
+              Sag <span style={{ color: 'var(--accent)' }}>Hallo.</span>
+            </h1>
+          </div>
+          <div className="mag-introcol">
+            <hr className="mag-hair" />
+            <p className="mag-intro">
+              Kennst du ein Ausflugsziel, das hier noch fehlt? Hast du einen Fehler entdeckt? Oder
+              willst du einfach Hallo sagen? Ich freue mich über jede Nachricht.
+            </p>
+          </div>
+        </header>
 
-            <hr className="lofi-divider" />
-
-            <div className="space-y-6" style={{ color: 'var(--ink-soft)' }}>
-              <p className="text-base leading-relaxed">
-                Kennst du ein Ausflugsziel, das hier noch fehlt? Hast du einen Fehler entdeckt?
-                Oder willst du einfach Hallo sagen? Schreib uns — wir freuen uns über jede Nachricht.
-              </p>
-              <div className="space-y-3">
-                {[
-                  { icon: '📍', label: 'Neues Ausflugsziel vorschlagen' },
-                  { icon: '✏️', label: 'Fehler oder veraltete Infos melden' },
-                  { icon: '🤝', label: 'Kooperation anfragen' },
-                  { icon: '💬', label: 'Einfach Hallo sagen' },
-                ].map(({ icon, label }) => (
-                  <div key={label} className="flex items-center gap-3">
-                    <span className="text-xl">{icon}</span>
-                    <span className="text-sm">{label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Direct email */}
-            <div className="surface p-5">
-              <p className="label mb-2" style={{ color: 'var(--ink-mute)' }}>Direkt per Mail</p>
-              <a
-                href="mailto:hallo@allgaeu-mit-kids.de"
-                className="font-bold text-sm hover:underline"
-                style={{ fontFamily: 'var(--font-body)', color: 'var(--accent)' }}
-              >
-                hallo@allgaeu-mit-kids.de
-              </a>
-            </div>
+        <section className="mag-block">
+          <div className="mag-prose">
+            <p>
+              Egal ob du ein neues Ausflugsziel vorschlagen, einen Fehler oder veraltete Infos
+              melden, eine Kooperation anfragen oder einfach Hallo sagen möchtest – schreib mir
+              gern direkt per Mail.
+            </p>
           </div>
 
-          {/* Right: form */}
-          <KontaktForm />
-
-        </div>
+          <div>
+            <h2 className="mag-h2">Direkt per Mail</h2>
+            <p className="mag-lead">
+              <a href="mailto:allgaeumitkids@gmail.com" style={{ color: 'var(--accent)' }}>
+                allgaeumitkids@gmail.com
+              </a>
+            </p>
+          </div>
+        </section>
       </main>
-    </>
+    </div>
   )
 }

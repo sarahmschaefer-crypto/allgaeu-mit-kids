@@ -43,7 +43,7 @@ export default function Footer() {
         <hr className="lofi-divider" />
 
         <p className="text-center text-xs text-ink/40 label">
-          © {new Date().getFullYear()} Allgäu mit Kids · Design mit ❤️ gemacht by sarahfordesign.com
+          © {new Date().getFullYear()} Allgäu mit Kids · Design & Umsetzung: sarahfordesign.com
         </p>
 
       </div>
