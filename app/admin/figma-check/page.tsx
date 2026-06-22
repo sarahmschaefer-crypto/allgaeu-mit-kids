@@ -5,7 +5,7 @@ import { FIGMA_TEMPLATES } from "@/lib/cover/figma-templates";
 export const metadata = { title: "Figma-Templates 1:1 · Admin" };
 
 const sample: FigmaContent = {
-  photo: "/cover/demo/01.jpg",
+  photo: "/cover/demo/figma.png",
   slogan: "Der schönste\nAusflug?",
   place: "Oberstdorf",
   number: "9",

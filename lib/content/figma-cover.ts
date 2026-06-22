@@ -10,7 +10,10 @@ import { primaryTagOf, type ShapesDest } from '@/lib/shapes/data'
 
 // Vorhandene Kategorie-Stempel (public/cover/stamps/<cat>.png).
 export const COVER_STAMPS = new Set(['attraktion', 'ausflug', 'kreatives', 'kultur', 'schwimmen', 'shop', 'spielplatz', 'sport', 'tierpark', 'unterkunft'])
-export const DEMO_PHOTOS = Array.from({ length: 10 }, (_, i) => `/cover/demo/${String(i + 1).padStart(2, '0')}.jpg`)
+// Original-Figma-Platzhalterfoto (aus dem Cover-System extrahiert) — wird genutzt,
+// solange ein Ziel noch kein echtes Foto hat. Die Schwester ersetzt es später.
+export const PLACEHOLDER_PHOTO = '/cover/demo/figma.png'
+export const DEMO_PHOTOS = [PLACEHOLDER_PHOTO]
 
 export const hasMarker = (t: FigmaTemplate) => t.layers.some((l) => l.type === 'marker')
 export const hasPhotoLayer = (t: FigmaTemplate) => t.layers.some((l) => l.type === 'photo')
@@ -34,7 +37,7 @@ export function autoTemplateId(id: string): string {
   if (slot === 6) return 'vollbild-grafik-schrift-2'
   return v ? 'textmarker-2' : 'textmarker-1'
 }
-export const autoDemoPhoto = (id: string) => DEMO_PHOTOS[fnv(id) % DEMO_PHOTOS.length]
+export const autoDemoPhoto = (_id: string) => PLACEHOLDER_PHOTO
 
 type CoverDest = ShapesDest & { photos?: { url: string }[]; figmaCover?: FigmaCoverChoice }
 
@@ -44,7 +47,7 @@ export const PICKER_TEMPLATES = FIGMA_TEMPLATES
 export function resolveFigmaCover(dest: CoverDest): { template: FigmaTemplate; content: FigmaContent } {
   const c = dest.figmaCover
   const template = figmaTemplate(c?.templateId || '') ?? figmaTemplate(autoTemplateId(dest.id))!
-  const photo = c?.photoUrl || dest.photos?.[0]?.url || autoDemoPhoto(dest.id)
+  const photo = c?.photoUrl || dest.photos?.[0]?.url || PLACEHOLDER_PHOTO
   const teaser = (c?.slogan ?? dest.teaser ?? dest.highlights?.[0] ?? dest.name) || dest.name
   const cat = primaryTagOf(dest)
   const content: FigmaContent = {

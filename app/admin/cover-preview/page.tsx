@@ -7,7 +7,7 @@ import { DESTINATIONS } from "@/lib/shapes/data";
 
 export const metadata = { title: "Cover-Vorschau · Admin" };
 
-const demo = (i: number) => `/cover/demo/${String((i % 10) + 1).padStart(2, "0")}.jpg`;
+const demo = (_i: number) => `/cover/demo/figma.png`;
 
 export default function CoverPreviewPage() {
   return (
