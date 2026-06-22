@@ -1,9 +1,9 @@
+'use client'
 // components/content/DestCover.tsx — echtes Cover eines Ziels als responsives 4:5-Bild.
-// Nutzt den cover-tool-Renderer (FigmaCover, 1:1 Figma-Templates). Ziele MIT Foto →
-// Foto-Template, OHNE Foto → Farbflächen-Template (sauberes buntes Cover). Auto-Wahl
-// deterministisch per id-Hash, damit jedes Ziel ein stabiles Template hat.
-// Dies ersetzt die Interim-Vorschau (DestPreview); der Schicht-Editor kommt in Phase 10.
-import type { CSSProperties } from 'react'
+// Nutzt den cover-tool-Renderer (FigmaCover, 1:1 Figma-Templates). FigmaCover braucht eine
+// NUMERISCHE Breite (skaliert intern via scale(width/1080)) → wir messen die Containerbreite
+// per ResizeObserver. Ziel mit Foto → Foto-Template, ohne Foto → Farbflächen-Template.
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { FIGMA_TEMPLATES, type FigmaTemplate } from '@/lib/cover/figma-templates'
 import { FigmaCover, type FigmaContent } from '@/components/cover/FigmaCover'
 import { primaryTagOf, type ShapesDest } from '@/lib/shapes/data'
@@ -27,6 +27,22 @@ function hash(s: string): number {
 type CoverDest = ShapesDest & { photos?: { url: string }[] }
 
 export function DestCover({ dest, style }: { dest: CoverDest; style?: CSSProperties }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [w, setW] = useState(0)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const measure = () => {
+      const cw = Math.round(el.getBoundingClientRect().width)
+      if (cw > 0) setW(cw)
+    }
+    measure() // sofort messen (ResizeObserver feuert beim Mount nicht überall zuverlässig)
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
   const photo = dest.photos?.[0]?.url
   const pool = photo ? PHOTO_POOL : COLOR_POOL
   const template = pool[hash(dest.id) % pool.length]
@@ -39,11 +55,13 @@ export function DestCover({ dest, style }: { dest: CoverDest; style?: CSSPropert
     stampCategory: cat,
     showStamp: STAMPS.has(cat),
   }
+
   return (
-    <div style={{ width: '100%', containerType: 'inline-size', aspectRatio: '4 / 5', overflow: 'hidden', background: '#e9e4d8', ...style }}>
-      <div style={{ width: 1080, height: 1350, transform: 'scale(calc(100cqw / 1080))', transformOrigin: 'top left' }}>
-        <FigmaCover template={template} content={content} width={1080} />
-      </div>
+    <div
+      ref={ref}
+      style={{ width: '100%', aspectRatio: '4 / 5', overflow: 'hidden', background: '#e9e4d8', ...style }}
+    >
+      {w > 0 && <FigmaCover template={template} content={content} width={w} />}
     </div>
   )
 }
