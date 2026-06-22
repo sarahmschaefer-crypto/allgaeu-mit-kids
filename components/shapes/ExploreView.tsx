@@ -22,7 +22,7 @@ import {
   type ShapesDest,
 } from '@/lib/shapes/data'
 import { EMPTY_SEL, type SelState } from '@/lib/shapes/explore'
-import { DestCard, Container, Photo, TagLabel, Stars, Tag } from '@/components/shapes/primitives'
+import { DestCard, Container, Photo, TagLabel, Tag } from '@/components/shapes/primitives'
 import { Segmented, SortSelect } from '@/components/shapes/controls'
 import { Squiggle } from '@/components/shapes/decor'
 
@@ -158,7 +158,6 @@ function MapPanel({ results }: { results: ShapesDest[] }) {
             <span style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: 3, flex: 1 }}>
               <span style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'center' }}>
                 <TagLabel tag={primaryTagOf(d)} />
-                <Stars rating={d.rating} />
               </span>
               <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 17, lineHeight: 1.3 }}>{d.name}</span>
               <span className="caption" style={{ fontSize: 13.5 }}>{d.place}</span>
@@ -182,7 +181,7 @@ export function ExploreView({
   fromQuiz: boolean
 }) {
   const [sel, setSel] = useState<SelState>(initialSel)
-  const [sort, setSort] = useState<'match' | 'rating' | 'name'>('match')
+  const [sort, setSort] = useState<'match' | 'name'>('match')
   const [view, setView] = useState<'liste' | 'karte'>(initialView)
   const [banner, setBanner] = useState(fromQuiz)
   const [filtersOpen, setFiltersOpen] = useState(false) // nur Mobile: Filter standardmäßig eingeklappt
@@ -197,8 +196,7 @@ export function ExploreView({
   const ortCenter = sel.ort.trim() ? resolveCenter(sel.ort) : null
 
   const ranked = filterDests(sel as Sel).map((d) => ({ d, m: matchScore(d, sel as Sel) }))
-  if (sort === 'match') ranked.sort((a, b) => b.m - a.m || b.d.rating - a.d.rating)
-  else if (sort === 'rating') ranked.sort((a, b) => b.d.rating - a.d.rating)
+  if (sort === 'match') ranked.sort((a, b) => b.m - a.m || a.d.name.localeCompare(b.d.name, 'de'))
   else ranked.sort((a, b) => a.d.name.localeCompare(b.d.name, 'de'))
   const results = ranked.map((r) => r.d)
 
@@ -304,7 +302,6 @@ export function ExploreView({
                   onChange={setSort}
                   options={[
                     { value: 'match', label: 'Beste Übereinstimmung' },
-                    { value: 'rating', label: 'Bewertung' },
                     { value: 'name', label: 'Name (A–Z)' },
                   ]}
                 />
