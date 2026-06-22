@@ -2,7 +2,7 @@
 // app/admin/AdminList.tsx — Ziel-Liste mit Suche + Live/Entwurf-Filter (Client).
 import { useState } from 'react'
 import Link from 'next/link'
-import { DestPreview } from '@/components/content/DestPreview'
+import { DestCover } from '@/components/content/DestCover'
 import type { ContentDest } from '@/lib/content/types'
 
 type Filter = 'all' | 'live' | 'draft'
@@ -42,7 +42,7 @@ export function AdminList({ dests }: { dests: ContentDest[] }) {
       <div className="adm-grid">
         {shown.map((d) => (
           <Link key={d.id} href={`/admin/ausflug/${d.id}`} className="adm-tile">
-            <DestPreview spec={d.cover} radius={11} />
+            <DestCover dest={d} style={{ borderRadius: 11 }} />
             <span className="adm-badge" data-live={d.published ? 'true' : 'false'}>
               {d.published ? 'Live' : 'Entwurf'}
             </span>

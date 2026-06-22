@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { CSSProperties, ReactNode } from 'react'
 import { TYPES, primaryTagOf, BUDGETS, TIMES, type ShapesDest } from '@/lib/shapes/data'
 import { Blob } from '@/components/shapes/decor'
+import { DestCover } from '@/components/content/DestCover'
 
 // Coloured category tag: design-system icon (masked from /tags/<icon>.svg) + name.
 // Interactive (button, toggles) when `onClick` is given, otherwise a static label.
@@ -131,9 +132,7 @@ export function DestCard({ dest }: { dest: ShapesDest }) {
   return (
     <Link href={`/ausflug/${dest.id}`} className="dc-link" style={{ textDecoration: 'none', color: 'inherit' }}>
       <article style={{ display: 'flex', flexDirection: 'column', gap: 13, cursor: 'pointer' }}>
-        <div style={{ position: 'relative', aspectRatio: '4 / 5', overflow: 'hidden', borderRadius: 'var(--radius)' }}>
-          <Photo label={dest.name} cat={dest.cat} style={{ position: 'absolute', inset: 0 }} rounded={false} seed={dest.name.length + 2} />
-        </div>
+        <DestCover dest={dest} style={{ borderRadius: 'var(--radius)' }} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
           <TagLabel tag={primaryTagOf(dest)} />
           {/* Display-Schrift explizit: DestCard wird auch in #story-root (Landing)

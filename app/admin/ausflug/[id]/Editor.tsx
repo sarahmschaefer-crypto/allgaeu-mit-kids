@@ -4,8 +4,8 @@
 import { useMemo, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { AGES, BUDGETS, TIMES, TYPES, detailInfo, primaryTagOf } from '@/lib/shapes/data'
-import type { CoverColor, ContentDest, CoverSpec } from '@/lib/content/types'
-import { DestPreview } from '@/components/content/DestPreview'
+import type { ContentDest } from '@/lib/content/types'
+import { DestCover } from '@/components/content/DestCover'
 import { saveDest, uploadPhoto, deleteDest } from '../../actions'
 
 const TAG_LIST = Object.values(TYPES) as { id: string; label: string; color: string }[]
@@ -39,38 +39,11 @@ export function Editor({ dest }: { dest: ContentDest }) {
   const [oeffnung, setOeffnung] = useState(dest.overrides?.oeffnungszeiten || '')
   const [preis, setPreis] = useState(dest.overrides?.preis || '')
 
-  // ── Cover-Felder ──
-  const hasPhoto = dest.photos.length > 0
-  const [bgType, setBgType] = useState<'photo' | 'color'>(dest.cover.bg.type)
-  const [bgColor, setBgColor] = useState(dest.cover.bg.type === 'color' ? dest.cover.bg.color : '#9ba1ff')
-  const [scrim, setScrim] = useState(dest.cover.scrim)
-  const [sloganColor, setSloganColor] = useState<CoverColor>(dest.cover.sloganColor)
-  const [sloganSize, setSloganSize] = useState(dest.cover.sloganSize)
-  const [sloganBar, setSloganBar] = useState(dest.cover.sloganBar)
-  const [sloganBarColor, setSloganBarColor] = useState<CoverColor>(dest.cover.sloganBarColor)
-  const [stamp, setStamp] = useState<string | null>(dest.cover.stamp)
-
   const toggle = (arr: string[], v: string) =>
     arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]
 
   // Defaults für Platzhalter (wie heute abgeleitet), damit leere Overrides klar sind.
   const derived = useMemo(() => detailInfo({ ...dest, place, season, duration, budget }), [dest, place, season, duration, budget])
-
-  // Live-Cover-Spec aus dem aktuellen Zustand.
-  const cover: CoverSpec = useMemo(() => {
-    const photoUrl = dest.photos[0]?.url
-    return {
-      format: 'feed',
-      bg: bgType === 'photo' && photoUrl ? { type: 'photo', photoUrl } : { type: 'color', color: bgColor },
-      scrim,
-      slogan: teaser || name,
-      sloganColor,
-      sloganSize,
-      sloganBar,
-      sloganBarColor,
-      stamp,
-    }
-  }, [dest.photos, bgType, bgColor, scrim, teaser, name, sloganColor, sloganSize, sloganBar, sloganBarColor, stamp])
 
   // Gesamter Patch, der beim Speichern als JSON mitgeht.
   const payload: Partial<ContentDest> = {
@@ -83,7 +56,6 @@ export function Editor({ dest }: { dest: ContentDest }) {
       oeffnungszeiten: oeffnung.trim() || undefined,
       preis: preis.trim() || undefined,
     },
-    cover,
   }
 
   const tagLabel = TAG_LIST.find((t) => t.id === primaryTagOf({ ...dest, tags }))
@@ -208,72 +180,11 @@ export function Editor({ dest }: { dest: ContentDest }) {
           </div>
         </section>
 
-        <section className="adm-section">
-          <h2>Cover gestalten</h2>
-          <div className="adm-field">
-            <label>Hintergrund</label>
-            <div className="adm-seg" role="radiogroup">
-              <label data-on={bgType === 'photo'} aria-disabled={!hasPhoto} style={!hasPhoto ? { opacity: 0.45 } : undefined}>
-                <input type="radio" name="bgtype" checked={bgType === 'photo'} disabled={!hasPhoto} onChange={() => setBgType('photo')} />
-                Foto
-              </label>
-              <label data-on={bgType === 'color'}>
-                <input type="radio" name="bgtype" checked={bgType === 'color'} onChange={() => setBgType('color')} />
-                Farbfläche
-              </label>
-            </div>
-            {!hasPhoto && <span className="hint">Noch kein Foto – lade unten eins hoch, um „Foto“ zu wählen.</span>}
-          </div>
-          {bgType === 'color' && (
-            <div className="adm-field">
-              <label>Flächenfarbe</label>
-              <input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} style={{ width: 56, height: 36, padding: 2 }} />
-            </div>
-          )}
-          <div className="adm-field">
-            <label>Scrim (Abdunklung fürs Lesen) — {Math.round(scrim * 100)}%</label>
-            <input type="range" min={0} max={0.85} step={0.01} value={scrim} onChange={(e) => setScrim(Number(e.target.value))} />
-          </div>
-          <div className="adm-row">
-            <div className="adm-field">
-              <label>Schriftfarbe</label>
-              <div className="adm-seg">
-                <label data-on={sloganColor === 'ink'}><input type="radio" name="sc" checked={sloganColor === 'ink'} onChange={() => setSloganColor('ink')} />Ink</label>
-                <label data-on={sloganColor === 'white'}><input type="radio" name="sc" checked={sloganColor === 'white'} onChange={() => setSloganColor('white')} />Weiß</label>
-              </div>
-            </div>
-            <div className="adm-field">
-              <label>Schriftgröße — {sloganSize.toFixed(2)}×</label>
-              <input type="range" min={0.7} max={1.6} step={0.01} value={sloganSize} onChange={(e) => setSloganSize(Number(e.target.value))} />
-            </div>
-          </div>
-          <div className="adm-field">
-            <label className="adm-chip" data-on={sloganBar} style={{ width: 'fit-content' }}>
-              <input type="checkbox" checked={sloganBar} onChange={() => setSloganBar(!sloganBar)} />
-              Farbbalken hinter der Schrift
-            </label>
-          </div>
-          {sloganBar && (
-            <div className="adm-field">
-              <label>Balkenfarbe</label>
-              <div className="adm-seg">
-                <label data-on={sloganBarColor === 'ink'}><input type="radio" name="bc" checked={sloganBarColor === 'ink'} onChange={() => setSloganBarColor('ink')} />Ink</label>
-                <label data-on={sloganBarColor === 'white'}><input type="radio" name="bc" checked={sloganBarColor === 'white'} onChange={() => setSloganBarColor('white')} />Weiß</label>
-              </div>
-            </div>
-          )}
-          <div className="adm-field">
-            <label>Kategorie-Stempel (oben rechts)</label>
-            <select value={stamp ?? ''} onChange={(e) => setStamp(e.target.value || null)}>
-              <option value="">— kein Stempel —</option>
-              {TAG_LIST.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
-            </select>
-          </div>
-          <p className="adm-note">
-            Übergangs-Vorschau: Slogan in Playfair Display. Der finale Cover-Builder (Baby&nbsp;Mango,
-            Rahmen, Blobs, Brand-Grafiken, Foto-Stempel) wird hier eingehängt, sobald das Cover-Tool fertig ist.
-          </p>
-        </section>
+        <p className="adm-note">
+          Das <strong>Cover</strong> wird aus Foto + Slogan + Kategorie automatisch als echtes Vorlagen-Cover
+          erzeugt (Vorschau rechts). Der frei gestaltbare Cover-Builder (Template wählen, Rahmen, Grafiken,
+          Format, Export) kommt als nächster Schritt.
+        </p>
 
         <div className="adm-actions">
           <SaveButton />
@@ -296,7 +207,7 @@ export function Editor({ dest }: { dest: ContentDest }) {
         <div>
           <span className="adm-card-mock lbl" style={{ display: 'block', marginBottom: 8 }}>So sieht die Karte aus</span>
           <div className="adm-card-mock">
-            <DestPreview spec={cover} />
+            <DestCover dest={{ ...dest, name, place, teaser }} style={{ borderRadius: 11 }} />
             {tagLabel && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 11 }}>
                 <span style={{ width: 9, height: 9, borderRadius: '50%', background: tagLabel.color }} />
