@@ -13,6 +13,7 @@ export function HeroScene() {
   const sec = useRef<HTMLElement>(null)
   const mapWrap = useRef<HTMLDivElement>(null)
   const photo = useRef<HTMLImageElement>(null)
+  const photoFull = useRef<HTMLImageElement>(null)
   const scrimRef = useRef<HTMLDivElement>(null)
   const copy = useRef<HTMLDivElement>(null)
   const cue = useRef<HTMLDivElement>(null)
@@ -30,6 +31,9 @@ export function HeroScene() {
     // Gegen-Skalierung: das Foto bleibt bildschirmfüllend & scharf, während das
     // wachsende Fenster es Stück für Stück freigibt.
     if (photo.current) photo.current.style.transform = `translate(-50%, -50%) scale(${1 / s})`
+    // Vollbild-Foto hinter dem Fenster früh einblenden, damit die grauen Lücken der
+    // wachsenden konkaven Silhouette nie sichtbar werden → randlos full-bleed (Plan E).
+    if (photoFull.current) photoFull.current.style.opacity = String(clamp(p / 0.12))
     // Scrim (Text-Kontrast) blendet aus, sobald die Headline geht — klares Foto.
     if (scrimRef.current) scrimRef.current.style.opacity = String(1 - clamp((p - 0.05) / 0.4))
     if (copy.current) {
@@ -54,6 +58,11 @@ export function HeroScene() {
         </svg>
         <div className="hero-blob a" ref={blobA} />
         <div className="hero-blob b" ref={blobB} />
+
+        {/* Vollbild-Foto hinter dem Silhouetten-Fenster (deckungsgleich), blendet beim
+            Scrollen ein und füllt die grauen Ränder → randloses full-bleed (Plan E). */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img ref={photoFull} className="hero-photo-full" src="/hero-lake.jpg" alt="" />
 
         <div className="hero-map-wrap" ref={mapWrap}>
           <div className="hero-photo-box" style={{ aspectRatio: `${shape.vw} / ${shape.vh}` }}>
