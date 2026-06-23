@@ -18,6 +18,21 @@ const swatchHex = (c: string) => (c === 'white' ? '#ffffff' : COVER_COLORS[c as 
 const graphicSrc = (asset: string) => (asset === 'logo' ? '/logo-allgaeu.svg' : `/cover/graphics/${asset}.svg`)
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n))
 
+// Responsives Layout: mobil gestapelt (Vorschau oben), ab 880px Vorschau LINKS
+// (sticky) neben den Einstellungen → Änderung sofort im Blick.
+const CB_CSS = `
+.cb-root { max-width: 560px; margin: 0 auto; padding: 14px 14px 132px; }
+.cb-main { display: flex; flex-direction: column; gap: 16px; }
+.cb-preview { width: min(78vw, 330px); margin: 0 auto; }
+.cb-controls { width: 100%; }
+@media (min-width: 880px) {
+  .cb-root { max-width: 960px; padding-bottom: 84px; }
+  .cb-main { flex-direction: row; align-items: flex-start; gap: 30px; }
+  .cb-preview { position: sticky; top: 18px; flex: 0 0 340px; width: 340px; margin: 0; }
+  .cb-controls { flex: 1; min-width: 0; }
+}
+`
+
 // Farbwähler-Reihe. `value`=aktuell, onPick(undefined)=erste „Auto/keiner"-Option.
 function Swatches({ value, onPick, first }: { value?: string; onPick: (c?: string) => void; first: { label: string; bg: string } }) {
   return (
@@ -67,6 +82,8 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
   const fullRef = useRef<HTMLDivElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
   const drag = useRef<{ mode: string; ox: number; oy: number } | null>(null)
+  const dragRaf = useRef(0)
+  const dragPt = useRef<{ fx: number; fy: number } | null>(null)
 
   const update = (fn: (c: FigmaCoverChoice) => FigmaCoverChoice) => { setChoice(fn); setSaved(false) }
   const patch = (p: Partial<FigmaCoverChoice>) => update((c) => ({ ...c, ...p }))
@@ -102,7 +119,7 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
   }
   const onDown = (e: React.PointerEvent) => {
     if (!dragMode) return
-    ;(e.target as HTMLElement).setPointerCapture?.(e.pointerId)
+    try { (e.target as HTMLElement).setPointerCapture?.(e.pointerId) } catch { /* ignorieren */ }
     const { fx, fy } = frac(e)
     if (dragMode === 'text') {
       const px = fx * 1080, py = fy * 1350
@@ -111,9 +128,12 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
     } else drag.current = { mode: dragMode, ox: 0, oy: 0 }
     onMove(e)
   }
-  const onMove = (e: React.PointerEvent) => {
-    if (!drag.current) return
-    const { fx, fy } = frac(e)
+  // rAF-throttled: viele pointermove-Events → max. ein Update pro Frame (flüssig).
+  const applyDrag = () => {
+    dragRaf.current = 0
+    const pt = dragPt.current
+    if (!pt || !drag.current) return
+    const { fx, fy } = pt
     if (drag.current.mode === 'focal') patch({ focal: { x: Number(fx.toFixed(3)), y: Number(fy.toFixed(3)) } })
     else if (drag.current.mode === 'text') {
       const nx = Math.round(Math.min(1020, Math.max(0, fx * 1080 - drag.current.ox)))
@@ -122,7 +142,16 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
       else patch({ textPos: { x: nx, y: ny } })
     } else if (drag.current.mode === 'sticker' && sel != null) updateSticker(sel, { x: Number(fx.toFixed(3)), y: Number(fy.toFixed(3)) })
   }
-  const onUp = () => { drag.current = null }
+  const onMove = (e: React.PointerEvent) => {
+    if (!drag.current) return
+    dragPt.current = frac(e)
+    if (!dragRaf.current) dragRaf.current = requestAnimationFrame(applyDrag)
+  }
+  const onUp = () => {
+    if (dragRaf.current) { cancelAnimationFrame(dragRaf.current); dragRaf.current = 0 }
+    applyDrag() // End-Position sicher übernehmen
+    drag.current = null
+  }
 
   const save = () => startTransition(async () => { await saveFigmaCover(dest.id, JSON.stringify(choice)); setSaved(true) })
   const exportPng = async () => {
@@ -143,7 +172,8 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
     : dragMode === 'sticker' ? 'Die Grafik im Bild ziehen, um sie zu platzieren.' : ''
 
   return (
-    <div style={{ maxWidth: 560, margin: '0 auto', padding: '14px 14px 132px' }}>
+    <div className="cb-root">
+      <style>{CB_CSS}</style>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
         <a href={`/admin/ausflug/${dest.id}`} className="adm-btn ghost" style={{ padding: '6px 12px' }}>← Zurück</a>
         <div>
@@ -152,9 +182,11 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
         </div>
       </div>
 
-      {/* ── Live-Vorschau ── */}
-      <div ref={previewRef} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
-        style={{ width: 'min(78vw, 330px)', margin: '0 auto', position: 'relative', touchAction: 'none', cursor: dragMode ? 'grab' : 'default' }}>
+      <div className="cb-main">
+        <div className="cb-preview">
+          {/* ── Live-Vorschau ── */}
+          <div ref={previewRef} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
+            style={{ width: '100%', position: 'relative', touchAction: 'none', cursor: dragMode ? 'grab' : 'default' }}>
         <MeasuredCover dest={merged} />
         {dragMode === 'focal' && choice.focal && (
           <div style={{ position: 'absolute', left: `${choice.focal.x * 100}%`, top: `${choice.focal.y * 100}%`, width: 22, height: 22, marginLeft: -11, marginTop: -11, border: '2px solid #fff', borderRadius: '50%', boxShadow: '0 0 0 2px rgba(0,0,0,.45)', pointerEvents: 'none' }} />
@@ -163,8 +195,10 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
           <div key={i} style={{ position: 'absolute', left: `${st.x * 100}%`, top: `${st.y * 100}%`, width: 16, height: 16, marginLeft: -8, marginTop: -8, borderRadius: '50%', border: sel === i ? '2px solid var(--ink)' : '2px solid rgba(255,255,255,.9)', boxShadow: '0 0 0 1.5px rgba(0,0,0,.4)', pointerEvents: 'none' }} />
         ))}
       </div>
-      {dragHint && <p className="hint" style={{ textAlign: 'center', marginTop: 8 }}>{dragHint}</p>}
+          {dragHint && <p className="hint" style={{ textAlign: 'center', marginTop: 8 }}>{dragHint}</p>}
+        </div>{/* /cb-preview */}
 
+        <div className="cb-controls">
       {/* ── Schicht-Tabs ── */}
       <div style={{ display: 'flex', gap: 2, margin: '16px 0 14px', borderBottom: '1px solid var(--line-soft)' }}>
         {TABS.map((t) => (
@@ -381,6 +415,8 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
           </div>
         </div>
       )}
+        </div>{/* /cb-controls */}
+      </div>{/* /cb-main */}
 
       {/* ── Aktionsleiste (sticky) ── */}
       <div style={{ position: 'fixed', left: 0, right: 0, bottom: 0, background: 'var(--paper, #f7f2e5)', borderTop: '1px solid var(--line)', padding: '10px 14px', display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
