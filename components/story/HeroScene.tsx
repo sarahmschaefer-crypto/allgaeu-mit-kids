@@ -31,9 +31,14 @@ export function HeroScene() {
     // Gegen-Skalierung: das Foto bleibt bildschirmfüllend & scharf, während das
     // wachsende Fenster es Stück für Stück freigibt.
     if (photo.current) photo.current.style.transform = `translate(-50%, -50%) scale(${1 / s})`
-    // Vollbild-Foto hinter dem Fenster früh einblenden, damit die grauen Lücken der
-    // wachsenden konkaven Silhouette nie sichtbar werden → randlos full-bleed (Plan E).
-    if (photoFull.current) photoFull.current.style.opacity = String(clamp(p / 0.12))
+    // Vollbild-Foto hinter dem Fenster: IDENTISCHE Gegen-Skalierung wie .hero-photo
+    // (gleicher hero-map-wrap, gleiche Rundung) → pixelgenau deckungsgleich, keine
+    // Nähte. Früh einblenden, damit die Lücken der wachsenden konkaven Silhouette nie
+    // grau sichtbar werden → randlos full-bleed (Plan E).
+    if (photoFull.current) {
+      photoFull.current.style.transform = `translate(-50%, -50%) scale(${1 / s})`
+      photoFull.current.style.opacity = String(clamp(p / 0.12))
+    }
     // Scrim (Text-Kontrast) blendet aus, sobald die Headline geht — klares Foto.
     if (scrimRef.current) scrimRef.current.style.opacity = String(1 - clamp((p - 0.05) / 0.4))
     if (copy.current) {
@@ -59,12 +64,11 @@ export function HeroScene() {
         <div className="hero-blob a" ref={blobA} />
         <div className="hero-blob b" ref={blobB} />
 
-        {/* Vollbild-Foto hinter dem Silhouetten-Fenster (deckungsgleich), blendet beim
-            Scrollen ein und füllt die grauen Ränder → randloses full-bleed (Plan E). */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img ref={photoFull} className="hero-photo-full" src="/hero-lake.jpg" alt="" />
-
         <div className="hero-map-wrap" ref={mapWrap}>
+          {/* Vollbild-Foto hinter dem Fenster — IM selben Wrap, damit es exakt dieselbe
+              Skalierung erfährt wie .hero-photo und deckungsgleich bleibt (Plan E). */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img ref={photoFull} className="hero-photo-full" src="/hero-lake.jpg" alt="" />
           <div className="hero-photo-box" style={{ aspectRatio: `${shape.vw} / ${shape.vh}` }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img ref={photo} className="hero-photo" src="/hero-lake.jpg" alt="" style={{ opacity: 1 }} />

@@ -25,6 +25,7 @@
   --pine-deep: var(--accent-deep);
   --terra: #f67f2f; /* Figma core/terra */
   --brand-pink: #ffa3eb; /* Figma decorative/brand-pink */
+  --brand-purple: #8583e4; /* Figma decorative/brand-purple */
   --lake: oklch(0.55 0.13 255);
 
   /* type */
@@ -67,7 +68,9 @@
 #story-root .h-lg { font-size: clamp(2.1rem, 5.6vw, 4.4rem); }
 #story-root .h-md { font-size: clamp(1.6rem, 3.4vw, 2.7rem); }
 #story-root .lede { font-weight: 500; font-size: clamp(1.05rem,1.6vw,1.35rem); line-height: 1.5; color: var(--ink-soft); max-width: 34ch; text-wrap: pretty; margin: 0; }
-#story-root .accent-terra { color: var(--accent); }
+/* Landing-Heading-Akzent ("von euch." / "Welche passt zu uns?") = Figma
+   decorative/brand-purple (#8583e4), NICHT core/accent. */
+#story-root .accent-terra { color: var(--brand-purple); }
 
 /* scaffolding ----------------------------------------------------------- */
 #story-root .scene { position: relative; }
@@ -118,11 +121,12 @@
 #story-root .hero-map-wrap { position: absolute; inset: 0; display: grid; place-items: center; will-change: transform, opacity; z-index: 2; }
 #story-root .hero-photo-box { position: relative; grid-area: 1 / 1; width: min(72vh, 86vw); -webkit-clip-path: url(#allgaeuClipN); clip-path: url(#allgaeuClipN); filter: drop-shadow(0 24px 48px oklch(0.3 0.04 160 / .28)); }
 #story-root .hero-photo { position: absolute; top: 50%; left: 50%; width: 120vw; height: 120vh; object-fit: cover; opacity: 0; transform: translate(-50%, -50%); transform-origin: center center; will-change: transform; }
-/* Vollbild-Foto HINTER dem Silhouetten-Fenster (z-index 1 < hero-map-wrap z-index 2).
-   Deckungsgleich mit .hero-photo (gleiches Bild, 120vw/120vh cover, zentriert) → wird
-   es eingeblendet, füllt es exakt die grauen Lücken, die die konkave Silhouette beim
-   Wachsen freigibt. So gibt es keinen gerahmten Zwischenzustand mehr (Plan E). */
-#story-root .hero-photo-full { position: absolute; top: 50%; left: 50%; width: 120vw; height: 120vh; object-fit: cover; opacity: 0; z-index: 1; transform: translate(-50%, -50%); transform-origin: center center; will-change: opacity; pointer-events: none; }
+/* Vollbild-Foto HINTER dem Silhouetten-Fenster — liegt IM selben hero-map-wrap und
+   bekommt per JS die EXAKT gleiche Gegen-Skalierung (1/s) wie .hero-photo. Dadurch
+   durchlaufen beide Ebenen identische Transforms (gleiche Rundung) → pixelgenau
+   deckungsgleich, kein Naht-Versatz. Eingeblendet füllt es die Lücken der wachsenden
+   konkaven Silhouette → randlos full-bleed (Plan E). */
+#story-root .hero-photo-full { position: absolute; top: 50%; left: 50%; width: 120vw; height: 120vh; object-fit: cover; opacity: 0; transform: translate(-50%, -50%); transform-origin: center center; will-change: opacity, transform; pointer-events: none; }
 #story-root .hero-photo-scrim { position: absolute; inset: 0; background: oklch(0.22 0.03 158 / .28); }
 #story-root .hero-map { grid-area: 1 / 1; width: min(72vh, 86vw); aspect-ratio: var(--shape-ar, 1000 / 995); overflow: visible; pointer-events: none; }
 #story-root .hero-seg { fill: none; stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
