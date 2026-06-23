@@ -17,7 +17,11 @@ damit die **parallel aktive cover-tool-Session** im Haupt-Repo `~/Developer/allg
   ⚠️ Der Datei-Store cached im Speicher: nach externem Schreiben (Import-Skript) Dev-Server **neu starten**.
 - **Login lokal:** `ADMIN_PASSWORD` in `.env.local` (Dev: `allgaeu2026`). Login-Token = SHA-256 davon.
   Ohne Variable: in `development` offen, in `production` gesperrt.
-- **Typecheck:** `npx tsc --noEmit` (Hauptverifikation; Preview-Server meiden).
+- **Typecheck:** `npx tsc --noEmit` für Logik/Typen. **Visuelle Änderungen (Cover/Layout/UI): SELBST per
+  Screenshot gegen die Referenz prüfen, in Schleife bis fehlerfrei** (Sarahs stehende Regel — überschreibt
+  „Sarah prüft selbst" für Visuelles). Dev auf 3100, Login im Preview-Browser via Cookie setzen
+  (`amk_admin` = SHA-256 von `amk-admin:v1:<ADMIN_PASSWORD>`). Hinweis: Preview-Scroll ist unzuverlässig
+  → Kacheln per CSS ausblenden oder `body.style.zoom` statt scrollen.
 - **Drive-Import:** `npx tsx scripts/import-drive.ts <lokaler-ordner>` (z. B. `~/Downloads/"Relevant für App"`).
 - **Cloud-Migration (einmalig, erledigt):** `npx tsx scripts/migrate-to-cloud.ts` lädt `data/content.json`
   → Postgres und lokale `public/uploads`-Fotos → Blob (URLs umgeschrieben); Creds aus `.env.local`.
@@ -32,16 +36,29 @@ damit die **parallel aktive cover-tool-Session** im Haupt-Repo `~/Developer/allg
   JSON-Datei `data/content.json` (gitignored, **seedet aus `lib/shapes/data.ts`**). Verbraucher kennen
   nur das Interface.
 - **`ContentDest`** (`lib/content/types.ts`) = **Superset von `ShapesDest`** + `photos`, `cover`
-  (CoverSpec), `overrides` (Adresse/Öffnung/Preis), `description` (voller Reisebericht), `tips`,
-  `published` (Drive-Importe = Entwurf `false`, data.ts-Seed = `true`). `blurb` = Kurzfassung.
-  Designsystem-Konstanten (`TYPES/AGES/BUDGETS/…`) bleiben in `lib/shapes/data.ts`.
+  (alte Interim-CoverSpec, ungenutzt), **`figmaCover`** (`FigmaCoverChoice` = die Cover-Builder-Auswahl,
+  jeder Layer optional überschreibbar), `overrides` (Adresse/Öffnung/Preis), `description` (voller
+  Reisebericht), `tips`, `published` (Drive-Importe = Entwurf `false`, data.ts-Seed = `true`). `blurb` =
+  Kurzfassung. Designsystem-Konstanten (`TYPES/AGES/BUDGETS/…`) bleiben in `lib/shapes/data.ts`.
 - **Login-Gate:** `middleware.ts` schützt `/admin/*` (außer `/admin/login`); `lib/auth.ts` leitet ein
   SHA-256-Cookie aus `ADMIN_PASSWORD` ab (läuft in Edge + Node). `app/admin/login/` = Seite + `login`/
   `logout`-Actions.
-- **Cover = Vorschaubild.** Interim-Renderer `components/content/DestPreview.tsx` rendert die CoverSpec
-  (Schichten hinten→vorn: Foto/Farbe · Scrim · Slogan + optional Farbbalken · Kategorie-Stempel oben
-  rechts; Playfair statt Baby Mango). Wird in **Phase 5 durch den echten `<Cover>`-Renderer** (Branch
-  cover-tool) als Drop-in ersetzt.
+- **Cover = echtes Vorschaubild (LIVE).** Das Cover-System aus dem cover-tool liegt jetzt hier
+  (`lib/cover/*`, `components/cover/*`, `public/cover/*`). `components/content/DestCover.tsx` rendert via
+  `lib/content/figma-cover.ts` → `resolveFigmaCover(dest)` das echte **`<FigmaCover>`** (19 pixelgenaue
+  Figma-Templates in `lib/cover/figma-templates.ts`, Baby-Mango-Font). **Responsive:** FigmaCover braucht
+  eine **numerische** Breite → ResizeObserver misst den Container (CSS `scale(calc(len/zahl))` ist
+  UNGÜLTIG — war der ursprüngliche Bug). `resolveFigmaCover` = gespeicherte Builder-Auswahl
+  (`dest.figmaCover`) ODER deterministisches Auto-Cover (gewichteter Vorlagen-Mix 3× Vollbild : je 1×
+  andere via FNV-Hash `(h>>>16)%8`; Platzhalter `public/cover/demo/figma.png` für fotolose Ziele).
+  **`applyOverrides(template, choice)`** transformiert die Layer-Liste für JEDE Editier-Option
+  (Fläche/Rahmen/Scrim/Sticker/Marker/Farbbalken/Text-Position) — `FigmaCover` bleibt schlanker Renderer.
+- **Cover-Builder** `app/admin/ausflug/[id]/cover/` (`CoverEditor.tsx`, mobile-first, 5 Tabs
+  Vorlage·Fläche·Schrift·Grafik·Stempel): jeder Layer editierbar (Foto↔Farbfläche+Farbe, Rahmen-Form,
+  Scrim, Brand-Grafiken/Sticker per Drag, Kategorie-Stempel wählen, Schrift mit voller Brand-Palette +
+  Farbbalken + Textmarker-Toggle + Drag&Drop + Marker-/Bandarolen-Farbe). Speichert `FigmaCoverChoice`
+  (`lib/content/types.ts`) via Server-Action `saveFigmaCover`. **PNG-Export** via `html-to-image`
+  (verstecktes 1080×1350-Render). Referenz-Galerien: `/admin/figma-check`, `/admin/cover-preview`.
 - **Admin** unter `app/admin/`: Shell (`layout.tsx` + gescoptes `admin.css`, Logout) · Liste
   (`page.tsx` Server + `AdminList.tsx` Client = Suche + Live/Entwurf-Filter, „+ Neues Ziel"-Formular) ·
   Editor (`ausflug/[id]/page.tsx` lädt, `Editor.tsx` Client-Form mit Live-Cover-Vorschau,
@@ -66,20 +83,28 @@ damit die **parallel aktive cover-tool-Session** im Haupt-Repo `~/Developer/allg
   (Owner `allgaeumitkids@gmail.com`) → lokale Kopie nötig.
 
 ## Stehende Regeln (Admin-CMS — IMMER beachten)
-- **NIE anfassen:** `components/cover/*`, `lib/cover/*`, `app/admin/cover-preview` — gehören dem
-  parallelen **cover-tool**-Job (existieren nur auf Branch `cover-tool`, nicht hier).
-- **Cover-Editor (Instagram-artig, mobile-first) = Phase 5**, auf dem cover-tool-Fundament, **erst nach
-  dessen Merge nach `main`**: EINE `CoverSpec`, EIN Renderer, EINE Asset-Bibliothek — kein zweiter Renderer.
+- **Cover-Code lebt jetzt HIER** (`lib/cover/*`, `components/cover/*`, `public/cover/*`, aus cover-tool/
+  main geholt) und wird genutzt. ⚠️ **MERGE-HAZARD:** `components/cover/FigmaCover.tsx` +
+  `lib/cover/figma-templates.ts` wurden in `admin-cms` **verändert** (Text-Auto-Fit `fitText`/`fitMarker`,
+  Override-Felder `fillColor`/`bar`, Umbenennungen, Kontrast-Fixes) → weichen von main/cover-tool ab; bei
+  `admin-cms`→`main` bewusst reconcilen.
+- **Referenz für die Templates = die NACHGEBAUTEN** in `lib/cover/figma-templates.ts` (Galerie
+  `/admin/figma-check`), **NICHT das Live-Figma** (File „Cover / Feed (4:5)" `rglURpXy84rtaZlYuvO4pY`) —
+  das ist versehentlich gedriftet (lila-auf-lila-Schrift). figma-templates.ts NICHT „1:1 ans Figma"
+  zurückbauen. Umbenannt: Stil17→Teaser 2, Stil20→Teaser 3, Stil19→Rahmen Viereck 3, altes Teaser 2→Zahl 1.
 - **Design ist eingefroren:** öffentliche Seiten (`/`, `/entdecken`, `/quiz`, `/ausflug/[id]`) müssen für
   die bestehenden 16 Ziele **pixelgleich** bleiben — neue Abschnitte/Daten nur additiv & konditional.
   Sarahs visueller Gegencheck steht noch aus.
 - **Cloud ist live (Branch gepusht):** `admin-cms` ist auf origin → Vercel baut ein **Vorschau-Deployment**
-  (eigene URL, Live-Domain `main` unberührt). Neon-Postgres + Blob `allgaeu-fotos` (Public) angelegt &
-  migriert (76 Ziele/74 Fotos). **Merge `admin-cms` → `main` (= echte Live-Domain) nur bewusst** und mit
-  dem cover-tool-Job abgestimmt.
+  (Live-Domain `main` unberührt). Neon-Postgres + Blob `allgaeu-fotos` (Public). Nach 6 gelöschten
+  Sammel-Docs: **70 Ziele** (16 live · 54 Entwurf). Stabiler Vorschau-Link (Branch-Alias, Vercel-Auth
+  ausgeschaltet → für die Schwester öffentlich, Admin per App-Passwort):
+  `https://allgaeu-mit-kids-git-admin-cms-allgaeumit-kids.vercel.app` (Website `/` + `/entdecken`, Admin
+  `/admin` Passwort `allgaeu2026`). **Merge `admin-cms` → `main` nur bewusst** (mit cover-tool abgestimmt).
 - Plan: `~/.claude/plans/expressive-frolicking-feigenbaum.md`. Phasen-Status in Memory
-  `project_allgaeu_admin_cms` (1✅ · 3✅ · 4✅ Drive-Bulk 76/74 · 2✅ Cloud live/Vorschau · 5 offen:
-  Cover-Editor nach cover-tool→main-Merge). Offen: `ADMIN_PASSWORD` in Vercel + Vorschau-Login testen.
+  `project_allgaeu_admin_cms`: 1✅ 2✅ 3✅ 4✅ (Drive-Bulk) · 6/7✅ Cover echt + Platzhalter · 8✅
+  (Wegbeschaffenheit→Toggle, Editor zeigt Reisebericht/Tipps) · 9✅ (6 Sammel-Docs gelöscht) · **10
+  (Cover-Builder) gebaut — voller Schicht-Editor**. Verbleibt: Sarahs Pixel-Gegencheck, `admin-cms`→`main`.
 
 ---
 
@@ -88,9 +113,12 @@ damit die **parallel aktive cover-tool-Session** im Haupt-Repo `~/Developer/allg
 Familien-Ausflugsplattform fürs Allgäu. Next.js 15 · React 19 · Tailwind 4 · TypeScript.
 
 ## ⚡ Arbeitsweise mit Sarah (WICHTIG — Tempo!)
-- **Sarah prüft visuell SELBST** auf `localhost:3000` (eigener Browser / DevTools-Mobilansicht).
-  NICHT Zeit mit dem instabilen Preview-Server + Screenshots verbrennen — der stürzt ab & scrollt
-  nicht zuverlässig. Nur **`tsc` (Typen) + kurze DOM-Checks** zum Selbstcheck, dann Sarah schauen lassen.
+- ⚠️ **NEUERE Regel (überschreibt den nächsten Punkt für Visuelles):** Bei **visuellen** Änderungen
+  (Cover/Layout/UI) verifiziere ich **selbst per Screenshot** gegen die Referenz, in Schleife bis
+  fehlerfrei — erst dann Sarah zeigen. Nur für Nicht-Visuelles reicht `tsc`.
+- **Sarah prüft visuell SELBST** auf `localhost:3000` (eigener Browser / DevTools-Mobilansicht) — gilt
+  für rein funktionale/strukturelle Dinge. Für Visuelles siehe Punkt oben. Kurze DOM-Checks + `tsc` zum
+  Selbstcheck, dann Sarah schauen lassen.
 - **Kurze, fokussierte Schleifen.** Eine Sache pro Runde, dann Feedback. Nicht stundenlang allein verifizieren.
 - **Offene Unzufriedenheit (Stand letzter Chat):**
   1. **Journey/Pfad-Animation (§1)** war wiederholt fiddlig/problematisch → wenn es wieder hakt:
