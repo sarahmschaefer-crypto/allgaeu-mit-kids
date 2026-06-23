@@ -209,11 +209,13 @@
 
 /* ===== Detail · Variante B "Magazin-Feature" ===== */
 .shapes-root .mag { max-width: 980px; margin: 0 auto; padding: clamp(28px, 5vw, 60px) clamp(20px, 5vw, 60px) 44px; display: flex; flex-direction: column; gap: clamp(28px, 4vw, 36px); }
-.shapes-root .mag-back { display: inline-block; text-decoration: none; color: var(--accent); }
+/* Text-Button = Figma „Button / Text"-Variante: Nunito ExtraBold (800). */
+.shapes-root .mag-back { display: inline-block; text-decoration: none; color: var(--accent); font-weight: 800; }
 .shapes-root .mag-hair { border: 0; border-top: 1px solid var(--ink); margin: 0 0 16px; }
 
 .shapes-root .mag-top { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: clamp(24px, 4vw, 44px); align-items: start; }
-.shapes-root .mag-eyebrow { margin-bottom: 14px; color: var(--accent); }
+/* Eyebrows projektweit orange (core/terra) — wie Landing/Hero/Detail. */
+.shapes-root .mag-eyebrow { margin-bottom: 14px; color: var(--terra); }
 .shapes-root .mag-headline { font-family: var(--font-display); font-weight: 800; font-size: clamp(34px, 6vw, 60px); line-height: 1.12; letter-spacing: -0.015em; margin: 0; color: var(--ink); }
 .shapes-root .mag-intro { margin: 0; font-size: 15px; line-height: 1.55; color: var(--ink-soft, var(--ink-faint)); }
 

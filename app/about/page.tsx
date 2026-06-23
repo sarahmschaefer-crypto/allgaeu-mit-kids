@@ -21,7 +21,7 @@ export default function AboutPage() {
           <div className="mag-headcol">
             <div className="kicker mag-eyebrow">Über</div>
             <h1 className="mag-headline">
-              Hallo, ich bin <span style={{ color: 'var(--accent)' }}>Purista.</span>
+              Hallo, ich bin <span style={{ color: 'var(--brand-purple)' }}>Purista.</span>
             </h1>
           </div>
           <div className="mag-introcol">

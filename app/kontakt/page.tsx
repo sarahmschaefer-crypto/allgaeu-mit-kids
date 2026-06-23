@@ -21,7 +21,7 @@ export default function KontaktPage() {
           <div className="mag-headcol">
             <div className="kicker mag-eyebrow">Kontakt</div>
             <h1 className="mag-headline">
-              Sag <span style={{ color: 'var(--accent)' }}>Hallo.</span>
+              Sag <span style={{ color: 'var(--brand-purple)' }}>Hallo.</span>
             </h1>
           </div>
           <div className="mag-introcol">
