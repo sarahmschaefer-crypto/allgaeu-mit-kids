@@ -74,10 +74,21 @@ export function applyOverrides(base: FigmaTemplate, c?: FigmaCoverChoice): Figma
     if (c.fillMode === 'color') p.fillColor = (c.fillColor as CoverColor) ?? 'purple'
     else if (c.fillMode === 'photo') p.fillColor = undefined
     if (c.frameShape && c.frameShape !== 'template') {
-      if (c.frameShape === 'none') { p.x = 0; p.y = 0; p.w = 1080; p.h = 1350; p.mask = undefined; p.radius = undefined }
-      else if (c.frameShape === 'rect') { p.mask = undefined; p.radius = undefined }
-      else if (c.frameShape === 'circle') { const r = Math.round(Math.min(p.w, p.h) / 2); p.mask = undefined; p.radius = [r, r, r, r] }
-      else { p.mask = c.frameShape; p.radius = undefined } // blob1..4
+      if (c.frameShape === 'none') {
+        p.x = 0; p.y = 0; p.w = 1080; p.h = 1350; p.mask = undefined; p.radius = undefined
+      } else {
+        // Rahmen behält Randabstand (klebt nicht am Cover-Rand). Ein Vollbild-Foto
+        // wird auf einen eingerückten Rahmen (60px Rand) gebracht; ein bereits
+        // gerahmtes Foto behält seine Vorlagen-Geometrie.
+        const fullBleed = p.x <= 20 && p.y <= 20 && p.w >= 1060 && p.h >= 1300
+        if (fullBleed) {
+          if (c.frameShape === 'circle') { p.x = 60; p.y = 195; p.w = 960; p.h = 960 }
+          else { p.x = 60; p.y = 60; p.w = 960; p.h = 1230 }
+        }
+        if (c.frameShape === 'rect') { p.mask = undefined; p.radius = [40, 40, 40, 40] }
+        else if (c.frameShape === 'circle') { const r = Math.round(Math.min(p.w, p.h) / 2); p.mask = undefined; p.radius = [r, r, r, r] }
+        else { p.mask = c.frameShape; p.radius = undefined } // blob1..4
+      }
     }
     layers[photoIdx] = p
   } else if (c.fillMode === 'color' && c.fillColor) {
@@ -111,6 +122,26 @@ export function applyOverrides(base: FigmaTemplate, c?: FigmaCoverChoice): Figma
       }
       layers[sloganIdx] = m
     }
+  }
+
+  // Ebene 6b: Eyebrow/Overline — sichtbar machen (Layer ergänzen, falls keiner)
+  // + per Drag verschiebbar.
+  const overlineIdx = layers.findIndex((l) => l.type === 'text' && l.field === 'overline')
+  if (overlineIdx >= 0) {
+    if (c.overlinePos) {
+      const o = { ...(layers[overlineIdx] as FTText) }
+      o.x = Math.round(c.overlinePos.x); o.y = Math.round(c.overlinePos.y)
+      layers[overlineIdx] = o
+    }
+  } else if (c.overline) {
+    const sl = layers.find((l) => (l.type === 'text' && l.field === 'slogan') || l.type === 'marker')
+    const defX = (sl?.x ?? 60) + 19
+    const defY = sl ? Math.max(40, sl.y - 126) : 820
+    layers.push({
+      type: 'text', field: 'overline',
+      x: Math.round(c.overlinePos?.x ?? defX), y: Math.round(c.overlinePos?.y ?? defY), w: 922,
+      size: 41.5, color: 'white', font: 'nunito', lh: 1, tracking: 6.64, upper: true, weight: 700,
+    })
   }
 
   // Marker-/Bandarolen-Farbe (auf vorhandene Marker + Bänder)

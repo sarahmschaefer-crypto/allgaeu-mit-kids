@@ -59,6 +59,7 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
   const [choice, setChoice] = useState<FigmaCoverChoice>(dest.figmaCover ?? {})
   const [tab, setTab] = useState<Tab>('vorlage')
   const [sel, setSel] = useState<number | null>(null) // ausgewählter Sticker
+  const [moveTarget, setMoveTarget] = useState<'title' | 'eyebrow'>('title') // was Drag im Schrift-Tab verschiebt
   const [saved, setSaved] = useState(false)
   const [exporting, setExporting] = useState(false)
   const [exportErr, setExportErr] = useState('')
@@ -77,6 +78,7 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
   const fillMode: 'photo' | 'color' = choice.fillMode ?? (hasPhotoBox ? 'photo' : 'color')
   const hasMarkerOrBand = template.layers.some((l) => l.type === 'marker' || l.type === 'band') || !!choice.textMarker
   const sloganLayer = template.layers.find((l) => (l.type === 'text' && l.field === 'slogan') || l.type === 'marker')
+  const overlineLayer = template.layers.find((l) => l.type === 'text' && l.field === 'overline')
 
   const photoOptions = useMemo(() => {
     const real = (dest.photos ?? []).map((p) => p.url)
@@ -104,7 +106,8 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
     const { fx, fy } = frac(e)
     if (dragMode === 'text') {
       const px = fx * 1080, py = fy * 1350
-      drag.current = { mode: 'text', ox: px - (sloganLayer?.x ?? 60), oy: py - (sloganLayer?.y ?? 1040) }
+      const lay = moveTarget === 'eyebrow' ? overlineLayer : sloganLayer
+      drag.current = { mode: 'text', ox: px - (lay?.x ?? 60), oy: py - (lay?.y ?? 1040) }
     } else drag.current = { mode: dragMode, ox: 0, oy: 0 }
     onMove(e)
   }
@@ -115,7 +118,8 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
     else if (drag.current.mode === 'text') {
       const nx = Math.round(Math.min(1020, Math.max(0, fx * 1080 - drag.current.ox)))
       const ny = Math.round(Math.min(1320, Math.max(0, fy * 1350 - drag.current.oy)))
-      patch({ textPos: { x: nx, y: ny } })
+      if (moveTarget === 'eyebrow') patch({ overlinePos: { x: nx, y: ny } })
+      else patch({ textPos: { x: nx, y: ny } })
     } else if (drag.current.mode === 'sticker' && sel != null) updateSticker(sel, { x: Number(fx.toFixed(3)), y: Number(fy.toFixed(3)) })
   }
   const onUp = () => { drag.current = null }
@@ -135,7 +139,7 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
   const reset = () => { setChoice({}); setSel(null); setSaved(false) }
 
   const dragHint = dragMode === 'focal' ? 'Auf das Bild ziehen, um den Ausschnitt zu verschieben.'
-    : dragMode === 'text' ? 'Den Slogan im Bild ziehen, um ihn zu verschieben.'
+    : dragMode === 'text' ? `Im Bild ziehen, um ${moveTarget === 'eyebrow' ? 'die kleine Zeile (Eyebrow)' : 'den Slogan'} zu verschieben.`
     : dragMode === 'sticker' ? 'Die Grafik im Bild ziehen, um sie zu platzieren.' : ''
 
   return (
@@ -295,7 +299,18 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
               <Swatches value={choice.barColor} onPick={(c) => patch({ barColor: c })} first={{ label: 'Wie Vorlage', bg: 'conic-gradient(#8583e4,#ff932f,#ffdd00,#8583e4)' }} />
             </div>
           )}
-          {choice.textPos && <button type="button" className="adm-btn ghost" style={{ padding: '6px 12px', alignSelf: 'flex-start' }} onClick={() => patch({ textPos: undefined })}>Text-Position zurücksetzen</button>}
+          <div>
+            <label className="hint" style={{ display: 'block', marginBottom: 6 }}>Verschieben <span>(dann im Bild ziehen)</span></label>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+              {(['title', 'eyebrow'] as const).map((m) => (
+                <button key={m} type="button" onClick={() => setMoveTarget(m)}
+                  style={{ padding: '7px 14px', borderRadius: 999, border: moveTarget === m ? '2px solid var(--ink)' : '1px solid var(--line)', background: moveTarget === m ? 'var(--ink)' : 'transparent', color: moveTarget === m ? '#fff' : 'var(--ink)', fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>
+                  {m === 'title' ? 'Titel' : 'Eyebrow'}
+                </button>
+              ))}
+              {(choice.textPos || choice.overlinePos) && <button type="button" className="adm-btn ghost" style={{ padding: '6px 12px' }} onClick={() => patch({ textPos: undefined, overlinePos: undefined })}>Position zurücksetzen</button>}
+            </div>
+          </div>
         </div>
       )}
 

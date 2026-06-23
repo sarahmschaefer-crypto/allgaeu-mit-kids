@@ -60,6 +60,7 @@ export type FigmaCoverChoice = {
   fontScale?: number                  // Slogan-Größe × (0.6..1.5)
   sloganColor?: string                // CoverColor | 'white'
   textPos?: { x: number; y: number }  // Slogan per Drag verschoben (1080-Raum, Ebenen-Ursprung)
+  overlinePos?: { x: number; y: number } // Eyebrow/Overline per Drag verschoben
   textMarker?: boolean                // Slogan als Marker-Balken darstellen
   barColor?: string                   // Marker-/Bandarolen-Balkenfarbe (CoverColor)
   textBar?: string | null             // Farbbalken hinter dem Slogan (CoverColor); fehlt/null = keiner
