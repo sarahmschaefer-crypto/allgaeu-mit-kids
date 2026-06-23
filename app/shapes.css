@@ -86,7 +86,8 @@
 .shapes-bar.is-scrolled .shapes-brand .brand-logo { height: 34px; }
 .shapes-nav { margin-left: auto; display: flex; gap: 22px; }
 /* Eckiger Primary-Button (radius 4 = Figma-Button) — runder Pill-CTA abgeschafft */
-.shapes-cta { display: inline-flex; align-items: center; background: var(--accent); color: #fff; font-family: var(--font-body); font-weight: 700; font-size: 13px; letter-spacing: 0.02em; padding: 12px 20px; border-radius: var(--radius-sm); text-decoration: none; white-space: nowrap; transition: transform .12s, background .15s; }
+/* CTA-Typografie = Figma-Button (Nunito Bold, Letter-Spacing 3%, UPPERCASE). */
+.shapes-cta { display: inline-flex; align-items: center; background: var(--accent); color: #fff; font-family: var(--font-body); font-weight: 700; font-size: 13px; letter-spacing: 0.03em; text-transform: uppercase; padding: 12px 20px; border-radius: var(--radius-sm); text-decoration: none; white-space: nowrap; transition: transform .12s, background .15s; }
 .shapes-cta:hover { background: var(--accent-deep); transform: translateY(-1px); }
 .shapes-cta .cta-mini { display: none; } /* Desktop: nur volles Label; Mobile flippt das */
 @media (max-width: 680px) { .shapes-cta { padding: 9px 14px; font-size: 12px; } }
