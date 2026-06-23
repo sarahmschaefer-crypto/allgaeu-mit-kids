@@ -121,12 +121,11 @@
 #story-root .hero-map-wrap { position: absolute; inset: 0; display: grid; place-items: center; will-change: transform, opacity; z-index: 2; }
 #story-root .hero-photo-box { position: relative; grid-area: 1 / 1; width: min(72vh, 86vw); -webkit-clip-path: url(#allgaeuClipN); clip-path: url(#allgaeuClipN); filter: drop-shadow(0 24px 48px oklch(0.3 0.04 160 / .28)); }
 #story-root .hero-photo { position: absolute; top: 50%; left: 50%; width: 120vw; height: 120vh; object-fit: cover; opacity: 0; transform: translate(-50%, -50%); transform-origin: center center; will-change: transform; }
-/* Vollbild-Foto HINTER dem Silhouetten-Fenster — liegt IM selben hero-map-wrap und
-   bekommt per JS die EXAKT gleiche Gegen-Skalierung (1/s) wie .hero-photo. Dadurch
-   durchlaufen beide Ebenen identische Transforms (gleiche Rundung) → pixelgenau
-   deckungsgleich, kein Naht-Versatz. Eingeblendet füllt es die Lücken der wachsenden
-   konkaven Silhouette → randlos full-bleed (Plan E). */
-#story-root .hero-photo-full { position: absolute; top: 50%; left: 50%; width: 120vw; height: 120vh; object-fit: cover; opacity: 0; transform: translate(-50%, -50%); transform-origin: center center; will-change: opacity, transform; pointer-events: none; }
+/* EIN Vollbild-Foto, dauerhaft sichtbar (Silhouetten-Fenster entfernt → keine
+   zweite Ebene, keine Nähte). Sanfter Ken-Burns-Zoom per JS-Transform. */
+#story-root .hero-photo-full { position: absolute; top: 50%; left: 50%; width: 120vw; height: 120vh; object-fit: cover; opacity: 1; transform: translate(-50%, -50%); transform-origin: center center; will-change: transform; pointer-events: none; }
+/* Kontrast-Schleier hinter der Headline (mittig dezent dunkler, Ränder klar). */
+#story-root .hero-veil { position: absolute; inset: 0; pointer-events: none; z-index: 1; background: radial-gradient(120% 95% at 50% 46%, oklch(0.2 0.03 158 / .36), oklch(0.2 0.03 158 / .14) 50%, transparent 76%); }
 #story-root .hero-photo-scrim { position: absolute; inset: 0; background: oklch(0.22 0.03 158 / .28); }
 #story-root .hero-map { grid-area: 1 / 1; width: min(72vh, 86vw); aspect-ratio: var(--shape-ar, 1000 / 995); overflow: visible; pointer-events: none; }
 #story-root .hero-seg { fill: none; stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
