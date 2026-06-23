@@ -3,14 +3,15 @@
 // (ported from view_quiz.jsx).
 import { useState } from 'react'
 import Link from 'next/link'
-import { filterDests, TYPES } from '@/lib/shapes/data'
+import { filterDests, isAny, TYPES } from '@/lib/shapes/data'
 import { QUESTIONS } from '@/lib/shapes/questions'
 import { Container } from '@/components/shapes/primitives'
 import { Squiggle } from '@/components/shapes/decor'
 import { buildExploreHref } from '@/lib/shapes/explore'
 
-type SelState = { ages: string[]; types: string[]; times: string | null; budgets: string | null; weather: string | null }
-const EMPTY: SelState = { ages: [], types: [], times: null, budgets: null, weather: null }
+type SelState = { ages: string[]; types: string[]; times: string | null; budgets: string | null; weather: string | null; setting: string | null; region: string | null }
+const EMPTY: SelState = { ages: [], types: [], times: null, budgets: null, weather: null, setting: null, region: null }
+type SingleKey = 'times' | 'budgets' | 'weather' | 'setting' | 'region'
 
 export function QuizFlow() {
   const [step, setStep] = useState(0)
@@ -24,7 +25,7 @@ export function QuizFlow() {
         const arr = s[cur.key as 'ages' | 'types']
         return { ...s, [cur.key]: arr.includes(id) ? arr.filter((x) => x !== id) : [...arr, id] }
       }
-      return { ...s, [cur.key]: s[cur.key as 'times' | 'budgets' | 'weather'] === id ? null : id }
+      return { ...s, [cur.key]: s[cur.key as SingleKey] === id ? null : id }
     })
   }
   const curVal = sel[cur.key as keyof SelState]
@@ -38,13 +39,16 @@ export function QuizFlow() {
     else if (step > 0) setStep(step - 1)
   }
 
-  // quiz answers → shared filter shape (arrays), the language Entdecken speaks
+  // quiz answers → shared filter shape, the language Entdecken speaks. Wildcard-
+  // Antworten (egal / jede-wetterlage / ueberall) = keine Einschränkung.
   const handoffSel = {
     ages: sel.ages,
     types: sel.types,
-    times: sel.times ? [sel.times] : [],
-    budgets: sel.budgets ? [sel.budgets] : [],
-    weather: sel.weather === 'regen' ? 'regen' : null,
+    times: sel.times && !isAny(sel.times) ? [sel.times] : [],
+    budgets: sel.budgets && !isAny(sel.budgets) ? [sel.budgets] : [],
+    weather: isAny(sel.weather) ? null : sel.weather,
+    setting: isAny(sel.setting) ? null : sel.setting,
+    region: isAny(sel.region) ? null : sel.region,
   }
 
   if (done) {

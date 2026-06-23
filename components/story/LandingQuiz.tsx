@@ -5,7 +5,7 @@
 import { useState } from 'react'
 import { QUESTIONS } from '@/lib/shapes/questions'
 import { Reveal } from '@/components/story/Reveal'
-import { useMatch, type ArrField } from '@/components/story/MatchContext'
+import { useMatch, type ArrField, type SingleField } from '@/components/story/MatchContext'
 import { Tag } from '@/components/shapes/primitives'
 import { TYPES } from '@/lib/shapes/data'
 
@@ -15,14 +15,17 @@ function scrollToGallery() {
 }
 
 export function LandingQuiz() {
-  const { sel, toggle, setWeather, matches } = useMatch()
+  const { sel, toggle, setSingle, matches } = useMatch()
   const [step, setStep] = useState(0)
   const last = QUESTIONS.length - 1
   const cur = QUESTIONS[step]
 
-  const isOn = (id: string) =>
-    cur.key === 'weather' ? sel.weather === id : (sel[cur.key as ArrField] as string[]).includes(id)
-  const choose = (id: string) => (cur.key === 'weather' ? setWeather(id) : toggle(cur.key as ArrField, id))
+  const isOn = (id: string) => {
+    const v = sel[cur.key as keyof typeof sel]
+    return Array.isArray(v) ? v.includes(id) : v === id
+  }
+  const choose = (id: string) =>
+    cur.multi ? toggle(cur.key as ArrField, id) : setSingle(cur.key as SingleField, id)
   const next = () => (step < last ? setStep(step + 1) : scrollToGallery())
   const back = () => setStep((s) => Math.max(0, s - 1))
 

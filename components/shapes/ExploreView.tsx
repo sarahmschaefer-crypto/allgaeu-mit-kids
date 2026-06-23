@@ -190,7 +190,8 @@ export function ExploreView({
 
   const active =
     sel.ages.length + sel.times.length + sel.budgets.length + sel.types.length + sel.access.length +
-    (sel.weather ? 1 : 0) + (sel.stroller ? 1 : 0) + (sel.parking ? 1 : 0) + (sel.ort.trim() ? 1 : 0)
+    (sel.weather ? 1 : 0) + (sel.setting ? 1 : 0) + (sel.region ? 1 : 0) +
+    (sel.stroller ? 1 : 0) + (sel.parking ? 1 : 0) + (sel.ort.trim() ? 1 : 0)
 
   const ortCenter = sel.ort.trim() ? resolveCenter(sel.ort) : null
 

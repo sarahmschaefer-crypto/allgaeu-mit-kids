@@ -8,12 +8,19 @@ export type ShapesDest = {
   map: { x: number; y: number }; rating: number; reviews: number;
   blurb: string; highlights: string[]; facilities: string[]; season: string; duration: string;
   tags?: string[]; teaser?: string;
+  // Erweiterte Filterdimensionen (via DEST_META befüllt): Lage, Region, Schnee-tauglich.
+  setting?: 'indoor' | 'outdoor' | 'both'; region?: string; snow?: boolean;
 }
 export type Sel = {
   ages?: string[]; types?: string[]; times?: string[];
   budgets?: string[]; weather?: string | null; stroller?: boolean;
   parking?: boolean; access?: string[]; ort?: string; radius?: number;
+  setting?: string | null; region?: string | null;
 }
+
+// Wildcard-Antworten ("keine Einschränkung"): egal / überall / jede Wetterlage.
+export const ANY_IDS = new Set(['egal', 'ueberall', 'jede-wetterlage']);
+export const isAny = (v?: string | null) => !v || ANY_IDS.has(v);
 
 
 // Activity TYPES — drawn from the uploaded icon set. Each destination carries a
@@ -107,6 +114,35 @@ export const BUDGETS = [
   { id: "€",    label: "Günstig",   sub: "bis ~10 €/Pers.", glyph: "€" },
   { id: "€€",   label: "Mittel",    sub: "10–25 €/Pers.", glyph: "€€" },
   { id: "€€€",  label: "Premium",   sub: "ab ~25 €/Pers.", glyph: "€€€" },
+];
+
+// Wetter-Optionen (Quiz-Frage „Wie ist das Wetter heute?"). „jede-wetterlage" ist
+// die Wildcard (= keine Einschränkung, vgl. ANY_IDS).
+export const WEATHERS = [
+  { id: "gut",            label: "Schön & trocken" },
+  { id: "regen",          label: "Regnerisch" },
+  { id: "schnee",         label: "Schnee" },
+  { id: "jede-wetterlage",label: "Jede Wetterlage" },
+];
+
+// Lage-Optionen (Indoor/Outdoor). „egal" = Wildcard.
+export const SETTINGS = [
+  { id: "indoor",  label: "Indoor" },
+  { id: "outdoor", label: "Outdoor" },
+  { id: "egal",    label: "Egal" },
+];
+
+// Regions-Optionen (Quiz-Frage „Wo wollt ihr hin?"). „ueberall" = Wildcard,
+// „anderswo" ist eine echte Region (Ziele außerhalb der genannten Gebiete).
+export const REGIONS = [
+  { id: "westallgaeu",  label: "Westallgäu" },
+  { id: "ostallgaeu",   label: "Ostallgäu" },
+  { id: "oberallgaeu",  label: "Oberallgäu" },
+  { id: "unterallgaeu", label: "Unterallgäu" },
+  { id: "bodensee",     label: "Bodenseeregion" },
+  { id: "oberschwaben", label: "Oberschwaben" },
+  { id: "ueberall",     label: "Überall" },
+  { id: "anderswo",     label: "Anderswo" },
 ];
 
 // Each destination: id, name, place, cat, ages[], time, budget, weather (gut/egal/regen),
@@ -272,10 +308,35 @@ export const DEST_TEASERS = {
   "hündle":                 "Bergspaß für alle",
 };
 
-// Attach activity tags + cover hook to each destination.
+// Lage / Region / Schnee je Ziel. Editorial gesetzt anhand Ort + Inhalt — bitte
+// von Sarah gegenprüfen. setting: indoor|outdoor|both, region: s. REGIONS,
+// snow: ganzjährig/winter-/wetterunabhängig tauglich.
+type DestMeta = { setting: 'indoor' | 'outdoor' | 'both'; region: string; snow: boolean };
+export const DEST_META: Record<string, DestMeta> = {
+  "breitachklamm":          { setting: "outdoor", region: "oberallgaeu",  snow: true },  // Winter-Eiswelt
+  "skywalk":                { setting: "outdoor", region: "westallgaeu",  snow: false },
+  "alpsee-coaster":         { setting: "outdoor", region: "oberallgaeu",  snow: true },  // Ganzjahres-Rodelbahn
+  "skyline-park":           { setting: "outdoor", region: "unterallgaeu", snow: false },
+  "ziegelwies":             { setting: "outdoor", region: "ostallgaeu",   snow: false },
+  "eistobel":               { setting: "outdoor", region: "westallgaeu",  snow: false },
+  "aquaria":                { setting: "both",    region: "unterallgaeu", snow: true },  // Hallenbad, ganzjährig
+  "bergbauernmuseum":       { setting: "both",    region: "oberallgaeu",  snow: false },
+  "soellereck":             { setting: "outdoor", region: "oberallgaeu",  snow: true },  // Wintersportberg
+  "sturmannshoehle":        { setting: "indoor",  region: "oberallgaeu",  snow: false }, // Mai–Okt
+  "neuschwanstein":         { setting: "both",    region: "ostallgaeu",   snow: true },  // ganzjährig
+  "kletterwald-bärenfalle": { setting: "outdoor", region: "oberallgaeu",  snow: false },
+  "moorbad-schwarzenberg":  { setting: "outdoor", region: "oberallgaeu",  snow: false },
+  "vogelpark":              { setting: "outdoor", region: "oberallgaeu",  snow: false },
+  "iglu-indoorspielplatz":  { setting: "indoor",  region: "oberallgaeu",  snow: true },  // wetterunabhängig
+  "hündle":                 { setting: "outdoor", region: "oberallgaeu",  snow: true },  // Wintersportberg
+};
+
+// Attach activity tags + cover hook + meta to each destination.
 DESTINATIONS.forEach((d: any) => {
   d.tags = (DEST_TAGS as Record<string, string[]>)[d.id] || ["ausflug"];
   d.teaser = (DEST_TEASERS as Record<string, string>)[d.id] || d.highlights?.[0] || "Familienausflug";
+  const meta = DEST_META[d.id];
+  if (meta) { d.setting = meta.setting; d.region = meta.region; d.snow = meta.snow; }
 });
 
 // Score a destination against a filter selection (used by quiz + filter)
@@ -287,9 +348,25 @@ export function matchScore(dest: ShapesDest, sel: Sel) {
   if (has(sel.types)) { max += 3; if (sel.types?.some(t => tagsOf(dest).includes(t))) score += 3; }
   if (has(sel.times)) { max += 1; if (sel.times?.includes(dest.time)) score += 1; }
   if (has(sel.budgets)) { max += 1; if (sel.budgets?.includes(dest.budget)) score += 1; }
-  if (sel.weather === "regen") { max += 2; if (dest.weather === "regen") score += 2; }
+  if (!isAny(sel.weather)) {
+    if (sel.weather === "regen") { max += 2; if (weatherproof(dest)) score += 2; }
+    else if (sel.weather === "schnee") { max += 2; if (dest.snow) score += 2; }
+    // "gut" stellt keine harte Anforderung — kein Score-Anteil.
+  }
+  if (!isAny(sel.setting) && sel.setting) { max += 1; if (settingMatch(dest, sel.setting)) score += 1; }
+  if (!isAny(sel.region) && sel.region) { max += 1; if (dest.region === sel.region) score += 1; }
   if (sel.stroller) { max += 2; if (dest.stroller) score += 2; }
   return max === 0 ? 1 : score / max;
+}
+
+// Regensicher = Regen-Ziel, „egal"-Wetter-Ziel oder (teil-)Indoor.
+function weatherproof(d: ShapesDest): boolean {
+  return d.weather === "regen" || d.weather === "egal" || d.setting === "indoor" || d.setting === "both";
+}
+function settingMatch(d: ShapesDest, want: string): boolean {
+  if (want === "indoor") return d.setting === "indoor" || d.setting === "both";
+  if (want === "outdoor") return d.setting === "outdoor" || d.setting === "both";
+  return true;
 }
 
 // ── Geo: approximate (placeholder) coordinates for the radius/"Umkreis" filter.
@@ -374,7 +451,13 @@ export function filterDests(sel: Sel) {
     if (sel.types?.length && !sel.types?.some(t => tagsOf(d).includes(t))) return false;
     if (sel.times?.length && !sel.times?.includes(d.time)) return false;
     if (sel.budgets?.length && !sel.budgets?.includes(d.budget)) return false;
-    if (sel.weather === "regen" && d.weather !== "regen") return false;
+    if (!isAny(sel.weather)) {
+      if (sel.weather === "regen" && !weatherproof(d)) return false;
+      if (sel.weather === "schnee" && !d.snow) return false;
+      // "gut": kein harter Filter (die meisten Ziele passen bei schönem Wetter).
+    }
+    if (!isAny(sel.setting) && sel.setting && !settingMatch(d, sel.setting)) return false;
+    if (!isAny(sel.region) && sel.region && d.region !== sel.region) return false;
     if (sel.stroller && !d.stroller) return false;
     if (sel.parking && !d.facilities.includes("Parkplatz")) return false;
     if (sel.access?.length && !sel.access.some(a => accessIds(d).includes(a))) return false;

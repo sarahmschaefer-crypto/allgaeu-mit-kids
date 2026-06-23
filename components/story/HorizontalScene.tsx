@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { clamp, useScrollScene } from '@/lib/story/scroll'
 import { DestCard } from '@/components/shapes/primitives'
 import { useTweaks } from '@/components/Tweaks'
-import { useMatch } from '@/components/story/MatchContext'
+import { useMatch, toSel } from '@/components/story/MatchContext'
 import { buildExploreHref } from '@/lib/shapes/explore'
 
 function scrollToQuiz() {
@@ -18,7 +18,7 @@ export function HorizontalScene() {
   const { fx } = useTweaks()
   const { matches, sel } = useMatch()
   const cardsData = matches.slice(0, 12)
-  const exploreHref = buildExploreHref(sel, { from: 'quiz' })
+  const exploreHref = buildExploreHref(toSel(sel), { from: 'quiz' })
   const empty = matches.length === 0
   const sec = useRef<HTMLElement>(null)
   const track = useRef<HTMLDivElement>(null)

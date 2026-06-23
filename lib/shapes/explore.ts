@@ -7,6 +7,8 @@ export type SelState = {
   budgets: string[]
   types: string[]
   weather: string | null
+  setting: string | null
+  region: string | null
   stroller: boolean
   parking: boolean
   access: string[]
@@ -22,6 +24,8 @@ export const EMPTY_SEL: SelState = {
   budgets: [],
   types: [],
   weather: null,
+  setting: null,
+  region: null,
   stroller: false,
   parking: false,
   access: [],
@@ -38,6 +42,8 @@ export function buildExploreHref(sel: Partial<SelState>, opts?: { view?: 'liste'
   if (sel.budgets?.length) p.set('budgets', sel.budgets.join(','))
   if (sel.types?.length) p.set('types', sel.types.join(','))
   if (sel.weather) p.set('weather', sel.weather)
+  if (sel.setting) p.set('setting', sel.setting)
+  if (sel.region) p.set('region', sel.region)
   if (sel.stroller) p.set('stroller', '1')
   if (sel.parking) p.set('parking', '1')
   if (sel.access?.length) p.set('access', sel.access.join(','))
