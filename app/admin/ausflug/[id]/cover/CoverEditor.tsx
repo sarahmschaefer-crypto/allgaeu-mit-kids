@@ -125,6 +125,9 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
       const px = fx * 1080, py = fy * 1350
       const lay = moveTarget === 'eyebrow' ? overlineLayer : sloganLayer
       drag.current = { mode: 'text', ox: px - (lay?.x ?? 60), oy: py - (lay?.y ?? 1040) }
+    } else if (dragMode === 'sticker' && sel != null) {
+      const st = stickers[sel] // Greif-Versatz in 0..1, damit der Sticker dort bleibt, wo man ihn anfasst
+      drag.current = { mode: 'sticker', ox: fx - (st?.x ?? 0.5), oy: fy - (st?.y ?? 0.5) }
     } else drag.current = { mode: dragMode, ox: 0, oy: 0 }
     onMove(e)
   }
@@ -140,7 +143,9 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
       const ny = Math.round(Math.min(1320, Math.max(0, fy * 1350 - drag.current.oy)))
       if (moveTarget === 'eyebrow') patch({ overlinePos: { x: nx, y: ny } })
       else patch({ textPos: { x: nx, y: ny } })
-    } else if (drag.current.mode === 'sticker' && sel != null) updateSticker(sel, { x: Number(fx.toFixed(3)), y: Number(fy.toFixed(3)) })
+    } else if (drag.current.mode === 'sticker' && sel != null) {
+      updateSticker(sel, { x: Number(clamp01(fx - drag.current.ox).toFixed(3)), y: Number(clamp01(fy - drag.current.oy).toFixed(3)) })
+    }
   }
   const onMove = (e: React.PointerEvent) => {
     if (!drag.current) return
