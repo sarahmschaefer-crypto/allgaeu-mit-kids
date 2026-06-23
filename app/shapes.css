@@ -71,7 +71,10 @@
 @keyframes shapesFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
 /* top bar for the discovery flows */
-.shapes-bar { position: sticky; top: 0; z-index: 50; background: color-mix(in oklch, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--ink); }
+/* Figma „Navbar" (205:75): solid core/paper #f7f2e5 + core/line-Border (16%).
+   War: oklch-color-mix mit transparent → verlor den Farbton (hue=none) und
+   rendert rosa; Border war volles Ink statt line. */
+.shapes-bar { position: sticky; top: 0; z-index: 50; background: var(--paper); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 /* Overlay-Navbar (Landing/Hero): transparent über dem Hero, erst beim Scrollen core/paper. */
 .shapes-bar--overlay { position: fixed; left: 0; right: 0; top: 0; background: transparent; backdrop-filter: none; border-bottom-color: transparent; }
 .shapes-bar--overlay.is-scrolled { background: var(--paper); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
@@ -110,7 +113,7 @@
   .shapes-brand .brand-logo { height: 50px; }
   .shapes-bar.is-scrolled .shapes-brand .brand-logo { height: 32px; }
   .shapes-burger { display: inline-flex; margin-left: 10px; padding: 10px 0 10px 2px; }
-  .shapes-menu { display: flex; flex-direction: column; padding: 8px 24px 18px; background: color-mix(in oklch, var(--bg) 96%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .shapes-menu { display: flex; flex-direction: column; padding: 8px 24px 18px; background: var(--paper); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
   .shapes-menu a { padding: 13px 2px; color: var(--ink); font-family: var(--font-body); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.12em; text-decoration: none; border-bottom: 1px solid var(--line-soft); }
   .shapes-menu a.on { color: var(--accent); }
   .shapes-menu .shapes-menu-cta { display: inline-flex; justify-content: center; margin-top: 14px; padding: 13px 18px; color: #fff; text-transform: none; letter-spacing: 0.02em; border-bottom: none; }
