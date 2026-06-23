@@ -48,8 +48,9 @@ export type FigmaCoverChoice = {
   frameShape?: CoverFrameShape        // organische Blobs / Viereck / Kreis / keiner
   // ── Ebene 3: Scrim ──
   scrim?: number | null               // 0..1 Stärke; null/0 = aus; fehlt = Template-Default
-  // ── Ebene 4: Brand-Grafiken (zusätzlich) ──
-  stickers?: CoverSticker[]
+  // ── Ebene 4: Brand-Grafiken ──
+  stickers?: CoverSticker[]          // zusätzlich eingefügte Grafiken
+  hiddenGraphics?: number[]          // ausgeblendete Vorlagen-Grafiken (Basis-Layer-Index)
   // ── Ebene 5: Kategorie-Stempel ──
   showStamp?: boolean
   stampCategory?: string              // welcher Stempel (sonst echte Kategorie)

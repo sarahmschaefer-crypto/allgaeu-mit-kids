@@ -8,9 +8,10 @@ import { useEffect, useMemo, useRef, useState, useTransition, type CSSProperties
 import { FigmaCover } from '@/components/cover/FigmaCover'
 import { COVER_COLORS, type CoverColor } from '@/lib/cover/types'
 import {
-  resolveFigmaCover, PICKER_TEMPLATES, DEMO_PHOTOS, needsNumber,
+  resolveFigmaCover, PICKER_TEMPLATES, DEMO_PHOTOS, needsNumber, autoTemplateId,
   BRAND_COLORS, STICKER_GRAPHICS, FRAME_SHAPES, STAMP_CATEGORIES,
 } from '@/lib/content/figma-cover'
+import { figmaTemplate } from '@/lib/cover/figma-templates'
 import type { ContentDest, FigmaCoverChoice, CoverSticker } from '@/lib/content/types'
 import { saveFigmaCover } from '@/app/admin/actions'
 
@@ -96,6 +97,10 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
   const hasMarkerOrBand = template.layers.some((l) => l.type === 'marker' || l.type === 'band') || !!choice.textMarker
   const sloganLayer = template.layers.find((l) => (l.type === 'text' && l.field === 'slogan') || l.type === 'marker')
   const overlineLayer = template.layers.find((l) => l.type === 'text' && l.field === 'overline')
+  // Vorlagen-eigene Grafiken (Basis-Template) — können ausgeblendet werden.
+  const baseTemplate = figmaTemplate(choice.templateId || '') ?? figmaTemplate(autoTemplateId(dest.id))!
+  const baseGraphics = baseTemplate.layers.map((l, i) => ({ l, i })).filter((x) => x.l.type === 'graphic')
+  const toggleGraphic = (i: number) => update((c) => { const h = new Set(c.hiddenGraphics ?? []); if (h.has(i)) h.delete(i); else h.add(i); return { ...c, hiddenGraphics: [...h] } })
 
   const photoOptions = useMemo(() => {
     const real = (dest.photos ?? []).map((p) => p.url)
@@ -220,7 +225,7 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
           {PICKER_TEMPLATES.map((t) => {
             const on = (choice.templateId ?? template.id) === t.id
             return (
-              <button key={t.id} type="button" onClick={() => patch({ templateId: t.id })}
+              <button key={t.id} type="button" onClick={() => patch({ templateId: t.id, hiddenGraphics: undefined })}
                 style={{ padding: 0, border: on ? '2.5px solid var(--ink)' : '1px solid var(--line)', borderRadius: 12, overflow: 'hidden', background: 'none', cursor: 'pointer' }}>
                 <FigmaCover template={t} content={resolveFigmaCover({ ...dest, figmaCover: { templateId: t.id } }).content} width={86} />
                 <div style={{ fontSize: 10.5, padding: '4px 2px', color: on ? 'var(--ink)' : 'var(--ink-soft)', fontWeight: on ? 700 : 500, lineHeight: 1.15 }}>{t.name}</div>
@@ -356,6 +361,24 @@ export function CoverEditor({ dest }: { dest: ContentDest }) {
       {/* ── GRAFIK (Brand-Sticker) ── */}
       {tab === 'grafik' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {baseGraphics.length > 0 && (
+            <div>
+              <label className="hint" style={{ display: 'block', marginBottom: 6 }}>Vorlagen-Grafiken <span>(antippen zum Aus-/Einblenden)</span></label>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {baseGraphics.map(({ l, i }) => {
+                  const hidden = choice.hiddenGraphics?.includes(i)
+                  return (
+                    <button key={i} type="button" onClick={() => toggleGraphic(i)} title={hidden ? 'Einblenden' : 'Ausblenden'}
+                      style={{ position: 'relative', width: 54, height: 54, border: hidden ? '1px dashed var(--line)' : '2px solid var(--ink)', borderRadius: 10, background: '#fff', cursor: 'pointer', display: 'grid', placeItems: 'center', padding: 8, opacity: hidden ? 0.45 : 1 }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={graphicSrc((l as { asset: string }).asset)} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                      {hidden && <span style={{ position: 'absolute', right: 3, bottom: 1, fontSize: 9, color: 'var(--ink-soft)', fontWeight: 800 }}>aus</span>}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
           <div>
             <label className="hint" style={{ display: 'block', marginBottom: 6 }}>Grafik einfügen</label>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(58px, 1fr))', gap: 8 }}>

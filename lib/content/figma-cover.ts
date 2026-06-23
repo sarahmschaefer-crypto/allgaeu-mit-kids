@@ -63,7 +63,11 @@ export const STAMP_CATEGORIES = [...COVER_STAMPS]
 // für alle Layer-Overrides; FigmaCover bleibt ein schlanker Renderer.
 export function applyOverrides(base: FigmaTemplate, c?: FigmaCoverChoice): FigmaTemplate {
   if (!c) return base
-  let layers: FTLayer[] = base.layers.map((l) => ({ ...l }))
+  // Vorlagen-Grafiken können ausgeblendet werden (Templates = nur Voreinstellung).
+  let layers: FTLayer[] = base.layers
+    .map((l, i) => ({ l, i }))
+    .filter(({ l, i }) => !(l.type === 'graphic' && c.hiddenGraphics?.includes(i)))
+    .map(({ l }) => ({ ...l }))
   let bg = base.bg
   const photoIdx = layers.findIndex((l) => l.type === 'photo')
   const sloganIdx = layers.findIndex((l) => l.type === 'text' && l.field === 'slogan')
